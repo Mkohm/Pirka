@@ -6,5 +6,8 @@ Pirka is a chatbot, which can help you with studying.
 - [X] Is being developed right now
 - [ ] Get the list of assignments this week
 - [ ] Answer when the next lecture in {subject} is 
-etc.. 
+
+More is coming soon..
+
+Release date of Pirka is 27.april 2017
 
