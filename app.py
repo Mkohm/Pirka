@@ -30,8 +30,6 @@ def webhook():
     return r
 
 
-
-
 def processRequest(req):
     if req.get("result").get("action") != "yahooWeatherForecast":
         return {}
