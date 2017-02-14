@@ -14,7 +14,6 @@ from flask import make_response
 # Flask app should start in global layout
 app = Flask(__name__)
 
-
 @app.route('/', methods=['POST'])
 def webhook():
     req = request.get_json(silent=True, force=True)
@@ -29,6 +28,8 @@ def webhook():
     r = make_response(res)
     r.headers['Content-Type'] = 'application/json'
     return r
+
+
 
 
 def processRequest(req):
