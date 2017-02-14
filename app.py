@@ -3,9 +3,11 @@
 from __future__ import print_function
 from future import standard_library
 standard_library.install_aliases()
-import urllib.request, urllib.parse, urllib.error
+import urllib3.request, urllib.parse, urllib.error
 import json
 import os
+import requests
+
 
 from flask import Flask
 from flask import request
@@ -13,48 +15,84 @@ from flask import make_response
 
 # Flask app should start in global layout
 app = Flask(__name__)
+app.debug = True
+
+# Change this variable to true if you are going to run this on Heroku
+deployment = False
+
+if deployment:
+    deployment_link = "webhook"
+else:
+    deployment_link = ""
 
 
-@app.route('/', methods=['POST'])
+
+@app.route('/' + deployment_link, methods=['POST'])
 def webhook():
-    req = request.get_json(silent=True, force=True)
 
+    # This is the json-data we are sent from API.AI (request in json-form)
+    jsonRequest = request.get_json(silent=True, force=True)
+
+    # This is just printing the jsonRequest with all the data
     print("Request:")
-    print(json.dumps(req, indent=4))
+    print(json.dumps(jsonRequest, indent=4))
 
-    res = processRequest(req)
+    # This is creating a response to the request
+    response = processRequest(jsonRequest)
+    response = json.dumps(response, indent=4)
+    print(response)
 
-    res = json.dumps(res, indent=4)
-    # print(res)
-    r = make_response(res)
-    r.headers['Content-Type'] = 'application/json'
-    return r
+    created_response = make_response(response)
+    created_response.headers['Content-Type'] = 'application/json'
+
+    return created_response
 
 
-def processRequest(req):
-    if req.get("result").get("action") != "yahooWeatherForecast":
+def processRequest(json_request):
+
+    # Here we can add different cases depending on the names on the different actions
+    if json_request.get("result").get("action") != "yahooWeatherForecast":
         return {}
-    baseurl = "https://query.yahooapis.com/v1/public/yql?"
-    yql_query = makeYqlQuery(req)
-    if yql_query is None:
+
+    yahoo_query = makeYahooQuery(json_request)
+
+    if yahoo_query is None:
+        #return {}
         return {}
-    yql_url = baseurl + urllib.parse.urlencode({'q': yql_query}) + "&format=json"
-    result = urllib.request.urlopen(yql_url).read()
+
+
+    base_url = "https://query.yahooapis.com/v1/public/yql?"
+    # This variable contains a link to the json data we got from Yahoo
+    received_link_to_json = base_url + urllib.parse.urlencode({'q': yahoo_query}) + "&format=json"
+
+    # This is the json data we get from yahoo containing our weather information
+    result = requests.get(received_link_to_json, verify=False).text
+    print(result)
+
+
     data = json.loads(result)
-    res = makeWebhookResult(data)
-    return res
+    result = makeWebhookResult(data)
+
+    return result
 
 
 
-def makeYqlQuery(req):
-    result = req.get("result")
+def makeYahooQuery(json_request):
+
+    # Extract the data from the json-request (first get the result section of the json)
+    result = json_request.get("result")
+
+    # Then get the parameters of the result
     parameters = result.get("parameters")
+
+    # Extract the city from the result
     city = parameters.get("geo-city")
+
     if city is None:
         return None
 
+    # If we got the parameters in the json_request - create this query to get the data from yahoo
     return "select * from weather.forecast where woeid in (select woeid from geo.places(1) where text='" + city + "')"
-
 
 def makeWebhookResult(data):
     query = data.get('query')
@@ -97,11 +135,9 @@ def makeWebhookResult(data):
     }
 
 
+# This starts the program
 if __name__ == '__main__':
     port = int(os.getenv('PORT', 8080))
 
     print("Starting app on port %d" % port)
-
-    print("this is a test")
-
-    app.run(debug=False, port=port, host='localhost')
+    app.run(debug=True, port=port, host='localhost')
