@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="df8647b4-8a60-4293-b24d-0cb635e518ae" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/Pirka.iml" afterPath="$PROJECT_DIR$/.idea/Pirka.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/IME-API/DataReceiver.py" afterPath="$PROJECT_DIR$/IME-API/DataReceiver.py" />
     </list>
@@ -15,7 +13,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Pirka$DataReceiver.coverage" NAME="DataReceiver Coverage Results" MODIFIED="1487333439755" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/IME-API" />
+    <SUITE FILE_PATH="coverage/Pirka$DataReceiver.coverage" NAME="DataReceiver Coverage Results" MODIFIED="1487334738452" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/IME-API" />
     <SUITE FILE_PATH="coverage/Pirka$app.coverage" NAME="app Coverage Results" MODIFIED="1486029515897" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Pirka$Pirka.coverage" NAME="Pirka Coverage Results" MODIFIED="1487085682622" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Pirka$ChatBot.coverage" NAME="ChatBot Coverage Results" MODIFIED="1487328193516" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -45,13 +43,10 @@
       <file leaf-file-name="ChatBot.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/ChatBot.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="765">
+            <state relative-caret-position="398">
               <caret line="52" column="0" lean-forward="false" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
               <folding>
                 <element signature="e#0#37#0" expanded="true" />
-                <marker date="1487330626000" expanded="true" signature="550:1177" ph="..." />
-                <marker date="1487330626000" expanded="true" signature="1130:1134" ph="..." />
-                <marker date="1487330626000" expanded="true" signature="1221:1237" ph="..." />
               </folding>
             </state>
           </provider>
@@ -60,8 +55,8 @@
       <file leaf-file-name="DataReceiver.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/IME-API/DataReceiver.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
-              <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+            <state relative-caret-position="323">
+              <caret line="27" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
               </folding>
@@ -176,20 +171,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="IME-API" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Pirka" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Pirka" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Examples" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -509,9 +490,6 @@
           <caret line="52" column="0" lean-forward="false" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
-            <marker date="1487330626000" expanded="true" signature="550:1177" ph="..." />
-            <marker date="1487330626000" expanded="true" signature="1130:1134" ph="..." />
-            <marker date="1487330626000" expanded="true" signature="1221:1237" ph="..." />
           </folding>
         </state>
       </provider>
@@ -566,9 +544,6 @@
           <caret line="52" column="0" lean-forward="false" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
-            <marker date="1487330626000" expanded="true" signature="550:1177" ph="..." />
-            <marker date="1487330626000" expanded="true" signature="1130:1134" ph="..." />
-            <marker date="1487330626000" expanded="true" signature="1221:1237" ph="..." />
           </folding>
         </state>
       </provider>
@@ -727,21 +702,18 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/ChatBot.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
+        <state relative-caret-position="398">
           <caret line="52" column="0" lean-forward="false" selection-start-line="52" selection-start-column="0" selection-end-line="52" selection-end-column="0" />
           <folding>
             <element signature="e#0#37#0" expanded="true" />
-            <marker date="1487330626000" expanded="true" signature="550:1177" ph="..." />
-            <marker date="1487330626000" expanded="true" signature="1130:1134" ph="..." />
-            <marker date="1487330626000" expanded="true" signature="1221:1237" ph="..." />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/IME-API/DataReceiver.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="28" column="0" lean-forward="true" selection-start-line="28" selection-start-column="0" selection-end-line="28" selection-end-column="0" />
+        <state relative-caret-position="323">
+          <caret line="27" column="0" lean-forward="true" selection-start-line="27" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
           <folding>
             <element signature="e#0#15#0" expanded="true" />
           </folding>
