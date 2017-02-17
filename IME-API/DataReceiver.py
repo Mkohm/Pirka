@@ -4,7 +4,6 @@ class DataReceiver ():
 
 
 
-    # TODO: Implement this
     def getExamDate(self, code) -> str:
 
 
@@ -27,9 +26,9 @@ class DataReceiver ():
         name = subject["course"]["name"]
         try:
             exam_date = subject["course"]["assessment"][0]["date"]
-            return("Exam date for", code, name, "is", exam_date)
+            return "Exam date for", code, name, "is", exam_date
         except KeyError:
-            return("No Exam date available")
+            return "No Exam date available"
 
 
     def getContactInfo(self, codeInput)-> str:
