@@ -8,7 +8,7 @@ __pycache__/
 
 
 # Jetbrains stuff
-.idea/
+.idea/workspace.xml
 
 # Distribution / packaging
 .Python
