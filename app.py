@@ -54,6 +54,15 @@ def processRequest(json_request):
     if json_request.get("result").get("action") != "yahooWeatherForecast":
         return {}
 
+
+    # If user story 1 ...
+
+    # If user story 2 ...
+
+    # ...
+
+
+
     yahoo_query = makeYahooQuery(json_request)
 
     if yahoo_query is None:
@@ -119,13 +128,14 @@ def makeWebhookResult(data):
 
     print(json.dumps(item, indent=4))
 
+    # The string that the bot will answer with
     speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
              ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
 
     print("Response:")
     print(speech)
 
-
+    # Returns the data from yahoo in json format
     return {
         "speech": speech,
         "displayText": speech,
