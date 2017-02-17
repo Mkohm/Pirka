@@ -32,8 +32,10 @@ class ChatBot():
         # Change this variable to true if you are going to run this on Heroku
         self.deployment = False
 
+
         # The port to run webserver on
         self.port = int(os.getenv('PORT', 8080))
+
 
         # Run application
         app.run(debug=True, port=self.port, host='localhost')
@@ -62,6 +64,10 @@ def webhook():
 
 
 
+
+
 # Start the application
 bot = ChatBot()
+
+
 
