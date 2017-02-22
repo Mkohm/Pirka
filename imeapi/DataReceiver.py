@@ -6,8 +6,9 @@ class DataReceiver ():
 
     @staticmethod
     def is_valid_course(course_code: str):
+        data=DataReceiver.get_data(course_code)
         try:
-            cred = DataReceiver.get_credit(course_code)
+            cred=data["course"]["credit"]
             return True
         except KeyError:
             return False
