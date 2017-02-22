@@ -4,6 +4,17 @@ import json
 base_url = "http://www.ime.ntnu.no/api/course/en/"
 class DataReceiver ():
 
+    @staticmethod
+    def is_valid_course(course_code: str):
+        data = DataReceiver.get_data(course_code)
+        try:
+            cred = DataReceiver.get_credit(course_code)
+            return True
+        except KeyError:
+            return False
+
+            
+
 
     @staticmethod
     def get_data(course_code: str):
@@ -89,7 +100,7 @@ class DataReceiver ():
         # Fetch the course
         data = DataReceiver.get_data(course_code)
 
-        return data["course"]["infoType"][0]["text"]
+        return data["course"]["infoType"][1]["text"]
 
 
     @staticmethod
@@ -99,19 +110,10 @@ class DataReceiver ():
         data = DataReceiver.get_data(course_code)
 
         # Get relevant data
-        return data["course"]["infoType"][1]["code"]
+        return data["course"]["infoType"][2]["code"]
 
     @staticmethod
     def get_course_content(course_code)-> str:
-
-        # Fetch the course
-        data = DataReceiver.get_data(course_code)
-
-        return data["course"]["infoType"][2]["text"]
-
-
-    @staticmethod
-    def get_course_material(course_code) -> str:
 
         # Fetch the course
         data = DataReceiver.get_data(course_code)
@@ -120,9 +122,21 @@ class DataReceiver ():
 
 
     @staticmethod
-    def get_teaching_form(course_code) -> str:
+    def get_course_material(course_code) -> str:
 
         # Fetch the course
         data = DataReceiver.get_data(course_code)
 
         return data["course"]["infoType"][4]["text"]
+
+
+    @staticmethod
+    def get_teaching_form(course_code) -> str:
+
+        # Fetch the course
+        data = DataReceiver.get_data(course_code)
+
+        return data["course"]["infoType"][5]["text"]
+
+
+print(DataReceiver.get_URL("TDT4100"))
