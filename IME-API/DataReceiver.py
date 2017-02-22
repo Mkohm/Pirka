@@ -12,9 +12,9 @@ class DataReceiver ():
 
 
         # Fetch the course
-        course = requests.get(base_url + codeInput).json()
-        course2 = json.dumps(course, indent=4)
-        print(course2)
+        #course = requests.get(base_url + codeInput).json()
+        #course2 = json.dumps(course, indent=4)
+        #print(course2)
 
         #code = input("Please provide a course code: ")
         subject = requests.get(base_url + code).json()
