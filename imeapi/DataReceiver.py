@@ -41,13 +41,24 @@ class DataReceiver ():
     @staticmethod
     def get_contact_name(course_code)-> str:
 
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
+
         # Fetch the course
         data = DataReceiver.get_data(course_code)
 
-        return data["course"]["educationalRole"][0]["person"]["displayName"]
+        try:
+            name=data["course"]["educationalRole"][0]["person"]["displayName"]
+            return name
+        except KeyError:
+            return "No credits available"
+
 
     @staticmethod
     def get_contact_mail(course_code)-> str:
+
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
 
         # Fetch the course
         data = DataReceiver.get_data(course_code)
@@ -57,6 +68,9 @@ class DataReceiver ():
     @staticmethod
     def get_contact_office(course_code)-> str:
 
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
+
         # Fetch the course
         data = DataReceiver.get_data(course_code)
 
@@ -64,6 +78,9 @@ class DataReceiver ():
 
     @staticmethod
     def get_contact_phone(course_code)-> str:
+
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
 
         # Fetch the course
         data = DataReceiver.get_data(course_code)
@@ -74,6 +91,9 @@ class DataReceiver ():
     def get_contact_website(course_code)-> str:
         #gets the contacts person website
 
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
+
         mail = DataReceiver.get_contact_mail(course_code)
 
         website_id = mail.split("@")
@@ -83,6 +103,9 @@ class DataReceiver ():
     @staticmethod
     def get_course_name(course_code)-> str:
 
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
+
         # Fetch the course
         data = DataReceiver.get_data(course_code)
 
@@ -90,6 +113,9 @@ class DataReceiver ():
 
     @staticmethod
     def get_credit(course_code)-> str:
+
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
 
         # Fetch the course
         data = DataReceiver.get_data(course_code)
@@ -100,6 +126,9 @@ class DataReceiver ():
     @staticmethod
     def get_URL(course_code)-> str:
 
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
+
         # Fetch the course
         data = DataReceiver.get_data(course_code)
 
@@ -108,6 +137,9 @@ class DataReceiver ():
 
     @staticmethod
     def get_prerequisite_knowledge(course_code)-> str:
+
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
 
         # Fetch the course
         data = DataReceiver.get_data(course_code)
@@ -118,6 +150,9 @@ class DataReceiver ():
     @staticmethod
     def get_course_content(course_code)-> str:
 
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
+
         # Fetch the course
         data = DataReceiver.get_data(course_code)
 
@@ -126,6 +161,9 @@ class DataReceiver ():
 
     @staticmethod
     def get_course_material(course_code) -> str:
+
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
 
         # Fetch the course
         data = DataReceiver.get_data(course_code)
@@ -136,7 +174,11 @@ class DataReceiver ():
     @staticmethod
     def get_teaching_form(course_code) -> str:
 
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
+
         # Fetch the course
         data = DataReceiver.get_data(course_code)
 
         return data["course"]["infoType"][5]["text"]
+
