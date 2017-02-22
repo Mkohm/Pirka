@@ -1,6 +1,3 @@
-from __future__ import print_function
-from future import standard_library
-standard_library.install_aliases()
 import urllib3.request, urllib.parse, urllib.error
 import json
 import os

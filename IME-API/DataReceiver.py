@@ -1,5 +1,7 @@
 import requests
 import json
+
+base_url = "http://www.ime.ntnu.no/api/course/en/"
 class DataReceiver ():
 
 
@@ -7,9 +9,6 @@ class DataReceiver ():
     def getExamDate(self, code) -> str:
 
 
-        import requests
-
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
 
 
         # Fetch the course
@@ -32,7 +31,6 @@ class DataReceiver ():
 
 
     def getContactInfo(self, codeInput)-> str:
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
 
         # Fetch the course
         data = requests.get(base_url + codeInput).json()
@@ -64,7 +62,6 @@ class DataReceiver ():
 
 
     def getCourseName(self, codeInput)-> str:
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
 
         # Fetch the course
         data = requests.get(base_url + codeInput).json()
@@ -79,7 +76,6 @@ class DataReceiver ():
         return courseName
 
     def getCredit(self, codeInput)-> str:
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
 
         # Fetch the course
         data = requests.get(base_url + codeInput).json()
@@ -95,7 +91,6 @@ class DataReceiver ():
 
 
     def getURL(self, codeInput)-> str:
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
 
         # Fetch the course
         data = requests.get(base_url + codeInput).json()
@@ -110,7 +105,6 @@ class DataReceiver ():
         return url
 
     def getFORK(self, codeInput)-> str:
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
 
         # Fetch the course
         data = requests.get(base_url + codeInput).json()
@@ -130,7 +124,6 @@ class DataReceiver ():
         #Returns the course info in English by default.
         #Implement a Norwegian version
 
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
 
         # Fetch the course
         data = requests.get(base_url + codeInput).json()
@@ -147,7 +140,6 @@ class DataReceiver ():
         # Returns the course info in English by default.
         # Implement a Norwegian version
 
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
 
         # Fetch the course
         data = requests.get(base_url + codeInput).json()
@@ -164,7 +156,6 @@ class DataReceiver ():
         # Returns the course info in English by default.
         # Implement a Norwegian version
 
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
 
         # Fetch the course
         data = requests.get(base_url + codeInput).json()
@@ -180,8 +171,6 @@ class DataReceiver ():
     def getANBFORK(self, codeInput) -> str:
         # Returns the course info in English by default.
         # Implement a Norwegian version
-
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
 
         # Fetch the course
         data = requests.get(base_url + codeInput).json()
