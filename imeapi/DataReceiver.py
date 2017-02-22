@@ -24,7 +24,7 @@ class DataReceiver ():
     @staticmethod
     def get_exam_date(course_code: str) -> str:
         if not DataReceiver.is_valid_course(course_code):
-            return "Invalid course code"
+            return "You entered an invalid course code."
 
 
         data = DataReceiver.get_data(course_code)
@@ -33,10 +33,10 @@ class DataReceiver ():
         name = data["course"]["name"]
         try:
             exam_date = data["course"]["assessment"][0]["date"]
-            return "Exam date for " + str(course_code) + " " + str(name) + " is " + str(exam_date)
+            return "The exam date for " + str(course_code) + " " + str(name) + " is " + str(exam_date) + "."
         except KeyError:
             #todo: add reason, e.g. wrong semester, different evaluation form
-            return "No exam date available"
+            return "There is no exam date available."
 
     @staticmethod
     def get_contact_name(course_code)-> str:
