@@ -2,9 +2,9 @@ import requests
 import json
 
 base_url = "http://www.ime.ntnu.no/api/course/en/"
-class DataReceiver ():
 
 
+class DataReceiver:
     @staticmethod
     def get_data(course_code: str):
         data = requests.get(base_url + course_code).json()
@@ -15,7 +15,6 @@ class DataReceiver ():
 
         subject = DataReceiver.get_data(course_code)
 
-
         # Get relevant data and print it
         course_code = subject["course"]["code"]
         name = subject["course"]["name"]
@@ -25,101 +24,97 @@ class DataReceiver ():
         except KeyError:
             return "No Exam date available"
 
-
-    def getContactInfo(self, codeInput)-> str:
+    def getContactInfo(self, codeInput) -> str:
 
         # Fetch the course
         data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
-        #print(data2)
+        # print(data2)
 
         # Get relevant data and print it
         personData = data["course"]["educationalRole"][0]["person"]
 
         name = personData["displayName"]
-        print ()
-        print ()
+        print()
+        print()
         print(name)
         mail = personData["email"]
         print(mail)
-        #office = personData["officeAddress"]
-        #print (office)
+        # office = personData["officeAddress"]
+        # print (office)
         phone = personData["phone"]
-        print (phone)
+        print(phone)
 
         website_id = mail.split("@")
 
         base_url_ntnu = "https://www.ntnu.no/ansatte/"
         website = base_url_ntnu + website_id[0]
 
-        print (website)
+        print(website)
 
         return ("Contact info for TMA4105 is", name)
 
-
-
-    def getCourseName(self, codeInput)-> str:
+    def getCourseName(self, codeInput) -> str:
 
         # Fetch the course
         data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
-        #print(data2)
+        # print(data2)
 
         # Get relevant data and print it
         courseName = data["course"]["norwegianName"]
 
-        print (courseName)
+        print(courseName)
 
         return courseName
 
-    def getCredit(self, codeInput)-> str:
+    def getCredit(self, codeInput) -> str:
 
         # Fetch the course
         data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
-        #print(data2)
+        # print(data2)
 
         # Get relevant data and print it
         credit = data["course"]["credit"]
 
-        print (credit)
+        print(credit)
 
         return credit
 
-
-    def getURL(self, codeInput)-> str:
+    def getURL(self, codeInput) -> str:
 
         # Fetch the course
         data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
-        #print(data2)
+        # print(data2)
 
         # Get relevant data and print it
-        url  = data["course"]["infoType"][0]["text"]
+        url = data["course"]["infoType"][0]["text"]
 
-        print (url)
+        print(url)
 
         return url
 
-    def getFORK(self, codeInput)-> str:
+    def getFORK(self, codeInput) -> str:
 
         # Fetch the course
         data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
-        #print(data2)
+        # print(data2)
 
         # Get relevant data and print it
         # have to fix
-        fork  = data["course"]["infoType"][1]["code"]
+        fork = data["course"]["infoType"][1]["code"]
 
-        print (fork)
+        print(fork)
 
         return fork
 
-    def getContent(self, codeInput)-> str:
+    def getContent(self, codeInput) -> str:
 
-        #Returns the course info in English by default.
-        #Implement a Norwegian version
+        # Returns the course info in English by default.
+        # Implement a Norwegian version
 
 
         # Fetch the course
@@ -127,9 +122,9 @@ class DataReceiver ():
         data2 = json.dumps(data, indent=4)
 
         # Get relevant data and print it
-        content  = data["course"]["infoType"][2]["text"]
+        content = data["course"]["infoType"][2]["text"]
 
-        print (content)
+        print(content)
 
         return content
 
@@ -179,7 +174,3 @@ class DataReceiver ():
         print(anbfork)
 
         return anbfork
-
-
-
-

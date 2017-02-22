@@ -7,7 +7,7 @@ from flask import request
 from flask import make_response
 
 
-from imeapi import Datareceiver
+from imeapi import DataReceiver
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -93,7 +93,7 @@ def webhook():
     # The string that the bot will answer with
     #speech = "Hei pa deg"
 
-    speech = Datareceiver.DataReceiver.get_exam_date(parameter)
+    speech = DataReceiver.DataReceiver.get_exam_date(parameter)
     print(speech)
 
 
