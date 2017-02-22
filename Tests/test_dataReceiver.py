@@ -21,7 +21,7 @@ class TestDataReceiver(TestCase):
         self.assertEqual(DataReceiver.get_course_name("TDT4145"), "Software Engineering ellernoe")
         self.assertEqual(DataReceiver.get_course_name("TMA4100"), "Calculus 1 ufidjsg")
         self.assertEqual(DataReceiver.get_course_name("TTK4105"), "Control Systems")
-        self.assertEqal(DataReceiver.get_course_name("TKT4124"), "Mechanics 3")
+        self.assertEqual(DataReceiver.get_course_name("TKT4124"), "Mechanics 3")
         self.assertEqual(DataReceiver.get_course_name("fgyjhkdlsø"),"Invalid course")
         self.assertEqual(DataReceiver.get_course_name("TMR1111"), "Invalid course")
 
