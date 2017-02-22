@@ -28,7 +28,11 @@ class TestDataReceiver(TestCase):
 
 
     def test_getCredit(self):
-        self.fail()
+        self.assertEqual(get_credit(TMA4100), "7.5")
+        self.assertEqual(get_credit(TMA4160), "7.5")
+        self.assertEqual(get_credit(IØ1000), "15.0")
+        self.assertEqual(get_credit(TMA4130), "7.5")
+        self.assertEqual(get_credit(TEP4100), "7.5")
 
     def test_get_URL(self):
         self.assertEqual(get_URL("TMA4120"), "" )
