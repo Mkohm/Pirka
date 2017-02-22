@@ -1,5 +1,6 @@
 import requests
 import json
+import datetime
 
 base_url = "http://www.ime.ntnu.no/api/course/en/"
 class DataReceiver ():
@@ -14,18 +15,54 @@ class DataReceiver ():
             return False
 
             
-
+    @staticmethod
+    def get_assessment_form(course_code: str):
+        data = DataReceiver.get_data(course_code)
+        assessment_form = data["course"]["assessment"][0]["assessmentFormDescription"]
+        return assessment_form
 
     @staticmethod
     def get_data(course_code: str):
         data = requests.get(base_url + course_code).json()
         return data
 
+
+    @staticmethod
+    def get_term(course_code: str):
+
+        data = DataReceiver.get_data(course_code)
+        term = data["course"]["assessment"][0]["realExecutionTerm"]
+
+        return term;
+
+    @staticmethod
+    def get_year(course_code: str):
+        data = DataReceiver.get_data(course_code)
+        year = data["course"]["assessment"][0]["realExecutionYear"]
+
+        return year
+
+    @staticmethod
+    def is_active_course(course_code: str):
+         # todo: needs better formatting
+        course_year = DataReceiver.get_year(course_code)
+        course_term = DataReceiver.get_term(course_code)
+
+        now = datetime.datetime.now()
+        year = now.year
+        month = now.month
+        last_course_month = 1
+
+        if (course_term == "Autumn"):
+            last_course_month = 12
+        elif (course_term == "Spring"):
+            last_course_month = 6
+
+        return year == course_year and month <= last_course_month
+
     @staticmethod
     def get_exam_date(course_code: str) -> str:
-        if not DataReceiver.is_valid_course(course_code):
-            return "You entered an invalid course code."
-
+        # not the most robust code.
 
         data = DataReceiver.get_data(course_code)
 
@@ -33,10 +70,14 @@ class DataReceiver ():
         name = data["course"]["name"]
         try:
             exam_date = data["course"]["assessment"][0]["date"]
-            return "The exam date for " + str(course_code) + " " + str(name) + " is " + str(exam_date) + "."
+            return "Exam date for " + str(course_code) + " " + str(name) + " is " + str(exam_date)
         except KeyError:
-            #todo: add reason, e.g. wrong semester, different evaluation form
-            return "There is no exam date available."
+            if (not DataReceiver.is_active_course(course_code)):
+                return "No exam date available because the course is not active"
+            elif (DataReceiver.get_assessment_form(course_code) != "Written examination"):
+                return "No exam date available because assessment form is: " + DataReceiver.get_assessment_form(                        course_code)
+            return "No exam date available"
+
 
     @staticmethod
     def get_contact_name(course_code)-> str:
@@ -181,7 +222,5 @@ class DataReceiver ():
         data = DataReceiver.get_data(course_code)
         return data["course"]["infoType"][5]["text"]
 
-<<<<<<< HEAD
-        return data["course"]["infoType"][5]["text"]
 
 
