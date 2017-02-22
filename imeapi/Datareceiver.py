@@ -6,24 +6,22 @@ class DataReceiver ():
 
 
     @staticmethod
-    def __get_data__(course_code):
+    def get_data(course_code: str):
         data = requests.get(base_url + course_code).json()
         return data
 
+    @staticmethod
+    def get_exam_date(course_code: str) -> str:
 
-
-
-    def get_exam_date(self, code) -> str:
-
-        subject = self.getData(code)
+        subject = DataReceiver.get_data(course_code)
 
 
         # Get relevant data and print it
-        code = subject["course"]["code"]
+        course_code = subject["course"]["code"]
         name = subject["course"]["name"]
         try:
             exam_date = subject["course"]["assessment"][0]["date"]
-            return "Exam date for", code, name, "is", exam_date
+            return "Exam date for " + str(course_code) + " " + str(name) + " is " + str(exam_date)
         except KeyError:
             return "No Exam date available"
 
@@ -182,21 +180,6 @@ class DataReceiver ():
 
         return anbfork
 
-data = DataReceiver()
-data.getContactInfo('TMA4105')
-data.getContactInfo('IMT5331')
-print ()
-data.getCourseName("TMA4130")
-print()
-data.getCredit("TMA4130")
-print()
-data.getURL("TMA4130")
-print()
-data.getContent("TMA4130")
-print()
-data.getForm("TMA4130")
-print()
-data.getANBFORK("TMA4130")
 
 
 
