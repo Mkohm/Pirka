@@ -5,19 +5,17 @@ base_url = "http://www.ime.ntnu.no/api/course/en/"
 class DataReceiver ():
 
 
+    @staticmethod
+    def __get_data__(course_code):
+        data = requests.get(base_url + course_code).json()
+        return data
 
-    def getExamDate(self, code) -> str:
 
 
 
+    def get_exam_date(self, code) -> str:
 
-        # Fetch the course
-        #course = requests.get(base_url + codeInput).json()
-        #course2 = json.dumps(course, indent=4)
-        #print(course2)
-
-        #code = input("Please provide a course code: ")
-        subject = requests.get(base_url + code).json()
+        subject = self.getData(code)
 
 
         # Get relevant data and print it
@@ -33,7 +31,7 @@ class DataReceiver ():
     def getContactInfo(self, codeInput)-> str:
 
         # Fetch the course
-        data = requests.get(base_url + codeInput).json()
+        data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
         #print(data2)
 
@@ -61,10 +59,11 @@ class DataReceiver ():
         return ("Contact info for TMA4105 is", name)
 
 
+
     def getCourseName(self, codeInput)-> str:
 
         # Fetch the course
-        data = requests.get(base_url + codeInput).json()
+        data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
         #print(data2)
 
@@ -78,7 +77,7 @@ class DataReceiver ():
     def getCredit(self, codeInput)-> str:
 
         # Fetch the course
-        data = requests.get(base_url + codeInput).json()
+        data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
         #print(data2)
 
@@ -93,7 +92,7 @@ class DataReceiver ():
     def getURL(self, codeInput)-> str:
 
         # Fetch the course
-        data = requests.get(base_url + codeInput).json()
+        data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
         #print(data2)
 
@@ -107,7 +106,7 @@ class DataReceiver ():
     def getFORK(self, codeInput)-> str:
 
         # Fetch the course
-        data = requests.get(base_url + codeInput).json()
+        data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
         #print(data2)
 
@@ -126,7 +125,7 @@ class DataReceiver ():
 
 
         # Fetch the course
-        data = requests.get(base_url + codeInput).json()
+        data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
 
         # Get relevant data and print it
@@ -142,7 +141,7 @@ class DataReceiver ():
 
 
         # Fetch the course
-        data = requests.get(base_url + codeInput).json()
+        data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
 
         # Get relevant data and print it
@@ -158,7 +157,7 @@ class DataReceiver ():
 
 
         # Fetch the course
-        data = requests.get(base_url + codeInput).json()
+        data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
 
         # Get relevant data and print it
@@ -173,7 +172,7 @@ class DataReceiver ():
         # Implement a Norwegian version
 
         # Fetch the course
-        data = requests.get(base_url + codeInput).json()
+        data = self.getData(codeInput)
         data2 = json.dumps(data, indent=4)
 
         # Get relevant data and print it

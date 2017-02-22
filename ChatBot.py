@@ -41,6 +41,9 @@ class ChatBot():
 
     # Receives action-name, gets the data and returns a string ready to send back to API.AI
     def processActions(self, actionName: str) -> str:
+        if actionName is "examdate":
+            return Datareceiver.get_exam_date()
+
         return "Dette er en test"
 
 

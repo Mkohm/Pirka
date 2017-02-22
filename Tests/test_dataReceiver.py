@@ -3,7 +3,7 @@ from unittest import TestCase
 
 class TestDataReceiver(TestCase):
     def test_getExamDate(self):
-        self.fail()
+        assert(1, 2)
 
     def test_getContactInfo(self):
         self.fail()
