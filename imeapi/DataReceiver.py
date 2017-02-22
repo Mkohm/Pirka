@@ -6,7 +6,6 @@ class DataReceiver ():
 
     @staticmethod
     def is_valid_course(course_code: str):
-        data = DataReceiver.get_data(course_code)
         try:
             cred = DataReceiver.get_credit(course_code)
             return True
@@ -23,6 +22,9 @@ class DataReceiver ():
 
     @staticmethod
     def get_exam_date(course_code: str) -> str:
+        if not DataReceiver.is_valid_course(course_code):
+            return "Invalid course code"
+
 
         data = DataReceiver.get_data(course_code)
 
@@ -137,6 +139,3 @@ class DataReceiver ():
         data = DataReceiver.get_data(course_code)
 
         return data["course"]["infoType"][5]["text"]
-
-
-print(DataReceiver.get_URL("TDT4100"))
