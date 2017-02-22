@@ -10,7 +10,7 @@ class DataReceiver ():
         try:
             cred=data["course"]["credit"]
             return True
-        except KeyError:
+        except TypeError:
             return False
 
             
