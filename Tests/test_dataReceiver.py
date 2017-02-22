@@ -1,29 +1,29 @@
 from unittest import TestCase
-
+from imeapi.DataReceiver import DataReceiver
 
 class TestDataReceiver(TestCase):
 
     def test_get_exam_date(self):
-        self.assertEqual(get_exam_date("TDT4100"), "Exam date for TDT4100 Object-Oriented Programming is 2017-05-16")
-        self.assertEqual(get_exam_date("TMA4140"), "Exam date for TMA4140 Discrete Mathematics is 2016-12-15")
-        self.assertEqual(get_exam_date("TFE4120"), "Exam date for TFE4120 Electromagnetics is 2017-05-29")
-        self.assertEqual(get_exam_date("TDT4140"), "No Exam date available")
-        self.assertEqual(get_exam_date("TMR4160"), "No Exam date available")
-        self.assertEqual(get_exam_date("TTK4135"), "Exam date for TTK4135 Optimization and Control is 2017-05-20")
-        self.assertEqual(get_exam_date("TMR1111", "Invalid course"))
-        self.assertEqual(get_exam_date("jflsh"), "Invalid course"))
+        self.assertEqual(DataReceiver.get_exam_date("TDT4100"), "Exam date for TDT4100 Object-Oriented Programming is 2017-05-16")
+        self.assertEqual(DataReceiver.get_exam_date("TMA4140"), "Exam date for TMA4140 Discrete Mathematics is 2016-12-15")
+        self.assertEqual(DataReceiver.get_exam_date("TFE4120"), "Exam date for TFE4120 Electromagnetics is 2017-05-29")
+        self.assertEqual(DataReceiver.get_exam_date("TDT4140"), "No Exam date available")
+        self.assertEqual(DataReceiver.get_exam_date("TMR4160"), "No Exam date available")
+        self.assertEqual(DataReceiver.get_exam_date("TTK4135"), "Exam date for TTK4135 Optimization and Control is 2017-05-20")
+        self.assertEqual(DataReceiver.get_exam_date("TMR1111"), "Invalid course")
+        self.assertEqual(DataReceiver.get_exam_date("jflsh"), "Invalid course")
 
 
     def test_getContactInfo(self):
         self.fail()
 
     def test_get_course_name(self):
-        self.assertEqual(get_course_name("TDT4145"), "Software Engineering ellernoe")
-        self.assertEqual(get_course_name("TMA4100"), "Calculus 1 ufidjsg")
-        self.assertEqual(get_course_name("TTK4105"), "Control Systems")
-        self.assertEqal(get_course_name("TKT4124"), "Mechanics 3")
-        self.assertEqual(get_course_name("fgyjhkdlsø"),"Invalid course")
-        self.assertEqual(get_course_name("TMR1111"), "Invalid course")
+        self.assertEqual(DataReceiver.get_course_name("TDT4145"), "Software Engineering ellernoe")
+        self.assertEqual(DataReceiver.get_course_name("TMA4100"), "Calculus 1 ufidjsg")
+        self.assertEqual(DataReceiver.get_course_name("TTK4105"), "Control Systems")
+        self.assertEqal(DataReceiver.get_course_name("TKT4124"), "Mechanics 3")
+        self.assertEqual(DataReceiver.get_course_name("fgyjhkdlsø"),"Invalid course")
+        self.assertEqual(DataReceiver.get_course_name("TMR1111"), "Invalid course")
 
 
 
