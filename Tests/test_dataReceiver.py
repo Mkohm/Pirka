@@ -28,11 +28,11 @@ class TestDataReceiver(TestCase):
 
 
     def test_getCredit(self):
-        self.assertEqual(DataReceiver.get_credit(TMA4100), "7.5")
-        self.assertEqual(DataReceiver.get_credit(TMA4160), "7.5")
-        self.assertEqual(DataReceiver.get_credit(IØ1000), "15.0")
-        self.assertEqual(DataReceiver.get_credit(TMA4130), "7.5")
-        self.assertEqual(DataReceiver.get_credit(TEP4100), "7.5")
+        self.assertEqual(DataReceiver.get_credit("TMA4100"), "7.5")
+        self.assertEqual(DataReceiver.get_credit("TMA4160"), "7.5")
+        self.assertEqual(DataReceiver.get_credit("IØ1000"), "15.0")
+        self.assertEqual(DataReceiver.get_credit("TMA4130"), "7.5")
+        self.assertEqual(DataReceiver.get_credit("TEP4100"), "7.5")
 
     def test_get_URL(self):
         self.assertEqual(DataReceiver.get_URL("TMA4120"), "http://wiki.math.ntnu.no/tma4105")
