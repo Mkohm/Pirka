@@ -33,14 +33,10 @@ def webhook():
     # This is the json-data we are sent from API.AI (request in json-form)
     jsonRequest = request.get_json(silent=True, force=True)
 
-    # This is just printing the jsonRequest with all the data
-    print("Request:")
-    print(json.dumps(jsonRequest, indent=4))
 
     # This is creating a response to the request
     response = processRequest(jsonRequest)
     response = json.dumps(response, indent=4)
-    print(response)
 
     created_response = make_response(response)
     created_response.headers['Content-Type'] = 'application/json'
@@ -76,11 +72,13 @@ def processRequest(json_request):
 
     # This is the json data we get from yahoo containing our weather information
     result = requests.get(received_link_to_json, verify=False).text
-    print(result)
 
 
     data = json.loads(result)
     result = makeWebhookResult(data)
+
+    #processrequest returns this
+    print(result)
 
     return result
 
@@ -126,14 +124,11 @@ def makeWebhookResult(data):
     if condition is None:
         return {}
 
-    print(json.dumps(item, indent=4))
 
     # The string that the bot will answer with
     speech = "Today in " + location.get('city') + ": " + condition.get('text') + \
              ", the temperature is " + condition.get('temp') + " " + units.get('temperature')
 
-    print("Response:")
-    print(speech)
 
     # Returns the data from yahoo in json format
     return {
