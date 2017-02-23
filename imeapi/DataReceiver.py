@@ -236,5 +236,3 @@ class DataReceiver ():
 
 
 
-print(DataReceiver.get_exam_date("TDT4100"))
-
