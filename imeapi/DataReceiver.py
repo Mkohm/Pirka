@@ -1,6 +1,7 @@
 import requests
 import json
 import datetime
+from datetime import datetime
 
 base_url = "http://www.ime.ntnu.no/api/course/en/"
 class DataReceiver ():
@@ -61,6 +62,15 @@ class DataReceiver ():
         return year == course_year and month <= last_course_month
 
     @staticmethod
+    def get_date_string(date:str)-> str:
+        year = int(float(date[0:4]))
+        month = int(float(date[5:7]))
+        day = int(float(date[8:]))
+        date_time = datetime(year, month, day)
+        date_string = "{:%B %d, %Y}".format(date_time)
+        return date_string
+
+    @staticmethod
     def get_exam_date(course_code: str) -> str:
         # not the most robust code.
 
@@ -70,7 +80,9 @@ class DataReceiver ():
         name = data["course"]["name"]
         try:
             exam_date = data["course"]["assessment"][0]["date"]
-            return "Exam date for " + str(course_code) + " " + str(name) + " is " + str(exam_date)
+            exam_date_string=DataReceiver.get_date_string(exam_date)
+
+            return "Exam date for " + str(course_code) + " " + str(name) + " is " + str(exam_date_string)
         except KeyError:
             if (not DataReceiver.is_active_course(course_code)):
                 return "No exam date available because the course is not active"
@@ -223,4 +235,6 @@ class DataReceiver ():
         return data["course"]["infoType"][5]["text"]
 
 
+
+print(DataReceiver.get_exam_date("TDT4100"))
 
