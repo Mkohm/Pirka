@@ -181,7 +181,5 @@ class DataReceiver ():
         data = DataReceiver.get_data(course_code)
         return data["course"]["infoType"][5]["text"]
 
-<<<<<<< HEAD
-        return data["course"]["infoType"][5]["text"]
 
 
