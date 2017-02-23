@@ -1,21 +1,19 @@
 import requests
 import json
-import datetime
 from datetime import datetime
 
 base_url = "http://www.ime.ntnu.no/api/course/en/"
-class DataReceiver ():
 
+class DataReceiver():
     @staticmethod
     def is_valid_course(course_code: str):
-        data=DataReceiver.get_data(course_code)
+        data = DataReceiver.get_data(course_code)
         try:
-            cred=data["course"]["credit"]
+            cred = data["course"]["credit"]
             return True
         except TypeError:
             return False
 
-            
     @staticmethod
     def get_assessment_form(course_code: str):
         data = DataReceiver.get_data(course_code)
@@ -27,14 +25,13 @@ class DataReceiver ():
         data = requests.get(base_url + course_code).json()
         return data
 
-
     @staticmethod
     def get_term(course_code: str):
 
         data = DataReceiver.get_data(course_code)
         term = data["course"]["assessment"][0]["realExecutionTerm"]
 
-        return term;
+        return term
 
     @staticmethod
     def get_year(course_code: str):
@@ -45,24 +42,24 @@ class DataReceiver ():
 
     @staticmethod
     def is_active_course(course_code: str):
-         # todo: needs better formatting
+
         course_year = DataReceiver.get_year(course_code)
         course_term = DataReceiver.get_term(course_code)
 
-        now = datetime.datetime.now()
-        year = now.year
-        month = now.month
-        last_course_month = 1
+        # default value for end of course
+        end_of_course = datetime(2000, 1, 1)
 
-        if (course_term == "Autumn"):
-            last_course_month = 12
-        elif (course_term == "Spring"):
-            last_course_month = 6
+        # checks which term the course is taught, and assigns an appropiate value to end_of_course
+        if course_term == "Autumn":
+            end_of_course = datetime(course_year, 12, 31)
+        elif course_term == "Spring":
+            end_of_course = datetime(course_year, 6, 30)
 
-        return year == course_year and month <= last_course_month
+        # checks if the end_of_course is in the future, and returns the boolean
+        return datetime.now() < end_of_course
 
     @staticmethod
-    def get_date_string(date:str)-> str:
+    def get_date_string(date: str) -> str:
         year = int(float(date[0:4]))
         month = int(float(date[5:7]))
         day = int(float(date[8:]))
@@ -80,19 +77,19 @@ class DataReceiver ():
         name = data["course"]["name"]
         try:
             exam_date = data["course"]["assessment"][0]["date"]
-            exam_date_string=DataReceiver.get_date_string(exam_date)
+            exam_date_string = DataReceiver.get_date_string(exam_date)
 
             return "Exam date for " + str(course_code) + " " + str(name) + " is " + str(exam_date_string)
         except KeyError:
-            if (not DataReceiver.is_active_course(course_code)):
+            if not DataReceiver.is_active_course(course_code):
                 return "No exam date available because the course is not active"
-            elif (DataReceiver.get_assessment_form(course_code) != "Written examination"):
-                return "No exam date available because assessment form is: " + DataReceiver.get_assessment_form(                        course_code)
+            elif DataReceiver.get_assessment_form(course_code) != "Written examination":
+                return "No exam date available because assessment form is: " + DataReceiver.get_assessment_form(
+                    course_code)
             return "No exam date available"
 
-
     @staticmethod
-    def get_contact_name(course_code)-> str:
+    def get_contact_name(course_code) -> str:
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
@@ -101,14 +98,13 @@ class DataReceiver ():
         data = DataReceiver.get_data(course_code)
 
         try:
-            name=data["course"]["educationalRole"][0]["person"]["displayName"]
+            name = data["course"]["educationalRole"][0]["person"]["displayName"]
             return name
         except KeyError:
             return "No credits available"
 
-
     @staticmethod
-    def get_contact_mail(course_code)-> str:
+    def get_contact_mail(course_code) -> str:
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
@@ -119,7 +115,7 @@ class DataReceiver ():
         return data["course"]["educationalRole"][0]["person"]["email"]
 
     @staticmethod
-    def get_contact_office(course_code)-> str:
+    def get_contact_office(course_code) -> str:
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
@@ -130,7 +126,7 @@ class DataReceiver ():
         return data["course"]["educationalRole"][0]["person"]["officeAddress"]
 
     @staticmethod
-    def get_contact_phone(course_code)-> str:
+    def get_contact_phone(course_code) -> str:
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
@@ -141,8 +137,8 @@ class DataReceiver ():
         return data["course"]["educationalRole"][0]["person"]["phone"]
 
     @staticmethod
-    def get_contact_website(course_code)-> str:
-        #gets the contacts person website
+    def get_contact_website(course_code) -> str:
+        # gets the contacts person website
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
@@ -154,7 +150,7 @@ class DataReceiver ():
         return "https://www.ntnu.no/ansatte/" + website_id[0]
 
     @staticmethod
-    def get_course_name(course_code)-> str:
+    def get_course_name(course_code) -> str:
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
@@ -165,7 +161,7 @@ class DataReceiver ():
         return data["course"]["englishName"]
 
     @staticmethod
-    def get_credit(course_code)-> str:
+    def get_credit(course_code) -> str:
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
@@ -175,9 +171,8 @@ class DataReceiver ():
 
         return data["course"]["credit"]
 
-
     @staticmethod
-    def get_URL(course_code)-> str:
+    def get_URL(course_code) -> str:
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
@@ -187,9 +182,8 @@ class DataReceiver ():
 
         return data["course"]["infoType"][1]["text"]
 
-
     @staticmethod
-    def get_prerequisite_knowledge(course_code)-> str:
+    def get_prerequisite_knowledge(course_code) -> str:
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
@@ -201,7 +195,7 @@ class DataReceiver ():
         return data["course"]["infoType"][2]["code"]
 
     @staticmethod
-    def get_course_content(course_code)-> str:
+    def get_course_content(course_code) -> str:
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
@@ -210,7 +204,6 @@ class DataReceiver ():
         data = DataReceiver.get_data(course_code)
 
         return data["course"]["infoType"][3]["text"]
-
 
     @staticmethod
     def get_course_material(course_code) -> str:
@@ -223,7 +216,6 @@ class DataReceiver ():
 
         return data["course"]["infoType"][4]["text"]
 
-
     @staticmethod
     def get_teaching_form(course_code) -> str:
 
@@ -233,6 +225,3 @@ class DataReceiver ():
         # Fetch the course
         data = DataReceiver.get_data(course_code)
         return data["course"]["infoType"][5]["text"]
-
-
-
