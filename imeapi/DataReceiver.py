@@ -68,7 +68,10 @@ class DataReceiver():
 
     @staticmethod
     def get_exam_date(course_code: str) -> str:
-        # not the most robust code.
+        # todo: make code more clean
+
+        if not DataReceiver.is_valid_course(course_code):
+            return "You entered an invalid course code."
 
         data = DataReceiver.get_data(course_code)
 

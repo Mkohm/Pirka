@@ -41,7 +41,7 @@ class TestDataReceiver(TestCase):
         self.assertEqual(DataReceiver.get_credit("TEP4100"), "7.5")
 
     def test_get_url(self):
-        self.assertEqual(DataReceiver.get_URL("TMA4120"), "http://wiki.math.ntnu.no/tma4105")
+        self.assertEqual(DataReceiver.get_url("TMA4120"), "http://wiki.math.ntnu.no/tma4105")
 
 
     def test_getFORK(self):
