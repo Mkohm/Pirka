@@ -3,7 +3,6 @@ import json
 from datetime import datetime
 
 base_url = "http://www.ime.ntnu.no/api/course/en/"
-
 class DataReceiver():
     @staticmethod
     def is_valid_course(course_code: str):
@@ -69,7 +68,10 @@ class DataReceiver():
 
     @staticmethod
     def get_exam_date(course_code: str) -> str:
-        # not the most robust code.
+        # todo: make code more clean
+
+        if not DataReceiver.is_valid_course(course_code):
+            return "You entered an invalid course code."
 
         data = DataReceiver.get_data(course_code)
 
@@ -172,7 +174,7 @@ class DataReceiver():
         return data["course"]["credit"]
 
     @staticmethod
-    def get_URL(course_code) -> str:
+    def get_url(course_code) -> str:
 
         if not DataReceiver.is_valid_course(course_code):
             return "Invalid course code"
