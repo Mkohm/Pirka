@@ -15,13 +15,17 @@ class DataReceiver():
 
     @staticmethod
     def get_assessment_form(course_code: str):
+        # todo loop through every element in assessment
+
         data = DataReceiver.get_data(course_code)
         assessment_form = data["course"]["assessment"][0]["assessmentFormDescription"]
         return assessment_form
 
     @staticmethod
     def get_data(course_code: str):
+
         data = requests.get(base_url + course_code).json()
+
         return data
 
     @staticmethod
