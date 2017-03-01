@@ -18,6 +18,9 @@ class TestDataReceiver(TestCase):
         self.assertEqual(DataReceiver.get_exam_date("TMR1111"), "You entered an invalid course code.")
         self.assertEqual(DataReceiver.get_exam_date("jflsh"), "You entered an invalid course code.")
 
+    def test_get_exam_date_course_not_active(self):
+        self.assertEqual(DataReceiver.get_exam_date("TMA4100"), "No exam date available because the course is not active")
+
 
 
     def test_getContactInfo(self):

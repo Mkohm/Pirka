@@ -38,6 +38,10 @@ class ChatBot:
         if action_name == "get_exam_date":
             return DataReceiver.get_exam_date(parameter)
 
+@app.route('/')
+def hello_world():
+    return "Tast inn brukernan og passord her:"
+
 
 @app.route('/' + deployment_link, methods=['POST'])
 def webhook():
