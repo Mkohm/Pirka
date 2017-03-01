@@ -4,6 +4,7 @@ from datetime import datetime
 
 base_url = "http://www.ime.ntnu.no/api/course/en/"
 class DataReceiver():
+
     @staticmethod
     def is_valid_course(course_code: str):
         data = DataReceiver.get_data(course_code)

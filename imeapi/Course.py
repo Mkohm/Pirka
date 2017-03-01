@@ -1,10 +1,12 @@
 import requests
 from datetime import datetime
+from DataReceiver import DataReceiver
 
 class Course:
     def __init__(self, course_code: str):
+        self.data = DataReceiver()
         self.assessment_form = self.get_assessment_form()
-        self.data = self.get_data(course_code)
+        self.data = self.exam_data.get_data(course_code)
         self.exam_date = self.get_exam_date()
         self.contact_name = self.get_contact_name()
         self.contact_mail = self.get_contact_mail()
@@ -34,11 +36,7 @@ class Course:
             assessment_form = self.data["course"]["assessment"][0]["assessmentFormDescription"]
             return assessment_form
 
-    def
-
-
-
-
+DataReceiver.get_exam_date()
 
 
 
