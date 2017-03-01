@@ -1,7 +1,7 @@
+from imeapi.DataReceiver import DataReceiver
 
 
 #todo fix valid course code
-#todo how to import DataReceiver?
 
 class Course:
     def __init__(self, course_code: str):

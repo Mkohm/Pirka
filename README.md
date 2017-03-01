@@ -1,5 +1,6 @@
-# Pirka
-A chatbot developed using API.AI and a python web server. 
+# Pirka - the student helper
+A chatbot developed using API.AI and a python web server. Release date of Pirka is 27.april 2017
+
 ![Pirka running](https://github.com/Mkohm/Pirka/blob/master/pirka.png "Pirka running")
 
 ## Usage
