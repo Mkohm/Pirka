@@ -19,10 +19,40 @@ class Course:
         self.course_material = self.course_material()
         self.teaching_form = self.get_teaching_form()
 
-    def get_data(course_code: str):
-        base_url = "http://www.ime.ntnu.no/api/course/en/"
-        data = requests.get(base_url + course_code).json()
-        return data
+
+    def get_data(self, course_code: str):
+        if self.is_valid_course():
+            base_url = "http://www.ime.ntnu.no/api/course/en/"
+            data = requests.get(base_url + course_code).json()
+            return data
+
+
+    def get_assessment_form(self, course_code: str):
+        if self.field_exist():
+
+            # todo loop through every element in assessment
+            assessment_form = self.data["course"]["assessment"][0]["assessmentFormDescription"]
+            return assessment_form
+
+    def
+
+
+
+
+
+
+
+
+
+
+@staticmethod
+    def format_date(date: str) -> str:
+        year = int(float(date[0:4]))
+        month = int(float(date[5:7]))
+        day = int(float(date[8:]))
+        date_time = datetime(year, month, day)
+        date_string = "{:%B %d, %Y}".format(date_time)
+        return date_string
 
     def get_term(self):
         term = self.data["course"]["assessment"][0]["realExecutionTerm"]
@@ -50,19 +80,59 @@ class Course:
         # checks if the end_of_course is in the future, and returns the boolean
         return datetime.now() < end_of_course
 
-    def __field_exist__(field):
+
+
+    def __field_exist__(field, self):
         try:
             if field == "exam_date":
-            elif field == ""
-            return exist
+                date = self.data["course"]["assessment"][0]["date"]
+                return True
+            elif field == "assessment_form":
+                assessment_form = self.data["course"]["assessment"][0]["assessmentFormDescription"]
+                return True
+            elif field == "contact_name":
+                name = self.data["course"]["educationalRole"][0]["person"]["displayName"]
+                return True
+            elif field == "contact_office":
+                office = self.data["course"]["educationalRole"][0]["person"]["officeAddress"]
+                return True
+            elif field == "contact_phone":
+                phone = self.data["course"]["educationalRole"][0]["person"]["phone"]
+                return True
+            elif field == "course_name":
+                name = self.data["course"]["englishName"]
+                return True
+            elif field == "credit":
+                credit = self.data["course"]["credit"]
+                return True
+            elif field == "url":
+                url = self.data["course"]["infoType"][1]["text"]
+                return True
+            elif field == "prerequisite_knowledge":
+                knowledge = self.data["course"]["infoType"][2]["code"]
+                return True
+            elif field == "course_content":
+                content = self.data["course"]["infoType"][3]["text"]
+                return True
+            elif field == "course_material":
+                material = self.data["course"]["infoType"][4]["text"]
+                return True
+            elif field == "teaching_form":
+                form = self.data["course"]["infoType"][5]["text"]
+                return True
+            else:
+                return False
+
         except KeyError:
-            return "Empty field"
+            return False
+
+
+    def is_valid_course(self):
+        return self.field_exist("credit")
 
 
 
-    def make_course_dict(self):
 
 
-        course_address = {key, value}
 
 
