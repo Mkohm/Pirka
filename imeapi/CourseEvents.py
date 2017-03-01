@@ -58,8 +58,8 @@ class Event:
         self.room = self.get_event_room()
         self.time_slot = self.get_time_slot()
         self.type = self.get_event_type()
-        self.events = self.get_events()
-        self.number_of_events = self.get_number_of_events()
+        self.events = self.get_events() #uker
+        self.number_of_events = self.get_number_of_events() #antall_forelesning
         self.next_event = self.get_next_event()
 
     @staticmethod
