@@ -4,7 +4,8 @@ from flask import Flask
 from flask import request
 from flask import make_response
 
-from imeapi.DataReceiver import DataReceiver
+from imeapi.Course import Course
+from imeapi.Course import Course
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -36,7 +37,9 @@ class ChatBot:
     @staticmethod
     def process_actions(parameter: str, action_name: str) -> str:
         if action_name == "get_exam_date":
-            return DataReceiver.get_exam_date(parameter)
+            return Course.get_exam_date(parameter)
+
+
 
 @app.route('/')
 def hello_world():
