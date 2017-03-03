@@ -21,7 +21,7 @@ class Course:
         self.course_name = None
         self.credit = None
         self.url = None
-        self.prerequisite_knowledge = None
+        self.prereq_knowledge = None
         self.course_content = None
         self.course_material = None
         self.teaching_form = None
@@ -34,6 +34,7 @@ class Course:
 
         # todo: make code more clean
         # todo: fix for when written exam and still no date
+        # todo: move check for valid course?
 
         if not self.is_valid_course():
             self.exam_date = "You entered an invalid course code."
@@ -42,7 +43,7 @@ class Course:
         # Fetch the course
         data = self.get_data()
         print(data)
-        name = data["course"]["name"]
+        name = self.get_course_name()
 
         try:
             exam_date = data["course"]["assessment"][0]["date"]
@@ -134,129 +135,150 @@ class Course:
         return self.course_active
 
     
-    def get_contact_name(self) -> str:
-
+    def set_contact_name(self):
         # Fetch the course
         data = self.get_data()
 
         try:
-            return data["course"]["educationalRole"][0]["person"]["displayName"]
+            self.contact_name = data["course"]["educationalRole"][0]["person"]["displayName"]
         except KeyError:
-            return "No credits available"
+            self.contact_name = "No credits available"
+
+    def get_contact_name(self) ->str:
+        self.set_contact_name()
+        return self.contact_name
 
     
+    def set_contact_mail(self):
+        # Fetch the course
+        data = self.get_data()
+        try:
+            self.contact_mail = data["course"]["educationalRole"][0]["person"]["email"]
+        except KeyError:
+            self.contact_mail = "Contact mail is not available"
+
     def get_contact_mail(self) -> str:
+        self.set_contact_mail()
+        return self.contact_mail
 
+    def set_contact_office(self):
         # Fetch the course
         data = self.get_data()
         try:
-            return data["course"]["educationalRole"][0]["person"]["email"]
+            self.contact_office = data["course"]["educationalRole"][0]["person"]["officeAddress"]
         except KeyError:
-            return "Contact mail is not available"
+            self.contact_office = "Office address is not available"
 
-    
     def get_contact_office(self) -> str:
+        self.set_contact_office()
+        return self.contact_office
 
+    def set_contact_phone(self):
         # Fetch the course
         data = self.get_data()
         try:
-            return data["course"]["educationalRole"][0]["person"]["officeAddress"]
+            self.contact_phone = data["course"]["educationalRole"][0]["person"]["phone"]
         except KeyError:
-            return "Office address is not available"
+            self.contact_phone = "Contact phone is not available"
 
-    
     def get_contact_phone(self) -> str:
+        self.set_contact_phone()
+        return self.contact_phone
 
-        # Fetch the course
-        data = self.get_data()
-
-        try:
-            return data["course"]["educationalRole"][0]["person"]["phone"]
-        except KeyError:
-            return "Contact phone is not available"
-
-    
-    def get_contact_website(self) -> str:
+    def set_contact_website(self):
         # gets the contacts person website
-
         mail = self.get_contact_mail()
-
         website_id = mail.split("@")
 
-        return "https://www.ntnu.no/ansatte/" + website_id[0]
+        self.contact_website = "https://www.ntnu.no/ansatte/" + website_id[0]
 
-    
+    def get_contact_website(self) -> str:
+        self.set_contact_website()
+        return self.contact_website
+
+    def set_course_name(self):
+        # Fetch the course
+        data = self.get_data()
+        try:
+            self.course_name = data["course"]["englishName"]
+        except KeyError:
+            self.course_name = "Course name is not available"
+
     def get_course_name(self) -> str:
+        self.set_course_name()
+        return self.course_name
 
+    def set_credit(self):
         # Fetch the course
         data = self.get_data()
         try:
-            return data["course"]["englishName"]
+            self.credit = data["course"]["credit"]
         except KeyError:
-            return "Course name is not available"
+            self.credit = "Course credit not available"
 
-    
     def get_credit(self) -> str:
-
+        self.set_credit()
+        return self.credit
+    
+    def set_url(self):
         # Fetch the course
         data = self.get_data()
-
         try:
-            return data["course"]["credit"]
+            self.url = data["course"]["infoType"][1]["text"]
         except KeyError:
-            return "Course credit not available"
+            self.url = "Course url not available"
 
-    
     def get_url(self) -> str:
-
+        self.set_url()
+        return self.url
+    
+    def set_prereq_knowledge(self):
         # Fetch the course
         data = self.get_data()
         try:
-            return data["course"]["infoType"][1]["text"]
+            self.prereq_knowledge = data["course"]["infoType"][2]["code"]
         except KeyError:
-            return "Course url not available"
+             self.prereq_knowledge = "Prerequisite knowledge is not available for this course"
 
-    
-    def get_prerequisite_knowledge(self) -> str:
+    def get_prereq_knowledge(self) -> str:
+        self.set_prereq_knowledge()
+        return self.prereq_knowledge
 
+    def set_course_content(self):
         # Fetch the course
         data = self.get_data()
         try:
-            return data["course"]["infoType"][2]["code"]
+            self.course_code = data["course"]["infoType"][3]["text"]
         except KeyError:
-            return "Prerequisite knowledge is not available for this course"
+            self.course_code = "Course content is not available"
 
-    
     def get_course_content(self) -> str:
+        self.set_course_code()
+        return self.course_code
 
+    def set_course_material(self):
         # Fetch the course
         data = self.get_data()
         try:
-            return data["course"]["infoType"][3]["text"]
+            self.course_material = data["course"]["infoType"][4]["text"]
         except KeyError:
-            return "Course content is not available"
+            self.course_material = "Course material is not available"
 
-    
     def get_course_material(self) -> str:
-
-        # Fetch the course
-        data = self.get_data()
-
-        try:
-            return data["course"]["infoType"][4]["text"]
-        except KeyError:
-            return "Course material is not available"
-
+        self.set_course_material()
+        return self.course_material
     
-    def get_teaching_form(self) -> str:
-
+    def set_teaching_form(self):
         # Fetch the course
         data = self.get_data()
         try:
-            return data["course"]["infoType"][5]["text"]
+            self.teaching_form = data["course"]["infoType"][5]["text"]
         except KeyError:
-            return "Teaching form is not available for this course"
+            self.teaching_form = "Teaching form is not available for this course"
 
+    def get_teaching_form(self) -> str:
+        self.set_teaching_form()
+        return self.teaching_form
 
     def set_events(self):
         pass
