@@ -83,6 +83,8 @@ class Event:
         self.day = self.get_day_index()  # stores the event day as a int from 1 to 7
         self.room = self.get_event_room()
         self.time_slot = self.get_time_slot()
+        self.start_time = self.get_start_time()
+        self.end_time = self.get_end_time()
         self.type = self.get_event_type()  # stores the event type as an abbreviation, FOR, ØV, etc
         self.number_of_events = self.get_number_of_events()  # number of recurring weeks for this event
         self.week_dict = self.get_week_dict() # dict with every lecture/guidance week as key and event info as value
@@ -101,11 +103,19 @@ class Event:
 
         return calendar.day_name[day-1]
 
+    #TODO: delete code when all references to this block is removed
     def get_time_slot(self):
 
         start_time = self.data["from"]
         end_time = self.data["to"]
         return start_time, end_time
+
+
+    def get_start_time(self):
+        return self.data["from"]
+
+    def get_end_time(self):
+        return self.data["to"]
 
     def get_event_type(self):
 
@@ -215,11 +225,17 @@ class Event:
 
 
 my_event = Event(0)
-print(my_event.to_string())
-print("")
-print(my_event.get_next_event())
+
+for key in my_event.get_week_dict():
+    temp = my_event.get_event(key)
 
 
-my_course = CourseEvents()
-print(my_course.get_next_event())
-print(my_course.get_weekly_overview(8))
+# print(my_event.to_string())
+# print("")
+# print(my_event.get_next_event())
+#
+#
+# my_course = CourseEvents()
+# print(my_course.get_next_event())
+# print(my_course.get_weekly_overview(8))
+

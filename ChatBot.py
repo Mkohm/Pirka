@@ -5,7 +5,6 @@ from flask import request
 from flask import make_response
 
 from imeapi.Course import Course
-from imeapi.Course import Course
 
 # Flask app should start in global layout
 app = Flask(__name__)
