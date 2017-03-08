@@ -46,12 +46,13 @@ class ChatBot:
 
         if action_name == "get_exam_date":
             return Course(parameter).get_exam_date()
+        if action_name == "get_assessment_form":
+            return Course(parameter).get_assessment_form()
         elif action_name == "login":
             #save user data
             pass
         else:
             return "I didnt understand shit, you probably broke me :("
-
 
 
 

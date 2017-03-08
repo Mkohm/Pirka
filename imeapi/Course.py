@@ -35,6 +35,7 @@ class Course:
         # todo: make code more clean
         # todo: fix for when written exam and still no date
         # todo: move check for valid course?
+        # todo: fix the active course checker
 
         if not self.is_valid_course():
             self.exam_date = "You entered an invalid course code."
@@ -307,3 +308,5 @@ class Course:
         date_time = datetime(year, month, day)
         date_string = "{:%B %d, %Y}".format(date_time)
         return date_string
+
+
