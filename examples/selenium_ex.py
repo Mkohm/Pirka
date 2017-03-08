@@ -1,26 +1,28 @@
-# Selenium Web Scraping Example
-# This example shows how to log in to itslearning and fetch a user's course list
-# Author: Audun Liberg
 
 from selenium import webdriver
 import selenium.webdriver.support.ui as ui
-from getpass import getpass
+import getpass
 
-il_username = input("NTNU username: ")
-il_password = getpass("NTNU password: ") # Function for hiding password input
+
+# TODO: This has only been used for exprimenting so far. Create a proper code structure and documentation   
+
+# il_username = input("NTNU username: ")
+# il_password = getpass.getpass("NTNU password: ", stream=None) # Function for hiding password input
 
 def init_driver():
     global driver
     chrome_profile = webdriver.ChromeOptions()
-    driver = webdriver.Chrome("/Users/mariuskohmann/PycharmProjects/Pirka/examples/chromedriver")
+    driver = webdriver.Chrome(chrome_options=chrome_profile)
+
+
 
 def scrape():
     # Log in via Feide
     driver.get("http://www.ilearn.sexy") # Shortcut to itslearning
     username = driver.find_element_by_name("feidename")
-    username.send_keys(il_username)
+    username.send_keys("HER MÅ DU LEGGE INN BRUKERNAVN") # TODO: add your own user name if you want to test
     password = driver.find_element_by_name("password")
-    password.send_keys(il_password)
+    password.send_keys("HER MÅ DU LEGGE INN PASSORD") # TODO: add your own password if you want to test
     password.submit()
 
     # Go to course list
@@ -31,8 +33,43 @@ def scrape():
 
     # Fetch and print courses
     courses = driver.find_elements_by_css_selector("td > .ccl-iconlink") # "ccl-iconlink" is the classname associated with hyperlinks. For courses, these are children of the "td" tag
-    for course in courses:
-        print(course.text)
+
+
+
+
+    course = courses[0]
+
+    courses[1].click()
+
+    driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+
+    task_table = driver.find_element_by_xpath("//*[@id='ctl00_ContentPlaceHolder_DashboardLayout']/div[2]/ul/li[2]")
+
+    print(task_table)
+
+    tasks = task_table.find_elements_by_class_name("h-va-baseline")
+
+
+
+
+    for task in tasks:
+        task.click()
+        driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+        task_title = driver.find_elements_by_class_name("ccl-pageheader")
+        print(task_title[0].text)
+        date = driver.find_elements_by_class_name("h-mrb5")
+        print(date[1].text)
+        driver.back()
+        print("Back")
+
+
+    # tasks[0].click()
+    #
+    # driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+    # task_title = driver.find_elements_by_class_name("ccl-pageheader")
+    # print(task_title[0].text)
+    # date = driver.find_elements_by_class_name("h-mrb5")
+    # print(date[1].text)
 
 if __name__ == "__main__":
     init_driver()
