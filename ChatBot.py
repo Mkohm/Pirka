@@ -110,6 +110,7 @@ def valid_login(username:str, password:str):
 
 @app.route('/' + deployment_link, methods=['POST'])
 def webhook():
+    print(pirka_users)
     json_request = request.get_json(silent=True, force=True)
 
     # Extract the data from the json-request (first get the result section of the json)
