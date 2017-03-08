@@ -168,18 +168,18 @@ def webhook():
                                       "sessionId": "2edb215c-493a-49d8-b317-6375ef759897"
         }
 
-        """
 
-                    speech = ChatBot.process_actions(parameter, action_name)
 
-                        data = {
-                                "speech": speech,
-                                "displayText": speech,
-                                # "data": data,
-                                # "contextOut": [],
-                                "source": "Pirka-chatbot-webserver"
-                        }
-        """
+    speech = ChatBot.process_actions(parameter, action_name)
+
+    data = {
+        "speech": speech,
+        "displayText": speech,
+        # "data": data,
+        # "contextOut": [],
+        "source": "Pirka-chatbot-webserver"
+    }
+
 
 
 
