@@ -2,8 +2,10 @@ import json
 import os
 from flask import Flask
 from flask import request
+import requests
 from flask import make_response
 from flask import render_template
+from scraper import BlackboardScraper
 
 from imeapi.Course import Course
 
@@ -36,11 +38,16 @@ class ChatBot:
     # Receives action-name, gets the data and returns a string ready to send back to API.AI
     @staticmethod
     def process_actions(parameter: str, action_name: str) -> str:
+
         if action_name == "get_exam_date":
-            return Course.get_exam_date(parameter)
+            return Course(parameter).get_exam_date()
+        if action_name == "login":
+            print("loginaction")
+            return "login"
 
 
-@app.route('/', methods=['POST', 'GET'])
+
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     """
     This method handles the login so we can get user information to the blackboard scraper.
@@ -52,7 +59,7 @@ def login():
     if request.method == 'POST':
 
         #If the login is successfull we return a template saying you can start using pirka
-        if valid_login(request.form['email'], request.form['password']):
+        if valid_login(request.form['username'], request.form['password']):
             return render_template("login_success.html")
 
         else:
@@ -63,18 +70,22 @@ def login():
 
 def valid_login(username:str, password:str):
     #Try to do blackboard scraping
-    print(username)
-    print(password)
+
+    try:
+        scraper = BlackboardScraper.BlackboardScraper(username, password)
+        return True
+    except:
+        return False
 
 
 
-
-    return True
 
 
 @app.route('/' + deployment_link, methods=['POST'])
 def webhook():
     json_request = request.get_json(silent=True, force=True)
+
+    print(json_request)
 
     # Extract the data from the json-request (first get the result section of the json)
     result = json_request.get("result")
@@ -88,18 +99,21 @@ def webhook():
     speech = ChatBot.process_actions(parameter, action_name)
 
     data = {
-        "speech": speech,
-        "displayText": speech,
-        # "data": data,
-        # "contextOut": [],
-        "source": "apiai-weather-webhook-sample"
+            "speech": speech,
+            "displayText": speech,
+            # "data": data,
+            # "contextOut": [],
+            "source": "apiai-weather-webhook-sample"
     }
+
+
 
     response = json.dumps(data, indent=4)
     created_response = make_response(response)
     created_response.headers['Content-Type'] = 'application/json'
 
     return created_response
+
 
 
 # Start the application
