@@ -41,6 +41,8 @@ class ChatBot:
 
         if action_name == "get_exam_date":
             return Course(parameter).get_exam_date()
+        if action_name == "get_assessment_form":
+            return Course(parameter).get_assessment_form()
         if action_name == "login":
             print("loginaction")
             return "login"
