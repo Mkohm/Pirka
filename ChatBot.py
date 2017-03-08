@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from flask import request
 from flask import make_response
+from flask import render_template
 
 from imeapi.Course import Course
 
@@ -39,10 +40,36 @@ class ChatBot:
             return Course.get_exam_date(parameter)
 
 
+@app.route('/', methods=['POST', 'GET'])
+def login():
+    """
+    This method handles the login so we can get user information to the blackboard scraper.
+    We load a template so the user can login and send us the email and password.
+    :return:
+    """
 
-@app.route('/')
-def hello_world():
-    return "Tast inn brukernan og passord her:"
+    error = None
+    if request.method == 'POST':
+
+        #If the login is successfull we return a template saying you can start using pirka
+        if valid_login(request.form['email'], request.form['password']):
+            return render_template("login_success.html")
+
+        else:
+            error = 'Invalid username/password'
+    # the code below is executed if the request method
+    # was GET or the credentials were invalid
+    return render_template('login.html', error=error)
+
+def valid_login(username:str, password:str):
+    #Try to do blackboard scraping
+    print(username)
+    print(password)
+
+
+
+
+    return True
 
 
 @app.route('/' + deployment_link, methods=['POST'])
