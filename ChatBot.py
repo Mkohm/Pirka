@@ -5,13 +5,18 @@ from flask import request
 import requests
 from flask import make_response
 from flask import render_template
-from scraper import BlackboardScraper
+from scraper.BlackboardScraper import BlackboardScraper
 
 from imeapi.Course import Course
 
 # Flask app should start in global layout
 app = Flask(__name__)
 app.debug = True
+
+
+
+facebook_id = {}
+current_sender_id = None
 
 # Change this variable to true if you are going to run this on Heroku
 deployment = False
@@ -41,9 +46,13 @@ class ChatBot:
 
         if action_name == "get_exam_date":
             return Course(parameter).get_exam_date()
-        if action_name == "login":
-            print("loginaction")
-            return "login"
+        elif action_name == "login":
+            #save user data
+            pass
+        else:
+            return "I didnt understand shit, you probably broke me :("
+
+
 
 
 
@@ -60,8 +69,8 @@ def login():
 
         #If the login is successfull we return a template saying you can start using pirka
         if valid_login(request.form['username'], request.form['password']):
-            return render_template("login_success.html")
 
+            return render_template("login_success.html")
         else:
             error = 'Invalid username/password'
     # the code below is executed if the request method
@@ -72,23 +81,25 @@ def valid_login(username:str, password:str):
     #Try to do blackboard scraping
 
     try:
-        scraper = BlackboardScraper.BlackboardScraper(username, password)
+        scraper = BlackboardScraper(username, password)
+        facebook_id[current_sender_id] = {username, password}
+
+
+        print()
+        print(facebook_id)
         return True
     except:
         return False
-
-
-
 
 
 @app.route('/' + deployment_link, methods=['POST'])
 def webhook():
     json_request = request.get_json(silent=True, force=True)
 
-    print(json_request)
-
     # Extract the data from the json-request (first get the result section of the json)
     result = json_request.get("result")
+
+
 
     # Then get the parameters of the result
     parameters = result.get("parameters")
@@ -96,25 +107,87 @@ def webhook():
 
     action_name = result.get("action")
 
-    speech = ChatBot.process_actions(parameter, action_name)
-
-    data = {
-            "speech": speech,
-            "displayText": speech,
-            # "data": data,
-            # "contextOut": [],
-            "source": "apiai-weather-webhook-sample"
-    }
+    if action_name == "login":
+        print(json_request)
+        facebook_sender_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
+        current_sender_id = facebook_sender_id
 
 
+    data = None
+    if action_name == "loginlogin":
+        print("loginlogin")
+        facebook_sender_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
+        print(facebook_sender_id)
 
+        data = {
+                                                "id": "0cdb5479-fb34-489f-8631-d733308a1b3f",
+                                      "timestamp": "2017-03-08T18:15:54.828Z",
+                                      "lang": "en",
+                                      "result": {
+                                        "source": "agent",
+                                        "resolvedQuery": "login",
+                                        "action": "login",
+                                        "actionIncomplete": "false",
+                                        "parameters": {},
+                                        "contexts": [],
+                                        "metadata": {
+                                          "intentId": "580b1de5-9a96-439b-a450-f7ce6ad9b2e5",
+                                          "webhookUsed": "true",
+                                          "webhookForSlotFillingUsed": "false",
+                                          "intentName": "login"
+                                        },
+                                        "fulfillment": {
+                                          "speech": "",
+                                          "messages": [
+                                            {
+                                              "type": "0",
+                                              "speech": ""
+                                            },
+                                            {
+                                              "title": "Itslearning integration",
+                                              "subtitle": "login",
+                                              "imageUrl": "https://raw.githubusercontent.com/Mkohm/Pirka/dev/login.png",
+                                              "buttons": [
+                                                {
+                                                  "text": "Click here to enable itslearning integration",
+                                                  "postback": "http://localhost:8080/login/detteersmud"
+                                                }
+                                              ],
+                                              "type": "1"
+                                            }
+                                          ]
+                                        },
+                                        "score": "1"
+                                      },
+                                      "status": {
+                                        "code": "206",
+                                        "errorType": "partial_content",
+                                        "errorDetails": "Webhook call failed. Error message: org.springframework.web.client.HttpServerErrorException: 500 INTERNAL SERVER ERROR ErrorId: 17aeb4ac-5cb2-4139-8351-a7854935c094"
+                                      },
+                                      "sessionId": "2edb215c-493a-49d8-b317-6375ef759897"
+        }
+
+        """
+
+                    speech = ChatBot.process_actions(parameter, action_name)
+
+                        data = {
+                                "speech": speech,
+                                "displayText": speech,
+                                # "data": data,
+                                # "contextOut": [],
+                                "source": "Pirka-chatbot-webserver"
+                        }
+        """
+
+
+
+    print(json.dumps(data, indent=4))
     response = json.dumps(data, indent=4)
     created_response = make_response(response)
     created_response.headers['Content-Type'] = 'application/json'
 
     return created_response
-
-
 
 # Start the application
 bot = ChatBot()
