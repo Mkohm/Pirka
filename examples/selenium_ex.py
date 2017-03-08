@@ -12,7 +12,7 @@ il_password = getpass("NTNU password: ") # Function for hiding password input
 def init_driver():
     global driver
     chrome_profile = webdriver.ChromeOptions()
-    driver = webdriver.Chrome(chrome_options=chrome_profile)
+    driver = webdriver.Chrome("/Users/mariuskohmann/PycharmProjects/Pirka/examples/chromedriver")
 
 def scrape():
     # Log in via Feide
