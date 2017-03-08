@@ -10,8 +10,6 @@ from oauth2client.file import Storage
 import datetime
 import argparse
 
-from imeapi.CourseEvents import CourseEvents
-
 #TODO: make a class out of this.
 #TODO: change time zone
 
