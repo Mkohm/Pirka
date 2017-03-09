@@ -71,10 +71,16 @@ class Course:
 
         # Fetch the course
         data = self.get_data()
-        try:
-            self.assessment_form = data["course"]["assessment"][0]["assessmentFormDescription"]
-        except KeyError:
-            self.assessment_form = "No assesment form available"
+        number = len(data["course"]["assessment"])
+        liste = [0]*number
+        for i in range (0,number):
+            try:
+                liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
+            except KeyError:
+                self.assessment_form = "No assessment form available"
+
+        self.assessment_form = ' and '.join(liste)
+
 
     def get_assessment_form(self):
         self.set_assessment_form()
@@ -307,6 +313,3 @@ class Course:
         date_time = datetime(year, month, day)
         date_string = "{:%B %d, %Y}".format(date_time)
         return date_string
-
-test=Course("TMA4100")
-print(test.get_credit)

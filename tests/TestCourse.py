@@ -22,7 +22,7 @@ class TestCourse(TestCase):
 
     def test_assessment_form_written(self):
         self.assertEqual("Written examination", Course("TDT4100").get_assessment_form())
-        self.assertEqual("Written examination", Course("TMA4140").get_assessment_form())
+        self.assertEqual("Written examination", Course("TDT4105").get_assessment_form())
 
     def test_assessment_form_work(self):
         self.assertEqual("Work", Course("TDT4140").get_assessment_form())
@@ -32,6 +32,7 @@ class TestCourse(TestCase):
         self.assertEqual(Course("TTK4135").get_assessment_form(), "Written examination and Work and Semester assignment")
         self.assertEqual(Course("TMR4105").get_assessment_form(), "Work and Oral examination")
         self.assertEqual(Course("TMR4230").get_assessment_form(), "Oral examination and Semester assignment")
+        self.assertEqual("Written examination and Semester assignment", Course("TMA4140").get_assessment_form())
 
     def test_get_term(self):
         self.assertEqual("Spring", Course("TMA4105").get_term())
