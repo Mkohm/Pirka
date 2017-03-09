@@ -43,7 +43,6 @@ class Course:
 
         # Fetch the course
         data = self.get_data()
-        print(data)
         name = self.get_course_name()
 
         try:
@@ -143,7 +142,7 @@ class Course:
         try:
             self.contact_name = data["course"]["educationalRole"][0]["person"]["displayName"]
         except KeyError:
-            self.contact_name = "No credits available"
+            self.contact_name = "No contact person available"
 
     def get_contact_name(self) ->str:
         self.set_contact_name()
@@ -217,7 +216,7 @@ class Course:
         except KeyError:
             self.credit = "Course credit not available"
 
-    def get_credit(self) -> str:
+    def get_credit(self):
         self.set_credit()
         return self.credit
     
@@ -237,7 +236,7 @@ class Course:
         # Fetch the course
         data = self.get_data()
         try:
-            self.prereq_knowledge = data["course"]["infoType"][2]["code"]
+            self.prereq_knowledge = data["course"]["infoType"][0]["text"]
         except KeyError:
              self.prereq_knowledge = "Prerequisite knowledge is not available for this course"
 
@@ -249,13 +248,13 @@ class Course:
         # Fetch the course
         data = self.get_data()
         try:
-            self.course_code = data["course"]["infoType"][3]["text"]
+            self.course_content = data["course"]["infoType"][3]["text"]
         except KeyError:
-            self.course_code = "Course content is not available"
+            self.course_content = "Course content is not available"
 
     def get_course_content(self) -> str:
-        self.set_course_code()
-        return self.course_code
+        self.set_course_content()
+        return self.course_content
 
     def set_course_material(self):
         # Fetch the course
@@ -309,4 +308,5 @@ class Course:
         date_string = "{:%B %d, %Y}".format(date_time)
         return date_string
 
-
+test=Course("TMA4100")
+print(test.get_credit)
