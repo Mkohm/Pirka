@@ -20,9 +20,9 @@ class ItsLearningScraper:
 
         # logs into Its Learning. After this the "driver" contains the main page in Its Learning
         username = driver.find_element_by_name("feidename")
-        username.send_keys("evenkal") # TODO: add your own user name if you want to test
+        username.send_keys("HER MÅ DU LEGGE INN BRUKERNAVN") # TODO: add your own user name if you want to test
         password = driver.find_element_by_name("password")
-        password.send_keys("roPstAd1337CC4l") # TODO: add your own password if you want to test
+        password.send_keys("HER MÅ DU LEGGE INN PASSORD") # TODO: add your own password if you want to test
         password.submit()
 
 
