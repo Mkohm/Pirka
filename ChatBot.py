@@ -13,7 +13,7 @@ app = Flask(__name__)
 app.debug = True
 
 # Change this variable to true if you are going to run this on Heroku
-deployment = False
+deployment = True
 pirka_users = {}
 
 if deployment:
