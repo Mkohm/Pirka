@@ -36,4 +36,4 @@ Ngrok will now forward all connections to localhost.
 ```
 pip install requirements.txt
 ```
-6. You can now run ChatBot.py to start the webserver and start developing
+You can now run ChatBot.py to start the webserver and start developing
