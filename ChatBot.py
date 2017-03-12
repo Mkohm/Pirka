@@ -34,8 +34,6 @@ class ChatBot:
         app.run(host='0.0.0.0', port=port)
 
 
-        print("Starting chatbot-app on port %d" % self.port)
-
     # Receives action-name, gets the data and returns a string ready to send back to API.AI
     @staticmethod
     def process_actions(parameter: str, action_name: str) -> str:
