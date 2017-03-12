@@ -1,7 +1,7 @@
 # Pirka - the student helper
 A chatbot developed using API.AI and a python web server. Release date of Pirka is 27.april 2017
 
-![Pirka running](https://github.com/Mkohm/Pirka/blob/master/pirka.png "Pirka running")
+![Pirka running](https://github.com/Mkohm/Pirka/blob/dev/demo_pictures/pirka.png "Pirka running")
 
 ## Usage
 The first time you want to use Pirka you have to visit: https://www.facebook.com/pirkabot/ and then click to send a message to Pirka.
@@ -11,7 +11,7 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - [x] Can ask when an exam in a course is
 - [ ] Can get a list of exersizes to do
 
-## Setup (if you want to continue development)
+## Setup for contributing to Pirka
 
 ### Requirements
 - Python 3.6 (or some other Python 3 version)
