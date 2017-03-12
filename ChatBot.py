@@ -33,7 +33,7 @@ class ChatBot:
         self.port = int(os.getenv('PORT', 8080))
 
         # Run application
-        app.run(debug=True, port=self.port, host='localhost')
+        app.run(debug=True, port=self.port, host='https://pirka.herokuapp.com/')
         print("Starting chatbot-app on port %d" % self.port)
 
     # Receives action-name, gets the data and returns a string ready to send back to API.AI
