@@ -29,8 +29,11 @@ class ChatBot:
         self.deployment = deployment
 
 
-        # Run application
-        app.run(host='0.0.0.0')
+        # Bind to PORT if defined, otherwise default to 5000.
+        port = int(os.environ.get('PORT', 5000))
+        app.run(host='0.0.0.0', port=port)
+
+
         print("Starting chatbot-app on port %d" % self.port)
 
     # Receives action-name, gets the data and returns a string ready to send back to API.AI
