@@ -11,7 +11,7 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - [x] Can ask when an exam in a course is
 - [ ] Can get a list of exersizes to do
 
-## Setup (if you want to continue development)
+## Setup for contributing to Pirka
 
 ### Requirements
 - Python 3.6 (or some other Python 3 version)
