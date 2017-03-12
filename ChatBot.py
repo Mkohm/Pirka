@@ -42,14 +42,14 @@ class ChatBot:
         if action_name == "login":
             return ChatBot.create_followup_event_data(parameter)
         elif action_name == "get_exam_date":
-            return ChatBot.create_data(Course(parameter).get_exam_date())
+            return ChatBot.create_data_response(Course(parameter).get_exam_date())
         elif action_name == "get_assessment_form":
-            return ChatBot.create_data(Course(parameter).get_assessment_form())
+            return ChatBot.create_data_response(Course(parameter).get_assessment_form())
         else:
             return "I didn't understand shit, you probably broke me :("
 
     @staticmethod
-    def create_data(speech: str) -> str:
+    def create_data_response(speech: str) -> str:
         data = {
             "speech": speech,
             "displayText": speech,
@@ -113,6 +113,8 @@ def webhook():
     print(pirka_users)
     json_request = request.get_json(silent=True, force=True)
 
+    print(json.dumps(json_request, indent=4))
+
     # Extract the data from the json-request (first get the result section of the json)
     result = json_request.get("result")
 
@@ -123,7 +125,13 @@ def webhook():
 
     #Handles different parameters to the process-actions method
     if action_name == "login":
-        parameter = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
+
+        #Depending on if the event "WELCOME_FACEBOOK" or if the user typed "login, get started ect" the
+        # resulting json request is different, hence we get the parameter in different ways
+        if len(result.get("contexts")) > 1:
+            parameter = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
+        else:
+            parameter = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
     elif action_name == "get_exam_date":
         parameter = parameters.get("course_code")
 
