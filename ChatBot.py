@@ -29,9 +29,6 @@ class ChatBot:
         self.deployment = deployment
 
 
-        # The port to run webserver on
-        self.port = int(os.getenv('PORT', 8080))
-
         # Run application
         app.run(host='0.0.0.0')
         print("Starting chatbot-app on port %d" % self.port)
