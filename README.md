@@ -16,7 +16,6 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 ### Requirements
 - Python 3.6 (or some other Python 3 version)
 - Ngrok (download here: https://ngrok.com/)
-- Python libraries
 - API.AI account and an agent (go to https://api.ai/ to create one)
 
 ### Installation
@@ -33,4 +32,8 @@ Ngrok will now forward all connections to localhost.
 2. Copy the address that is hightligted in the picture above.
 3. Log in to API.AI and go to fulfillment and enable webhook. Paste the address so API.AI can send POST requests to Ngrok.
 4. Clone this project into a new folder
-5. You can now run ChatBot.py to start the webserver and start developing
+5. Get all the required python libraries
+```
+pip install requirements.txt
+```
+6. You can now run ChatBot.py to start the webserver and start developing
