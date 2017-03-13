@@ -9,7 +9,7 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 ## Features
 
 - [x] Can ask when an exam in a course is
-- [ ] Can get a list of exersizes to do
+- [ ] Can get a list of exercises to do
 
 ## Setup for contributing to Pirka
 
