@@ -110,14 +110,14 @@ class TestCourse(TestCase):
                          "projects and exercises.", Course("TDT4145").get_prereq_knowledge())
         self.assertEqual("TMA4100 Calculus 1 or equivalent.", Course("TMA4115").get_prereq_knowledge())
         self.assertEqual("TKT4116/TKT4118 Mechanics 1. ", Course("TKT4123").get_prereq_knowledge())
+        self.assertEqual("TMA4100 Calculus 1.", Course("TKT4116").get_prereq_knowledge())
 
     def test_get_prereq_knowledge_notexists(self):
         self.assertEqual("Prerequisite knowledge is not available for this course",
                          Course("TMA4100").get_prereq_knowledge())
-        self.assertEqual("Prerequisite knowledge is not available for this course",
+        self.assertEqual("None.",
                          Course("TDT4105").get_prereq_knowledge())
-        self.assertEqual("Prerequisite knowledge is not available for this course",
-                         Course("").get_prereq_knowledge("TKT4116"))
+
 
     def test_get_course_content(self):
         self.assertEqual("Curves in space. Functions of several variables. Taylor's theorem in two dimensions, "

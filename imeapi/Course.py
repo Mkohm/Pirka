@@ -241,8 +241,17 @@ class Course:
     def set_prereq_knowledge(self):
         # Fetch the course
         data = self.get_data()
+        value = ""
+
+        for i in range (0,6):
+            try:
+                value = data["course"]["infoType"][i]["code"]
+                if (value == "ANBFORK"):
+                        index = i
+            except KeyError:
+                    self.prereq_knowledge = "Prerequisite knowledge is not available for this course"
         try:
-            self.prereq_knowledge = data["course"]["infoType"][0]["text"]
+            self.prereq_knowledge = data["course"]["infoType"][index]["text"]
         except KeyError:
              self.prereq_knowledge = "Prerequisite knowledge is not available for this course"
 
@@ -313,3 +322,6 @@ class Course:
         date_time = datetime(year, month, day)
         date_string = "{:%B %d, %Y}".format(date_time)
         return date_string
+
+test=Course("TKT4116")
+print(test.get_prereq_knowledge())
