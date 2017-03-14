@@ -131,7 +131,7 @@ class TestCourse(TestCase):
         self.assertEqual("Theory for linear multivariable systems, state space models, discretization, "
                          "canonical forms and realizations, Lyapunov stability, controllability and observability, "
                          "state feedback, LQ control, state estimation, the Kalman filter, descriptions of stochastic "
-                         "processes and random signals. ", Course("TTK4115").get_course_content())
+                         "processes and random signals.\r\n", Course("TTK4115").get_course_content())
 
 
     def test_get_course_material(self):

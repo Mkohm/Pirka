@@ -262,10 +262,20 @@ class Course:
     def set_course_content(self):
         # Fetch the course
         data = self.get_data()
+        x = len(data["course"]["infoType"])
+        index = 0
+        for i in range (0,x):
+            try:
+                name = data["course"]["infoType"][i]["name"]
+                if (name == "Academic content"):
+                    index = i
+            except KeyError:
+                self.course_content = "Course content is not available"
         try:
-            self.course_content = data["course"]["infoType"][3]["text"]
+            self.course_content = data["course"]["infoType"][index]["text"]
         except KeyError:
             self.course_content = "Course content is not available"
+
 
     def get_course_content(self) -> str:
         self.set_course_content()
@@ -325,3 +335,5 @@ class Course:
 
 test=Course("TKT4116")
 print(test.get_prereq_knowledge())
+
+
