@@ -6,7 +6,7 @@ class DatabaseHandler:
     def __init__(self):
 
         # Connect to the database
-        self.sqlite_file = "/Users/mariuskohmann/PycharmProjects/Pirka/pirka.sqlt"
+        self.sqlite_file = "/Users/mariuskohmann/PycharmProjects/Pirka/pirkabase.db"
         self.connection = sqlite3.connect(self.sqlite_file)
 
 

@@ -178,7 +178,7 @@ def webhook():
             parameter = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
         else:
             parameter = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
-    elif action_name == "get_exam_date":
+    else:
         parameter = parameters.get("course_code")
 
 
