@@ -1,11 +1,13 @@
 import json
 import os
+import sqlite3
 from flask import Flask
 from flask import request
 from flask import make_response
 from flask import render_template
-from scraper.BlackboardScraper import BlackboardScraper
 
+from database.DatabaseHandler import DatabaseHandler
+from scraper.BlackboardScraper import BlackboardScraper
 from imeapi.Course import Course
 
 # Flask app should start in global layout
@@ -28,6 +30,13 @@ class ChatBot:
         # Change this variable to true if you are going to run this on Heroku
         self.deployment = False
 
+        # todo: Setup connection to database
+
+        # Connect to the database
+        database_handler = DatabaseHandler()
+        database_handler.testConnection()
+
+        # todo: Create thread to set all data in the database
 
         # The port to run webserver on
         self.port = int(os.getenv('PORT', 8080))
@@ -69,12 +78,12 @@ class ChatBot:
                 }
             }
         }
+
         return data
 
 
 @app.route('/login/<current_sender_id>', methods=['POST', 'GET'])
 def login(current_sender_id):
-
     """
     This method handles the login so we can get user information to the blackboard scraper.
     We load a template so the user can login and send us the email and password.
@@ -87,7 +96,7 @@ def login(current_sender_id):
         username = request.form["username"]
         password = request.form["password"]
 
-        #If the login is successfull we return a template saying you can start using pirka
+        # If the login is successfull we return a template saying you can start using pirka
         if valid_login(username, password):
 
             pirka_users[current_sender_id] = {username, password}
@@ -98,8 +107,9 @@ def login(current_sender_id):
     # was GET or the credentials were invalid
     return render_template('login.html', error=error)
 
-def valid_login(username:str, password:str):
-    #Try to do blackboard scraping
+
+def valid_login(username: str, password: str):
+    # Try to do blackboard scraping
 
     try:
         scraper = BlackboardScraper(username, password)
@@ -112,6 +122,7 @@ def valid_login(username:str, password:str):
 def webhook():
     print(pirka_users)
     json_request = request.get_json(silent=True, force=True)
+    print(json_request)
 
     print(json.dumps(json_request, indent=4))
 
@@ -145,6 +156,7 @@ def webhook():
     created_response.headers['Content-Type'] = 'application/json'
 
     return created_response
+
 
 # Start the application
 bot = ChatBot()
