@@ -54,6 +54,41 @@ class ChatBot:
             return ChatBot.create_data_response(Course(parameter).get_exam_date())
         elif action_name == "get_assessment_form":
             return ChatBot.create_data_response(Course(parameter).get_assessment_form())
+        elif action_name == "get_contact_mail":
+            return ChatBot.create_data_response(Course(parameter).get_contact_mail())
+        elif action_name == "get_contact_name":
+            return ChatBot.create_data_response(Course(parameter).get_contact_name())
+        elif action_name =="get_contact_phone":
+            return ChatBot.create_data_response(Course(parameter).get_contact_phone())
+        elif action_name =="get_contact_website":
+            return ChatBot.create_data_response(Course(parameter).get_contact_website())
+        elif action_name== "get_office":
+            return ChatBot.create_data_response(Course(parameter).get_office())
+        elif action_name == "get_teaching_form":
+            return ChatBot.create_data_response(Course(parameter).get_teaching_form())
+        elif action_name == "get_course_name":
+            return ChatBot.create_data_response(Course(parameter).get_course_name())
+        elif action_name == "get_credit":
+            return ChatBot.create_data_response(Course(parameter).get_credit())
+        elif action_name == "get_url":
+            return ChatBot.create_data_response(Course(parameter).get_url())
+        elif action_name == "get_prereq_knowledge":
+            return ChatBot.create_data_response(Course(parameter)).get_prereq_knowledge()
+        elif action_name =="get_course_content":
+            return ChatBot.create_data_response(Course(parameter).get_course_content())
+        elif action_name == "get_course_material":
+            return ChatBot.create_data_response(Course(parameter).get_course_material())
+        elif action_name == "get_teaching_form":
+            return ChatBot.create_data_response(Course(parameter).get_teaching_form())
+
+
+
+
+
+
+
+
+
         else:
             return "I didn't understand shit, you probably broke me :("
 
