@@ -31,11 +31,10 @@ class BlackboardScraper:
 
         # logs into Its Learning. After this the "driver" contains the main page in Its Learning
         username = driver.find_element_by_name("feidename")
-        username.send_keys("evenkal") # TODO: add your own user name if you want to test
+        username.send_keys(input("Username: "))
         password = driver.find_element_by_name("password")
-        password.send_keys("") # TODO: add your own password if you want to test
+        password.send_keys(input("Password: "))
         password.submit()
-
 
     # this function returns a users calendar feed in iCalendar-format
     # TODO: add functionality to extract the content from the feed
@@ -76,16 +75,53 @@ class BlackboardScraper:
 
         driver.implicitly_wait(5)
 
-        courses = driver.find_elements_by_partial_link_text(" /webapps/blackboard/execute/launcher?type=Course&id=")
+        courses = driver.find_elements_by_partial_link_text("(2017 VÅR)")
         courses[0].click()
+
+        driver.find_element_by_id("menuPuller").click()
+
+        assignments = driver.find_element_by_partial_link_text("Mine evaluering")
+        assignments.click()
+
+
+
 
     def get_completed_assignments(self):
 
         driver.get("https://ntnu.blackboard.com/webapps/bb-social-learning-BBLEARN/execute/mybb?cmd=display&toolId=MyGradesOnMyBb_____MyGradesTool")
-        driver.implicitly_wait(10)
-        grades = driver.find_element_by_id("grade")
+        driver.implicitly_wait(5)
 
-        print(grades[0].text)
+        driver.switch_to.frame("mybbCanvas")
+        driver.switch_to.frame("right_stream_mygrades")
+
+        assignments = driver.find_elements_by_css_selector("div.cell.gradable")
+        activity = driver.find_elements_by_class_name("activityType")
+        activitivt_type = driver.find_elements_by_class_name("itemCat")
+        grades = driver.find_elements_by_class_name("grade")
+
+        print("Assignment:")
+        for i in range(0, len(assignments)):
+            print(assignments[i].text)
+
+        print("\nActivity:")
+        for i in range(0, len(activity)):
+            print(activity[i].text)
+
+        print("\nType:")
+        for i in range(0, len(activitivt_type)):
+            print(activitivt_type[i].text)
+
+        print("\nGrade: ")
+        for i in range(0, len(grades)):
+            print(grades[0].text)
+
+        grade_score = driver.find_elements_by_css_selector("span.grade")
+
+        print("\nGrade score: ")
+        for i in range(0, len(grade_score)):
+            print(grade_score[i].text)
+
+
 
 
     def close_driver(self):
@@ -93,13 +129,13 @@ class BlackboardScraper:
 
 myScrape = BlackboardScraper()
 
-myScrape.get_first_course()
+# myScrape.get_first_course()
 
 myScrape.get_completed_assignments()
+#
+# myScrape.get_course_list()
 
-myScrape.get_course_list()
-
-
+myScrape.close_driver()
 
 # myScrape.get_calendar_feed()
 
