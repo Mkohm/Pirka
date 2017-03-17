@@ -1,5 +1,7 @@
 from unittest import TestCase
-from imeapi.Course import Course
+
+from database.DatabaseInserter import Course
+
 
 class TestCourse(TestCase):
 

@@ -1,17 +1,14 @@
 import json
 import os
-import sqlite3
+
 from flask import Flask
-from flask import request
 from flask import make_response
 from flask import render_template
+from flask import request
 
-import watchdog
-
-from database import DatabaseHandler
-
+from database import DatabaseConnector
+from database.DatabaseInserter import Course
 from scraper.BlackboardScraper import BlackboardScraper
-from imeapi.Course import Course
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -37,7 +34,7 @@ class ChatBot:
         # todo: Setup connection to database
 
         # Connect to the database
-        DatabaseHandler.add_values("INSERT INTO `user`(`username`,`password`,`facebook_id`) VALUES ('heeeeeui','lala',123);")
+        DatabaseConnector.add_values("INSERT INTO `user`(`username`,`password`,`facebook_id`) VALUES ('heeeeeui','lala',123);")
 
 
         # todo: Create thread to set all data in the database
