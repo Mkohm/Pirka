@@ -54,7 +54,6 @@ class Course:
             self.get_assessment_form()
 
 
-            print(self.course_active)
             if not self.course_active:
                 self.exam_date = "No exam date available because the course is not active."
             elif self.assessment_form != "Written examination":
@@ -332,8 +331,5 @@ class Course:
         date_time = datetime(year, month, day)
         date_string = "{:%B %d, %Y}".format(date_time)
         return date_string
-
-test=Course("TKT4116")
-print(test.get_prereq_knowledge())
 
 

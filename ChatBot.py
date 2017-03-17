@@ -6,7 +6,10 @@ from flask import request
 from flask import make_response
 from flask import render_template
 
-from database.DatabaseHandler import DatabaseHandler
+import watchdog
+
+from database import DatabaseHandler
+
 from scraper.BlackboardScraper import BlackboardScraper
 from imeapi.Course import Course
 
@@ -24,6 +27,7 @@ else:
     deployment_link = ""
 
 
+
 class ChatBot:
     # Starts the webserver and is ready to listen to incoming actions
     def __init__(self):
@@ -33,8 +37,8 @@ class ChatBot:
         # todo: Setup connection to database
 
         # Connect to the database
-        database_handler = DatabaseHandler()
-        database_handler.testConnection()
+        DatabaseHandler.add_values("INSERT INTO `user`(`username`,`password`,`facebook_id`) VALUES ('heeeeeui','lala',123);")
+
 
         # todo: Create thread to set all data in the database
 
@@ -148,6 +152,7 @@ def valid_login(username: str, password: str):
 
     try:
         scraper = BlackboardScraper(username, password)
+
         return True
     except:
         return False
