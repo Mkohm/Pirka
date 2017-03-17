@@ -1,12 +1,15 @@
 import json
 import os
+
 from flask import Flask
-from flask import request
 from flask import make_response
 from flask import render_template
-from scraper.BlackboardScraper import BlackboardScraper
+from flask import request
 
-from imeapi.Course import Course
+from database import DatabaseConnector
+from database import DatabaseInserter
+from database.Course import Course
+from scraper.BlackboardScraper import BlackboardScraper
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -22,12 +25,20 @@ else:
     deployment_link = ""
 
 
+
 class ChatBot:
     # Starts the webserver and is ready to listen to incoming actions
     def __init__(self):
         # Change this variable to true if you are going to run this on Heroku
         self.deployment = False
 
+        # todo: Setup connection to database
+
+        # Connect to the database
+        DatabaseInserter.add_subject_data("TMA4100")
+
+
+        # todo: Create thread to set all data in the database
 
         # The port to run webserver on
         self.port = int(os.getenv('PORT', 8080))
@@ -45,6 +56,32 @@ class ChatBot:
             return ChatBot.create_data_response(Course(parameter).get_exam_date())
         elif action_name == "get_assessment_form":
             return ChatBot.create_data_response(Course(parameter).get_assessment_form())
+        elif action_name == "get_contact_mail":
+            return ChatBot.create_data_response(Course(parameter).get_contact_mail())
+        elif action_name == "get_contact_name":
+            return ChatBot.create_data_response(Course(parameter).get_contact_name())
+        elif action_name =="get_contact_phone":
+            return ChatBot.create_data_response(Course(parameter).get_contact_phone())
+        elif action_name =="get_contact_website":
+            return ChatBot.create_data_response(Course(parameter).get_contact_website())
+        elif action_name== "get_office":
+            return ChatBot.create_data_response(Course(parameter).get_office())
+        elif action_name == "get_teaching_form":
+            return ChatBot.create_data_response(Course(parameter).get_teaching_form())
+        elif action_name == "get_course_name":
+            return ChatBot.create_data_response(Course(parameter).get_course_name())
+        elif action_name == "get_credit":
+            return ChatBot.create_data_response(Course(parameter).get_credit())
+        elif action_name == "get_url":
+            return ChatBot.create_data_response(Course(parameter).get_url())
+        elif action_name == "get_prereq_knowledge":
+            return ChatBot.create_data_response(Course(parameter)).get_prereq_knowledge()
+        elif action_name =="get_course_content":
+            return ChatBot.create_data_response(Course(parameter).get_course_content())
+        elif action_name == "get_course_material":
+            return ChatBot.create_data_response(Course(parameter).get_course_material())
+        elif action_name == "get_teaching_form":
+            return ChatBot.create_data_response(Course(parameter).get_teaching_form())
         else:
             return "I didn't understand shit, you probably broke me :("
 
@@ -69,12 +106,12 @@ class ChatBot:
                 }
             }
         }
+
         return data
 
 
 @app.route('/login/<current_sender_id>', methods=['POST', 'GET'])
 def login(current_sender_id):
-
     """
     This method handles the login so we can get user information to the blackboard scraper.
     We load a template so the user can login and send us the email and password.
@@ -87,7 +124,7 @@ def login(current_sender_id):
         username = request.form["username"]
         password = request.form["password"]
 
-        #If the login is successfull we return a template saying you can start using pirka
+        # If the login is successfull we return a template saying you can start using pirka
         if valid_login(username, password):
 
             pirka_users[current_sender_id] = {username, password}
@@ -98,11 +135,13 @@ def login(current_sender_id):
     # was GET or the credentials were invalid
     return render_template('login.html', error=error)
 
-def valid_login(username:str, password:str):
-    #Try to do blackboard scraping
+
+def valid_login(username: str, password: str):
+    # Try to do blackboard scraping
 
     try:
         scraper = BlackboardScraper(username, password)
+
         return True
     except:
         return False
@@ -112,6 +151,7 @@ def valid_login(username:str, password:str):
 def webhook():
     print(pirka_users)
     json_request = request.get_json(silent=True, force=True)
+    print(json_request)
 
     print(json.dumps(json_request, indent=4))
 
@@ -132,7 +172,7 @@ def webhook():
             parameter = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
         else:
             parameter = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
-    elif action_name == "get_exam_date":
+    else:
         parameter = parameters.get("course_code")
 
 
@@ -145,6 +185,7 @@ def webhook():
     created_response.headers['Content-Type'] = 'application/json'
 
     return created_response
+
 
 # Start the application
 bot = ChatBot()

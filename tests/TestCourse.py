@@ -1,5 +1,7 @@
 from unittest import TestCase
-from imeapi.Course import Course
+
+from database.DatabaseInserter import Course
+
 
 class TestCourse(TestCase):
 
@@ -138,7 +140,7 @@ class TestCourse(TestCase):
         self.assertEqual("Information will be given when the course starts.", Course("TTK4115").get_course_material())
         self.assertEqual("Will be announced at the start of the course.", Course("TMA4100").get_course_material())
         self.assertEqual("Konstruksjonsmekanikk, Del 1-Likevektslære, Fagbokforlaget. Konstruksjonsmekanikk, "
-                         "Del 2-Fasthetslære, Fagbokforlaget. ", Course("TKT4123").get_course_material())
+                         "Del 2-Fasthetslære\r, Fagbokforlaget. ", Course("TKT4123").get_course_material())
 
     def test_get_teaching_form(self):
         self.assertEqual("Lectures and exercises.", Course("TMR4160").get_teaching_form())

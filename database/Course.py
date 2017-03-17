@@ -27,8 +27,6 @@ class Course:
         self.teaching_form = None
 
         self.events = []
-        
-
 
     def set_exam_date(self):
 
@@ -53,8 +51,6 @@ class Course:
             self.set_is_active_course()
             self.get_assessment_form()
 
-
-            print(self.course_active)
             if not self.course_active:
                 self.exam_date = "No exam date available because the course is not active."
             elif self.assessment_form != "Written examination":
@@ -72,15 +68,14 @@ class Course:
         # Fetch the course
         data = self.get_data()
         number = len(data["course"]["assessment"])
-        liste = [0]*number
-        for i in range (0,number):
+        liste = [0] * number
+        for i in range(0, number):
             try:
                 liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
             except KeyError:
                 self.assessment_form = "No assessment form available"
 
         self.assessment_form = ' and '.join(liste)
-
 
     def get_assessment_form(self):
         self.set_assessment_form()
@@ -98,7 +93,6 @@ class Course:
         self.set_term()
         return self.term
 
-
     def set_year(self):
         # Fetch the course
         data = self.get_data()
@@ -111,14 +105,11 @@ class Course:
         self.set_year()
         return self.year
 
-
-    
     def set_is_active_course(self):
         # todo check for this on a smart place.
         try:
             self.get_year()
             self.get_term()
-
 
             # default value for end of course
             end_of_course = None
@@ -129,7 +120,6 @@ class Course:
             elif self.term == "Spring":
                 end_of_course = datetime(self.year, 6, 30)
 
-
             # checks if the end_of_course is in the future, and returns the boolean
             self.course_active = datetime.now() < end_of_course
 
@@ -139,8 +129,8 @@ class Course:
     def get_is_active_course(self):
         self.set_is_active_course()
         return self.course_active
+    #todo: add in DatabaseExtractor
 
-    
     def set_contact_name(self):
         # Fetch the course
         data = self.get_data()
@@ -150,11 +140,10 @@ class Course:
         except KeyError:
             self.contact_name = "No contact person available"
 
-    def get_contact_name(self) ->str:
+    def get_contact_name(self) -> str:
         self.set_contact_name()
         return self.contact_name
 
-    
     def set_contact_mail(self):
         # Fetch the course
         data = self.get_data()
@@ -225,7 +214,7 @@ class Course:
     def get_credit(self):
         self.set_credit()
         return self.credit
-    
+
     def set_url(self):
         # Fetch the course
         data = self.get_data()
@@ -237,23 +226,23 @@ class Course:
     def get_url(self) -> str:
         self.set_url()
         return self.url
-    
+
     def set_prereq_knowledge(self):
         # Fetch the course
         data = self.get_data()
         value = ""
 
-        for i in range (0,6):
+        for i in range(0, 6):
             try:
                 value = data["course"]["infoType"][i]["code"]
                 if (value == "ANBFORK"):
-                        index = i
+                    index = i
             except KeyError:
-                    self.prereq_knowledge = "Prerequisite knowledge is not available for this course"
+                self.prereq_knowledge = "Prerequisite knowledge is not available for this course"
         try:
             self.prereq_knowledge = data["course"]["infoType"][index]["text"]
         except KeyError:
-             self.prereq_knowledge = "Prerequisite knowledge is not available for this course"
+            self.prereq_knowledge = "Prerequisite knowledge is not available for this course"
 
     def get_prereq_knowledge(self) -> str:
         self.set_prereq_knowledge()
@@ -264,7 +253,7 @@ class Course:
         data = self.get_data()
         x = len(data["course"]["infoType"])
         index = 0
-        for i in range (0,x):
+        for i in range(0, x):
             try:
                 name = data["course"]["infoType"][i]["name"]
                 if (name == "Academic content"):
@@ -276,7 +265,6 @@ class Course:
         except KeyError:
             self.course_content = "Course content is not available"
 
-
     def get_course_content(self) -> str:
         self.set_course_content()
         return self.course_content
@@ -284,15 +272,24 @@ class Course:
     def set_course_material(self):
         # Fetch the course
         data = self.get_data()
+        x = len(data["course"]["infoType"])
+        index = 0
+        for i in range(0, x):
+            try:
+                name = data["course"]["infoType"][i]["name"]
+                if (name == "Course materiel"):
+                    index = i
+            except KeyError:
+                self.course_content = "Course material is not available"
         try:
-            self.course_material = data["course"]["infoType"][4]["text"]
+            self.course_material = data["course"]["infoType"][index]["text"]
         except KeyError:
             self.course_material = "Course material is not available"
 
     def get_course_material(self) -> str:
         self.set_course_material()
         return self.course_material
-    
+
     def set_teaching_form(self):
         # Fetch the course
         data = self.get_data()
@@ -332,8 +329,5 @@ class Course:
         date_time = datetime(year, month, day)
         date_string = "{:%B %d, %Y}".format(date_time)
         return date_string
-
-test=Course("TKT4116")
-print(test.get_prereq_knowledge())
 
 
