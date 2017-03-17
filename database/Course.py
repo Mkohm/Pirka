@@ -129,6 +129,7 @@ class Course:
     def get_is_active_course(self):
         self.set_is_active_course()
         return self.course_active
+    #todo: add in DatabaseExtractor
 
     def set_contact_name(self):
         # Fetch the course
@@ -271,8 +272,17 @@ class Course:
     def set_course_material(self):
         # Fetch the course
         data = self.get_data()
+        x = len(data["course"]["infoType"])
+        index = 0
+        for i in range(0, x):
+            try:
+                name = data["course"]["infoType"][i]["name"]
+                if (name == "Course materiel"):
+                    index = i
+            except KeyError:
+                self.course_content = "Course material is not available"
         try:
-            self.course_material = data["course"]["infoType"][4]["text"]
+            self.course_material = data["course"]["infoType"][index]["text"]
         except KeyError:
             self.course_material = "Course material is not available"
 

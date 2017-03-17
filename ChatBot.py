@@ -82,15 +82,6 @@ class ChatBot:
             return ChatBot.create_data_response(Course(parameter).get_course_material())
         elif action_name == "get_teaching_form":
             return ChatBot.create_data_response(Course(parameter).get_teaching_form())
-
-
-
-
-
-
-
-
-
         else:
             return "I didn't understand shit, you probably broke me :("
 
