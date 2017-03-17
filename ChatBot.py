@@ -7,7 +7,8 @@ from flask import render_template
 from flask import request
 
 from database import DatabaseConnector
-from database.DatabaseInserter import Course
+from database import DatabaseInserter
+from database.Course import Course
 from scraper.BlackboardScraper import BlackboardScraper
 
 # Flask app should start in global layout
@@ -34,7 +35,7 @@ class ChatBot:
         # todo: Setup connection to database
 
         # Connect to the database
-        DatabaseConnector.add_values("INSERT INTO `user`(`username`,`password`,`facebook_id`) VALUES ('heeeeeui','lala',123);")
+        DatabaseInserter.add_subject_data("TMA4100")
 
 
         # todo: Create thread to set all data in the database
