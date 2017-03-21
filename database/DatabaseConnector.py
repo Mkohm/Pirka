@@ -20,5 +20,6 @@ def get_values(statement: str):
 def add_values(statement: str):
     print("adding values")
     cur = connection.cursor()
-    cur.executescript(statement)
+    cur.execute(statement)
+    connection.commit()
 

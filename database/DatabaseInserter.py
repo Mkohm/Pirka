@@ -42,6 +42,7 @@ def add_subject_data(course_code: str):
     DatabaseConnector.add_values("INSERT INTO `subject`(`course_code`,`name`,`exam_date`, `assessment_form`) VALUES ('hest', 'hest','hest', 'hest');")
 
 
+"""
 def get_exam_date() -> str:
     set_exam_date()
     return exam_date
@@ -327,9 +328,8 @@ def is_valid_course():
         return True
     except TypeError:
         return False
+"""
 
-
-@staticmethod
 def format_date(date: str) -> str:
     year = int(float(date[0:4]))
     month = int(float(date[5:7]))
