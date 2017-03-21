@@ -4,7 +4,7 @@ from os.path import expanduser
 
 # Connect to the database
 home_dir = expanduser("~")
-sqlite_file = home_dir + "/PycharmProjects/Pirka/pirkabase.db"
+sqlite_file = home_dir + "/PycharmProjects/Pirka/pirkabase-kopi.db"
 
 connection = sqlite3.connect(sqlite_file)
 
