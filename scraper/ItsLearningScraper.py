@@ -6,11 +6,11 @@ from selenium import webdriver
 # TODO: move these variables and make them member variables in the class below if needed?
 
 chrome_profile = webdriver.ChromeOptions()
-driver = webdriver.Chrome(chrome_options=chrome_profile)
+driver = webdriver.Chrome(executable_path="/Users/mariuskohmann/PycharmProjects/Pirka/examples/chromedriver")
 driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
 
 class ItsLearningScraper:
-    def __init__(self):
+    def __init__(self, username, password):
 
         # TODO: add functionality for user credentials as parameters
 
@@ -18,11 +18,11 @@ class ItsLearningScraper:
         # self.password = password
 
         # logs into Its Learning. After this the "driver" contains the main page in Its Learning
-        username = driver.find_element_by_name("feidename")
-        username.send_keys(input("Username: "))
-        password = driver.find_element_by_name("password")
-        password.send_keys(input("Password: "))
-        password.submit()
+        username_field = driver.find_element_by_name("feidename")
+        username_field.send_keys(username)
+        password_field = driver.find_element_by_name("password")
+        password_field.send_keys(password)
+        password_field.submit()
 
     # this function returns a users calendar feed in iCalendar-format
     # TODO: add functionality to extract the content from the feed
@@ -191,3 +191,4 @@ myScrape.get_announcements()
 print(myScrape.get_all_assignments())
 
 myScrape.close_driver()
+

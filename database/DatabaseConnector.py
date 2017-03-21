@@ -1,9 +1,14 @@
 import sqlite3
+from os.path import expanduser
 
 
 # Connect to the database
-sqlite_file = "/Users/marileonhardsen/PycharmProjects/Pirka/pirkabase.db"
-connection = sqlite3.connect(sqlite_file)
+home_dir = expanduser("~")
+sqlite_file = home_dir + "/PycharmProjects/Pirka/pirkabase.db"
+
+connection = sqlite3.connect(database=sqlite_file, check_same_thread=False)
+
+
 
 def testConnection():
     cur = connection.cursor()
@@ -17,8 +22,8 @@ def get_values(statement: str):
     return cur.fetchall()
 
 
-def add_values(statement: str):
+def add_values(statement: str, data_variables):
     print("adding values")
     cur = connection.cursor()
-    cur.executescript(statement)
-
+    cur.execute(statement)
+    connection.commit()
