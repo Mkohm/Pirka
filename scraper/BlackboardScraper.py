@@ -1,10 +1,9 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
-import selenium.webdriver.support.ui as ui
 
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 
-# TODO: When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
+# When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
 
 # TODO: move these varibles and make them member varibales in the class below if needed @Kohm?
 chrome_profile = webdriver.ChromeOptions()
@@ -14,8 +13,7 @@ driver.get("https://ntnu.blackboard.com/")
 class BlackboardScraper:
     def __init__(self):
 
-        # TODO: add functionality for user credentials as parameters, not hardcoded like it is now
-        # Hardcoding is only for testing purposes.
+        # TODO: add functionality for user credentials as parameters
 
         # self.username = username
         # self.password = password
@@ -24,12 +22,10 @@ class BlackboardScraper:
         login_button[0].click()
 
         select = Select(driver.find_element_by_name('org'))
-
         select.select_by_visible_text("NTNU")
-
         driver.find_element_by_class_name("submit").click()
 
-        # logs into Its Learning. After this the "driver" contains the main page in Its Learning
+        # logs into BB. After this the "driver" contains the main page in Its Learning
         username = driver.find_element_by_name("feidename")
         username.send_keys(input("Username: "))
         password = driver.find_element_by_name("password")
@@ -45,23 +41,11 @@ class BlackboardScraper:
         driver.implicitly_wait(5)
         driver.find_element_by_id("ical")
 
-        # # navigates to the body frame to be able to navigate further
-        # driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-        #
-        # # expand the menu button (with three dots) above the calender, on the right side of the page
-        # cal = driver.find_element_by_id("ctl00_PageFunctionsPlaceHolder_PageFunctions")
-        # cal.click()
-        #
-        # # clicks the "abonner" butting
-        # cal = driver.find_element_by_id("ctl00_PageFunctionsPlaceHolder_ctl03_SubscribeLink")
-        # cal.click()
-        #
-        # # extracts the calendar feed url and returns it as a string
-        #
-        # # TODO: This URL structure can be used to subscribe to a calendar by URL, implement feature
-        # # https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
-        #
-        # return driver.find_element_by_id("ctl00_ContentPlaceHolder_ICalFeedModalDialog_ICalFeedLink").text
+        # TODO: implement the rest of this method
+
+        # TODO: This URL structure can be used to subscribe to a calendar by URL, implement feature
+        # https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
+
 
 
     def get_course_list(self):
@@ -73,9 +57,11 @@ class BlackboardScraper:
 
     def get_first_course(self):
 
-        driver.implicitly_wait(5)
+        current_term = "(2017 VÅR)"
 
-        courses = driver.find_elements_by_partial_link_text("(2017 VÅR)")
+        driver.implicitly_wait(2)
+
+        courses = driver.find_elements_by_partial_link_text(current_term)
         courses[0].click()
 
         driver.find_element_by_id("menuPuller").click()
@@ -94,34 +80,29 @@ class BlackboardScraper:
         driver.switch_to.frame("mybbCanvas")
         driver.switch_to.frame("right_stream_mygrades")
 
+        # sorts the assignments by ascending deadlines.
+        select = Select(driver.find_element_by_name('sortby'))
+        select.select_by_visible_text("Innleveringsfrist (eldste først)")
+
+
+
         assignments = driver.find_elements_by_css_selector("div.cell.gradable")
         activity = driver.find_elements_by_class_name("activityType")
-        activitivt_type = driver.find_elements_by_class_name("itemCat")
+        category = driver.find_elements_by_class_name("itemCat")
         grades = driver.find_elements_by_class_name("grade")
-
-        print("Assignment:")
-        for i in range(0, len(assignments)):
-            print(assignments[i].text)
-
-        print("\nActivity:")
-        for i in range(0, len(activity)):
-            print(activity[i].text)
-
-        print("\nType:")
-        for i in range(0, len(activitivt_type)):
-            print(activitivt_type[i].text)
-
-        print("\nGrade: ")
-        for i in range(0, len(grades)):
-            print(grades[0].text)
-
         grade_score = driver.find_elements_by_css_selector("span.grade")
 
-        print("\nGrade score: ")
+
         for i in range(0, len(grade_score)):
-            print(grade_score[i].text)
-
-
+            print("Index: " + str(i))
+            print("\nAssignment: " +assignments[i+1].text)
+            print("Activity: " +activity[i].text)
+            try:
+                print("Category: " + category[i].text)
+                print("Grade: " + grades[i].text)
+                print("Grade score: " + grade_score[i].text + "\n")
+            except IndexError:
+                print(" ")
 
 
     def close_driver(self):

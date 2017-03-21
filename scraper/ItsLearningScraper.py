@@ -1,23 +1,18 @@
 from selenium import webdriver
-import selenium.webdriver.support.ui as ui
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 
-# TODO: When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
+# When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
 
-# TODO: move these varibles and make them member varibales in the class below if needed @Kohm?
-
+# TODO: move these variables and make them member variables in the class below if needed?
 
 chrome_profile = webdriver.ChromeOptions()
 driver = webdriver.Chrome(chrome_options=chrome_profile)
 driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
 
-
-
 class ItsLearningScraper:
     def __init__(self):
 
-        # TODO: add functionality for user credentials as parameters, not hardcoded like it is now
-        # Hardcoding is only for testing purposes.
+        # TODO: add functionality for user credentials as parameters
 
         # self.username = username
         # self.password = password
@@ -28,7 +23,6 @@ class ItsLearningScraper:
         password = driver.find_element_by_name("password")
         password.send_keys(input("Password: "))
         password.submit()
-
 
     # this function returns a users calendar feed in iCalendar-format
     # TODO: add functionality to extract the content from the feed
@@ -55,7 +49,6 @@ class ItsLearningScraper:
 
         return driver.find_element_by_id("ctl00_ContentPlaceHolder_ICalFeedModalDialog_ICalFeedLink").text
 
-
     # returns the user course list as a list of strings
     # TODO: Write the result to database.user_has_subject
     def get_course_list(self):
@@ -73,10 +66,10 @@ class ItsLearningScraper:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
             course_list.append(course.text)
 
-
         return course_list
 
-    def get_assignments(self):
+    # Should be splitted into several methods, but have not found a solution that Selenium supports yet.
+    def get_assignments(self, course_index):
 
         # gets the course overview page
         driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
@@ -85,107 +78,79 @@ class ItsLearningScraper:
         # finds all the hyperlinks in the frame. They are all named "ccl-iconlink" in HTML
         courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
 
+        # Navigates to the relevant course based in course index
+        course_code = courses[course_index].text[0:7]
+        print("Extracting info from: " + course_code)
+        courses[course_index].click()
 
-        # TODO: This code works for Programvareutvikling, needs further testing.
-        # Navigates to the first course
-        # courses[0].click()
-        #
-        # driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-        #
-        # task_table = driver.find_element_by_css_selector("li.il-widget.itsl-cb-tasks")
-        #
-        # print(task_table)
-        #
-        # tasks = task_table.find_elements_by_class_name("h-va-baseline")
-        #
-        # tasks[0].click()
-        # driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-        # task_title = driver.find_elements_by_class_name("ccl-pageheader")
-        # print(task_title[0].text)
-        # date = driver.find_elements_by_class_name("h-mrb5")
-        # print(date[1].text)
-        # driver.back()
+        # Try to find a folder containing assignments
+        try:
+            link = driver.find_element_by_link_text("Assignments")
+        except:
+            try:
+                link = driver.find_element_by_link_text("Øvinger")
+            except:
+                print("Unable to find assignments for " + course_code)
+                return "Unable to find assignments for " + course_code
 
-        # TODO: Having trouble with extracting the deadline for Itslearning quizzes. Must fix.
-        # Navigates to the second course. For me this is KTN where I have only have quizzes, and not regular
-        # hand ins. This causes some trouble.
-
-
-
-        courses[0].click()
-
-        driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-        task_table = driver.find_element_by_css_selector("li.il-widget.itsl-cb-tasks")
-        # print(task_table.text)
-
-        tasks = task_table.find_elements_by_class_name("h-va-baseline")
-
-        for i in range(0, len(tasks)):
-            tasks[i].click()
-            driver.implicitly_wait(5)
-            driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-            date = driver.find_elements_by_class_name("itsl-detailed-info")
-            print(date)
-            driver.back()
-            driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-            task_table = driver.find_element_by_css_selector("li.il-widget.itsl-cb-tasks")
-            tasks = task_table.find_elements_by_class_name("h-va-baseline")
-
-    # TODO: This code works for Programvareutvikling, needs further testing.
-    def get_all_assignments(self):
-        # gets the course overview page
-        driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
-        driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-
-        # finds all the hyperlinks in the frame. They are all named "ccl-iconlink" in HTML
-        courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
-
-        # Navigates to the first course
-        courses[0].click()
-
-
-        # TODO: Implement support for different link text like "Øving"
-        link = driver.find_element_by_link_text("Assignments")
         link.click()
-
         driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
         link = driver.find_elements_by_class_name("GridTitle")
 
+        # loops through every element in the assignment folder, tries to extract info
+        # TODO: store the values in the database
         for i in range(0, len(link)):
             link[i].click()
-            title = driver.find_elements_by_class_name("ccl-pageheader-title")[0].text
 
-            attribute = driver.find_elements_by_class_name("h-mrb5")
+            try:
+                title = driver.find_elements_by_class_name("ccl-pageheader-title")[0].text
+                attribute = driver.find_elements_by_class_name("h-mrb5")
 
-            published = attribute[0].text[11:]
-            deadline = attribute[1].text[11:]
+                published = attribute[0].text[11:]
+                deadline = attribute[1].text[11:]
 
-            if ("Ja" in attribute[2].text):
-                obligatory = True
-            else:
-                obligatory = False
+                if ("Ja" in attribute[2].text):
+                    obligatory = True
+                else:
+                    obligatory = False
 
-            if ("Ja" in attribute[3].text):
-                anonymous = True
-            else:
-                anonymous = False
+                if ("Ja" in attribute[3].text):
+                    anonymous = True
+                else:
+                    anonymous = False
 
-            group = attribute[4].text[14:]
-            assessment = driver.find_element_by_class_name("colorbox_green").text
+                group = attribute[4].text[14:]
 
-            print("Title: " + title)
-            print("Published: " + published)
-            print("Deadline: " + deadline)
-            print("Obligatory: " + str(obligatory))
-            print("Anonym: " + str(anonymous))
-            print("Group: " + group)
-            print("Assessment: " + assessment)
-            print(" ")
+                print("Title: " + title)
+                print("Published: " + published)
+                print("Deadline: " + deadline)
+                print("Obligatory: " + str(obligatory))
+                print("Anonym: " + str(anonymous))
+                print("Group: " + group)
+
+                try:
+                    assessment = driver.find_element_by_class_name("colorbox_green").text
+                    print("Assessment: " + assessment)
+                except:
+                    print(" ")
+
+                print(" ")
+
+                driver.back()
+                driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+                link = driver.find_elements_by_class_name("GridTitle")
+            except:
+                print("\nNot an supported assignment\n")
+                driver.back()
+                driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+                link = driver.find_elements_by_class_name("GridTitle")
 
 
-            driver.back()
-            driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-            link = driver.find_elements_by_class_name("GridTitle")
+    # TODO: This code works for Programvareutvikling, needs further testing.
+    def get_all_assignments(self):
+
+        for i in range(0, len(self.get_course_list())):
+            self.get_assignments(i)
 
 
     def get_announcements(self):
@@ -199,7 +164,8 @@ class ItsLearningScraper:
 
         # TODO: This code works for Programvareutvikling, needs further testing.
         # Navigates to the first course
-        courses[0].click()
+        print("Getting messages from: " + courses[1].text[0:7]+"\n")
+        courses[1].click()
         driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
         announcements = driver.find_elements_by_class_name("h-ov-hidden")
         announcer = driver.find_elements_by_class_name("h-va-bottom")
@@ -212,32 +178,16 @@ class ItsLearningScraper:
             print(announcements[i].text)
             print("")
 
-
-        #
-        # for guy in announcer:
-        #     print(guy.text)
-        #
-        # for news in announcements:
-        #     print(news.text)
-
-
-
     def close_driver(self):
         driver.quit()
-
-
-
 
 myScrape = ItsLearningScraper()
 
 # print(myScrape.get_course_list())
 # print(myScrape.get_calendar_feed())
 
-# print(myScrape.get_assignments())
+myScrape.get_announcements()
 
-# myScrape.get_announcements()
-#
 print(myScrape.get_all_assignments())
-#
-myScrape.close_driver()
 
+myScrape.close_driver()
