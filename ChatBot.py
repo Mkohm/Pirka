@@ -9,7 +9,7 @@ from flask import request
 from database import DatabaseConnector
 from database import DatabaseInserter
 from database.Course import Course
-from scraper.BlackboardScraper import BlackboardScraper
+from scraper.ItsLearningScraper import ItsLearningScraper
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -34,8 +34,6 @@ class ChatBot:
 
         # todo: Setup connection to database
 
-        # Connect to the database
-        DatabaseInserter.add_subject_data("TMA4100")
 
 
         # todo: Create thread to set all data in the database
@@ -118,6 +116,8 @@ def login(current_sender_id):
     :return:
     """
 
+    print("login test")
+
     error = None
     if request.method == 'POST':
 
@@ -127,7 +127,10 @@ def login(current_sender_id):
         # If the login is successfull we return a template saying you can start using pirka
         if valid_login(username, password):
 
-            pirka_users[current_sender_id] = {username, password}
+            #pirka_users[current_sender_id] = {username, password}
+
+            DatabaseInserter.add_user(username, password, current_sender_id)
+
             return render_template("login_success.html")
         else:
             error = 'Invalid username/password'
@@ -139,21 +142,21 @@ def login(current_sender_id):
 def valid_login(username: str, password: str):
     # Try to do blackboard scraping
 
+    print(username)
+    print(password)
     try:
-        scraper = BlackboardScraper(username, password)
+        scraper = ItsLearningScraper(username, password)
 
+        print("Login success")
         return True
     except:
+        print("Login failed")
         return False
 
 
 @app.route('/' + deployment_link, methods=['POST'])
 def webhook():
-    print(pirka_users)
     json_request = request.get_json(silent=True, force=True)
-    print(json_request)
-
-    print(json.dumps(json_request, indent=4))
 
     # Extract the data from the json-request (first get the result section of the json)
     result = json_request.get("result")
@@ -179,7 +182,6 @@ def webhook():
     speech = ChatBot.process_actions(parameter, action_name)
 
 
-    print(json.dumps(speech, indent=4))
     response = json.dumps(speech, indent=4)
     created_response = make_response(response)
     created_response.headers['Content-Type'] = 'application/json'

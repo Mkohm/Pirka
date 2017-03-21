@@ -7,23 +7,23 @@ from database import DatabaseConnector
 base_url = "http://www.ime.ntnu.no/api/course/en/"
 
 
-def add_subject_data(course_code_data: str):
-    data = get_data(course_code_data)
-    assessment_form_data = "null"
+def add_subject_data(course_code: str):
+    data = get_data(course_code)
+    assessment_form = "null"
 
     # Fetch the course name
     try:
-        course_name_data = data["course"]["englishName"]
+        course_name = data["course"]["englishName"]
     except:
-        course_name_data = "Course name is not available"
+        course_name = "Course name is not available"
 
 
     # Try to get the exam date
     try:
         exam_date = data["course"]["assessment"][0]["date"]
-        exam_date_data = format_date(exam_date)
+        exam_date = format_date(exam_date)
     except:
-        exam_date_data = "null"
+        exam_date = "null"
 
 
     # Try to get the assesment form
@@ -34,50 +34,80 @@ def add_subject_data(course_code_data: str):
             try:
                 liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
             except:
-                assessment_form_data = "null"
+                assessment_form = "null"
 
-            assessment_form_data = ' and '.join(liste)
+            assessment_form = ' and '.join(liste)
     except:
-        course_name_data = "null"
+        course_name = "null"
+
+
+
+    # Try to get the contact name
+    try:
+        contact_name = data["course"]["educationalRole"][0]["person"]["displayName"]
+    except:
+        contact_name = "null"
+
+    try:
+        contact_mail = data["course"]["educationalRole"][0]["person"]["email"]
+    except KeyError:
+        contact_mail = "null"
+
+    try:
+        contact_office = data["course"]["educationalRole"][0]["person"]["officeAddress"]
+    except KeyError:
+        contact_office = "null"
+
+    try:
+        contact_phone = data["course"]["educationalRole"][0]["person"]["phone"]
+    except KeyError:
+        contact_phone = "null"
+
+    try:
+        credit = data["course"]["credit"]
+    except KeyError:
+        credit = "null"
+
+    try:
+        url = data["course"]["infoType"][1]["text"]
+    except KeyError:
+        url = "null"
 
     # Adds the data to an list for insertion into the table
     data = []
-    data.append(course_code_data)
-    data.append(course_name_data)
-    data.append(exam_date_data)
-    data.append(assessment_form_data)
+    data.append(course_code)
+    data.append(course_name)
+    data.append(exam_date)
+    data.append(assessment_form)
+    data.append(contact_name)
+    data.append(contact_mail)
+    data.append(contact_office)
+    data.append(contact_phone)
+    data.append(credit)
+    data.append(url)
 
     # Adds the data to the table
     conn = DatabaseConnector.connection
     cur = conn.cursor()
-    cur.execute("INSERT INTO `subject`(`course_code`,`course_name`,`exam_date`, `assessment_form`) VALUES (?,?,?,?)", data)
+    cur.execute("INSERT INTO `subject`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`contact_website`,`url`) VALUES (?,?,?,?,?,?,?,?,?,?)", data)
+    conn.commit()
+
+
+def add_user(username: str, password: str, facebook_id: int):
+    data = []
+    data.append(username)
+    data.append(password)
+    data.append(facebook_id)
+
+
+
+    # Adds the data to the table
+    conn = DatabaseConnector.connection
+    cur = conn.cursor()
+    cur.execute("INSERT INTO `user`(`username`,`password`,`facebook_id`) VALUES (?,?,?)", data)
     conn.commit()
 
 """
-def get_exam_date() -> str:
-    set_exam_date()
-    return exam_date
-
-
-def set_assessment_form():
-    # todo loop through every element in assessment
-
-    # Fetch the course
-    data = get_data()
-    number = len(data["course"]["assessment"])
-    liste = [0] * number
-    for i in range(0, number):
-        try:
-            liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
-        except KeyError:
-            assessment_form = "No assessment form available"
-
-    assessment_form = ' and '.join(liste)
-
-
-def get_assessment_form():
-    set_assessment_form()
-    return assessment_form
 
 
 def set_term():
@@ -89,11 +119,6 @@ def set_term():
         term = "Term not available"
 
 
-def get_term():
-    set_term()
-    return term
-
-
 def set_year():
     # Fetch the course
     data = get_data()
@@ -102,10 +127,6 @@ def set_year():
     except KeyError:
         year = "Year not available"
 
-
-def get_year():
-    set_year()
-    return year
 
 
 def set_is_active_course():
@@ -130,109 +151,7 @@ def set_is_active_course():
         course_active = "Can not check for active course"
 
 
-def get_is_active_course():
-    set_is_active_course()
-    return course_active
 
-
-def set_contact_name():
-    # Fetch the course
-    data = get_data()
-
-    try:
-        contact_name = data["course"]["educationalRole"][0]["person"]["displayName"]
-    except KeyError:
-        contact_name = "No contact person available"
-
-
-def get_contact_name() -> str:
-    set_contact_name()
-    return contact_name
-
-
-def set_contact_mail():
-    # Fetch the course
-    data = get_data()
-    try:
-        contact_mail = data["course"]["educationalRole"][0]["person"]["email"]
-    except KeyError:
-        contact_mail = "Contact mail is not available"
-
-
-def get_contact_mail() -> str:
-    set_contact_mail()
-    return contact_mail
-
-
-def set_contact_office():
-    # Fetch the course
-    data = get_data()
-    try:
-        contact_office = data["course"]["educationalRole"][0]["person"]["officeAddress"]
-    except KeyError:
-        contact_office = "Office address is not available"
-
-
-def get_contact_office() -> str:
-    set_contact_office()
-    return contact_office
-
-
-def set_contact_phone():
-    # Fetch the course
-    data = get_data()
-    try:
-        contact_phone = data["course"]["educationalRole"][0]["person"]["phone"]
-    except KeyError:
-        contact_phone = "Contact phone is not available"
-
-
-def get_contact_phone() -> str:
-    set_contact_phone()
-    return contact_phone
-
-
-def set_contact_website():
-    # gets the contacts person website
-    mail = get_contact_mail()
-    website_id = mail.split("@")
-
-    contact_website = "https://www.ntnu.no/ansatte/" + website_id[0]
-
-
-def get_contact_website() -> str:
-    set_contact_website()
-    return contact_website
-
-
-
-
-def set_credit():
-    # Fetch the course
-    data = get_data()
-    try:
-        credit = data["course"]["credit"]
-    except KeyError:
-        credit = "Course credit not available"
-
-
-def get_credit():
-    set_credit()
-    return credit
-
-
-def set_url():
-    # Fetch the course
-    data = get_data()
-    try:
-        url = data["course"]["infoType"][1]["text"]
-    except KeyError:
-        url = "Course url not available"
-
-
-def get_url() -> str:
-    set_url()
-    return url
 
 
 def set_prereq_knowledge():
@@ -290,11 +209,6 @@ def set_course_material():
         course_material = "Course material is not available"
 
 
-def get_course_material() -> str:
-    set_course_material()
-    return course_material
-
-
 def set_teaching_form():
     # Fetch the course
     data = get_data()
@@ -303,19 +217,6 @@ def set_teaching_form():
     except KeyError:
         teaching_form = "Teaching form is not available for this course"
 
-
-def get_teaching_form() -> str:
-    set_teaching_form()
-    return teaching_form
-
-
-def set_events():
-    pass
-
-
-def get_events():
-    set_events()
-    return events
 
 
 
@@ -352,4 +253,4 @@ def format_date(date: str) -> str:
     return date_string
 
 
-add_subject_data("tdt4140")
+add_subject_data("tdt4100")
