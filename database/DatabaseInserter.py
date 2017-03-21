@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import requests
 
 from database import DatabaseConnector
@@ -5,42 +7,51 @@ from database import DatabaseConnector
 base_url = "http://www.ime.ntnu.no/api/course/en/"
 
 
-def add_subject_data(course_code: str):
-    # Fetch the course
-    data = get_data(course_code)
-    course_name = get_course_name(course_code)
+def add_subject_data(course_code_data: str):
+    data = get_data(course_code_data)
+    assessment_form_data = "null"
 
-    exam_date_string = None
-    course_name = None
-    assessment_form = None
+    # Fetch the course name
+    try:
+        course_name_data = data["course"]["englishName"]
+    except:
+        course_name_data = "Course name is not available"
 
 
+    # Try to get the exam date
     try:
         exam_date = data["course"]["assessment"][0]["date"]
-        exam_date_string = format_date(exam_date)
-        # exam_date = "Exam date for " + str(course_code) + " " + str(course_name) + " is " + str(exam_date_string)
-    except KeyError:
-        exam_date_string = None
+        exam_date_data = format_date(exam_date)
+    except:
+        exam_date_data = "null"
 
-    # Fetch the course
-    number = len(data["course"]["assessment"])
-    liste = [0] * number
-    for i in range(0, number):
-        try:
-            liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
-        except KeyError:
-            assessment_form = None
 
-        assessment_form = ' and '.join(liste[i])
-
-    # Fetch the course
+    # Try to get the assesment form
     try:
-        course_name = data["course"]["englishName"]
-    except KeyError:
-        course_name = "Course name is not available"
+        number = len(data["course"]["assessment"])
+        liste = [0] * number
+        for i in range(0, number):
+            try:
+                liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
+            except:
+                assessment_form_data = "null"
 
-    DatabaseConnector.add_values("INSERT INTO `subject`(`course_code`,`name`,`exam_date`, `assessment_form`) VALUES ('hest', 'hest','hest', 'hest');")
+            assessment_form_data = ' and '.join(liste)
+    except:
+        course_name_data = "null"
 
+    # Adds the data to an list for insertion into the table
+    data = []
+    data.append(course_code_data)
+    data.append(course_name_data)
+    data.append(exam_date_data)
+    data.append(assessment_form_data)
+
+    # Adds the data to the table
+    conn = DatabaseConnector.connection
+    cur = conn.cursor()
+    cur.execute("INSERT INTO `subject`(`course_code`,`course_name`,`exam_date`, `assessment_form`) VALUES (?,?,?,?)", data)
+    conn.commit()
 
 """
 def get_exam_date() -> str:
@@ -196,15 +207,6 @@ def get_contact_website() -> str:
 
 
 
-def get_course_name(course_code) -> str:
-    # Fetch the course
-    data = get_data(course_code)
-    try:
-        course_name = data["course"]["englishName"]
-    except KeyError:
-        course_name = None
-
-
 def set_credit():
     # Fetch the course
     data = get_data()
@@ -316,10 +318,6 @@ def get_events():
     return events
 
 
-def get_data(course_code):
-    data = requests.get(base_url + course_code).json()
-    return data
-
 
 def is_valid_course():
     data = get_data()
@@ -330,6 +328,21 @@ def is_valid_course():
         return False
 """
 
+def get_data(course_code):
+    data = requests.get(base_url + course_code).json()
+    return data
+
+
+def get_course_name(course_code) -> str:
+    # Fetch the course
+    data = get_data(course_code)
+    try:
+        course_name = data["course"]["englishName"]
+    except TypeError:
+        course_name = None
+
+    return course_name
+
 def format_date(date: str) -> str:
     year = int(float(date[0:4]))
     month = int(float(date[5:7]))
@@ -337,3 +350,6 @@ def format_date(date: str) -> str:
     date_time = datetime(year, month, day)
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
+
+
+add_subject_data("tdt4140")
