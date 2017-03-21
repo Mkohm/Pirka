@@ -67,6 +67,7 @@ def get_course_material(course_code):
     return course_material
 
 def get_teaching_form(course_code):
-    teaching_form = DatabaseConnector.get_values('Select teaching_form from subject where course_code ="' + course_code +'";')
+    teaching_form  = DatabaseConnector.get_values("Select teaching_form, course_name from subject where course_code =\"" + course_code +"\";")
     return teaching_form
-    
+
+
