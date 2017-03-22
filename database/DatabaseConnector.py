@@ -5,12 +5,9 @@ from os.path import expanduser
 # Connect to the database
 home_dir = expanduser("~")
 sqlite_file = home_dir + "/PycharmProjects/Pirka/pirkabase.db"
-<<<<<<< Updated upstream
-
 connection = sqlite3.connect(database=sqlite_file, check_same_thread=False)
 
-=======
->>>>>>> Stashed changes
+
 
 
 def testConnection():
