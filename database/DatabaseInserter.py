@@ -15,96 +15,21 @@ def add_subject_data(course_code: str):
     :return: nothing
     """
 
+    #Get data to work with
     data = get_data(course_code)
 
-    # Fetch the course name
-    try:
-        course_name = data["course"]["englishName"]
-    except:
-        course_name = "Course name is not available"
-
-
-    # Try to get the exam date
-    try:
-        exam_date = data["course"]["assessment"][0]["date"]
-        exam_date = format_date(exam_date)
-    except:
-        exam_date = "null"
-
-
-    # Try to get the assesment form
-    assessment_form = "null"
-    try:
-        number = len(data["course"]["assessment"])
-        liste = [0] * number
-        for i in range(0, number):
-            try:
-                liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
-            except:
-                assessment_form = "null"
-
-            assessment_form = ' and '.join(liste)
-    except:
-        course_name = "null"
-
-
-
-    # Try to get the contact name
-    try:
-        contact_name = data["course"]["educationalRole"][0]["person"]["displayName"]
-    except:
-        contact_name = "null"
-
-    try:
-        contact_mail = data["course"]["educationalRole"][0]["person"]["email"]
-    except:
-        contact_mail = "null"
-
-    try:
-        contact_office = data["course"]["educationalRole"][0]["person"]["officeAddress"]
-    except:
-        contact_office = "null"
-
-    try:
-        contact_phone = data["course"]["educationalRole"][0]["person"]["phone"]
-    except:
-        contact_phone = "null"
-
-    try:
-        credit = data["course"]["credit"]
-    except:
-        credit = "null"
-
-    try:
-        url = data["course"]["infoType"][1]["text"]
-    except:
-        url = "null"
-
-    try:
-        course_material = data["course"]["infoType"][4]["text"]
-    except:
-        course_material = "null"
-
-
-    try:
-        teaching_form = data["course"]["infoType"][5]["text"]
-    except:
-        teaching_form = "null"
-
-
-    # Try to get prerequisite knowledge
-    value = ""
-    for i in range(0, 6):
-        try:
-            value = data["course"]["infoType"][i]["code"]
-            if (value == "ANBFORK"):
-                index = i
-        except:
-            prereq_knowledge = "null"
-    try:
-        prereq_knowledge = data["course"]["infoType"][index]["text"]
-    except:
-        prereq_knowledge = "null"
+    course_name = get_course_name(data)
+    exam_date = get_exam_date(data)
+    assessment_form = get_assessment_form(data)
+    contact_name = get_contact_name(data)
+    contact_mail = get_contact_mail(data)
+    contact_office = get_contact_office(data)
+    contact_phone = get_contact_phone(data)
+    credit = get_credit(data)
+    url = get_url(data)
+    course_material = get_course_material(data)
+    teaching_form = get_teaching_form(data)
+    prereq_knowledge = get_prereq_knowledge(data)
 
     # Adds the data to an list for insertion into the table
     data = []
@@ -127,6 +52,114 @@ def add_subject_data(course_code: str):
     cur = conn.cursor()
     cur.execute("INSERT INTO `subject`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`contact_website`,`url`, `course_material`, `teaching_form`, `prereq_knowledge`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
     conn.commit()
+
+
+def get_prereq_knowledge(data):
+    value = ""
+    for i in range(0, 6):
+        try:
+            value = data["course"]["infoType"][i]["code"]
+            if (value == "ANBFORK"):
+                index = i
+        except:
+            prereq_knowledge = "null"
+    try:
+        prereq_knowledge = data["course"]["infoType"][index]["text"]
+    except:
+        prereq_knowledge = "null"
+
+    return prereq_knowledge
+
+
+def get_teaching_form(data):
+    try:
+        teaching_form = data["course"]["infoType"][5]["text"]
+    except:
+        teaching_form = "null"
+
+    return teaching_form
+
+
+def get_course_material(data):
+    try:
+        course_material = data["course"]["infoType"][4]["text"]
+    except:
+        course_material = "null"
+    return course_material
+
+
+def get_url(data):
+    try:
+        url = data["course"]["infoType"][1]["text"]
+    except:
+        url = "null"
+    return url
+
+
+def get_credit(data):
+    try:
+        credit = data["course"]["credit"]
+    except:
+        credit = "null"
+    return credit
+
+
+def get_contact_phone(data):
+    try:
+        contact_phone = data["course"]["educationalRole"][0]["person"]["phone"]
+    except:
+        contact_phone = "null"
+    return contact_phone
+
+
+def get_contact_office(data):
+    try:
+        contact_office = data["course"]["educationalRole"][0]["person"]["officeAddress"]
+    except:
+        contact_office = "null"
+    return contact_office
+
+
+def get_contact_mail(data):
+    try:
+        contact_mail = data["course"]["educationalRole"][0]["person"]["email"]
+    except:
+        contact_mail = "null"
+    return contact_mail
+
+
+def get_contact_name(data):
+    try:
+        contact_name = data["course"]["educationalRole"][0]["person"]["displayName"]
+    except:
+        contact_name = "null"
+    return contact_name
+
+
+def get_assessment_form(data):
+    assessment_form = "null"
+    number = len(data["course"]["assessment"])
+    liste = [0] * number
+    for i in range(0, number):
+        try:
+            liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
+        except:
+            assessment_form = "null"
+
+        assessment_form = ' and '.join(liste)
+
+    return assessment_form
+
+
+def get_exam_date(data):
+    try:
+        exam_date = data["course"]["assessment"][0]["date"]
+        exam_date = format_date(exam_date)
+    except:
+        exam_date = "null"
+
+    return exam_date
+
 
 
 def add_user(username: str, password: str, facebook_id: int):
@@ -219,13 +252,11 @@ def get_data(course_code):
     return data
 
 
-def get_course_name(course_code) -> str:
-    # Fetch the course
-    data = get_data(course_code)
+def get_course_name(data) -> str:
     try:
         course_name = data["course"]["englishName"]
-    except TypeError:
-        course_name = None
+    except:
+        course_name = "null"
 
     return course_name
 
