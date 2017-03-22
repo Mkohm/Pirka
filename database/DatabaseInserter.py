@@ -8,8 +8,14 @@ base_url = "http://www.ime.ntnu.no/api/course/en/"
 
 
 def add_subject_data(course_code: str):
+    """
+    This method will get all the useful data from one course code
+     - and is inserting this into the subject table in the database.
+    :param course_code: The course code that all the data should be derived from
+    :return: nothing
+    """
+
     data = get_data(course_code)
-    assessment_form = "null"
 
     # Fetch the course name
     try:
@@ -27,6 +33,7 @@ def add_subject_data(course_code: str):
 
 
     # Try to get the assesment form
+    assessment_form = "null"
     try:
         number = len(data["course"]["assessment"])
         liste = [0] * number
@@ -50,28 +57,54 @@ def add_subject_data(course_code: str):
 
     try:
         contact_mail = data["course"]["educationalRole"][0]["person"]["email"]
-    except KeyError:
+    except:
         contact_mail = "null"
 
     try:
         contact_office = data["course"]["educationalRole"][0]["person"]["officeAddress"]
-    except KeyError:
+    except:
         contact_office = "null"
 
     try:
         contact_phone = data["course"]["educationalRole"][0]["person"]["phone"]
-    except KeyError:
+    except:
         contact_phone = "null"
 
     try:
         credit = data["course"]["credit"]
-    except KeyError:
+    except:
         credit = "null"
 
     try:
         url = data["course"]["infoType"][1]["text"]
-    except KeyError:
+    except:
         url = "null"
+
+    try:
+        course_material = data["course"]["infoType"][4]["text"]
+    except:
+        course_material = "null"
+
+
+    try:
+        teaching_form = data["course"]["infoType"][5]["text"]
+    except:
+        teaching_form = "null"
+
+
+    # Try to get prerequisite knowledge
+    value = ""
+    for i in range(0, 6):
+        try:
+            value = data["course"]["infoType"][i]["code"]
+            if (value == "ANBFORK"):
+                index = i
+        except:
+            prereq_knowledge = "null"
+    try:
+        prereq_knowledge = data["course"]["infoType"][index]["text"]
+    except:
+        prereq_knowledge = "null"
 
     # Adds the data to an list for insertion into the table
     data = []
@@ -85,11 +118,14 @@ def add_subject_data(course_code: str):
     data.append(contact_phone)
     data.append(credit)
     data.append(url)
+    data.append(course_material)
+    data.append(teaching_form)
+    data.append(prereq_knowledge)
 
     # Adds the data to the table
     conn = DatabaseConnector.connection
     cur = conn.cursor()
-    cur.execute("INSERT INTO `subject`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`contact_website`,`url`) VALUES (?,?,?,?,?,?,?,?,?,?)", data)
+    cur.execute("INSERT INTO `subject`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`contact_website`,`url`, `course_material`, `teaching_form`, `prereq_knowledge`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
     conn.commit()
 
 
@@ -150,33 +186,6 @@ def set_is_active_course():
     except KeyError:
         course_active = "Can not check for active course"
 
-
-
-
-
-def set_prereq_knowledge():
-    # Fetch the course
-    data = get_data()
-    value = ""
-
-    for i in range(0, 6):
-        try:
-            value = data["course"]["infoType"][i]["code"]
-            if (value == "ANBFORK"):
-                index = i
-        except KeyError:
-            prereq_knowledge = "Prerequisite knowledge is not available for this course"
-    try:
-        prereq_knowledge = data["course"]["infoType"][index]["text"]
-    except KeyError:
-        prereq_knowledge = "Prerequisite knowledge is not available for this course"
-
-
-def get_prereq_knowledge() -> str:
-    set_prereq_knowledge()
-    return prereq_knowledge
-
-
 def set_course_content():
     # Fetch the course
     data = get_data()
@@ -193,30 +202,6 @@ def set_course_content():
         course_content = data["course"]["infoType"][index]["text"]
     except KeyError:
         course_content = "Course content is not available"
-
-
-def get_course_content() -> str:
-    set_course_content()
-    return course_content
-
-
-def set_course_material():
-    # Fetch the course
-    data = get_data()
-    try:
-        course_material = data["course"]["infoType"][4]["text"]
-    except KeyError:
-        course_material = "Course material is not available"
-
-
-def set_teaching_form():
-    # Fetch the course
-    data = get_data()
-    try:
-        teaching_form = data["course"]["infoType"][5]["text"]
-    except KeyError:
-        teaching_form = "Teaching form is not available for this course"
-
 
 
 
