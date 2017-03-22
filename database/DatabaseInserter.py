@@ -267,6 +267,3 @@ def format_date(date: str) -> str:
     date_time = datetime(year, month, day)
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
-
-
-add_subject_data("tdt4100")

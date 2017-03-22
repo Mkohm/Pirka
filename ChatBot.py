@@ -9,6 +9,7 @@ from flask import request
 from database import DatabaseConnector
 from database import DatabaseInserter
 from database.Course import Course
+from threading import Thread
 from scraper.ItsLearningScraper import ItsLearningScraper
 
 # Flask app should start in global layout
@@ -29,20 +30,30 @@ else:
 class ChatBot:
     # Starts the webserver and is ready to listen to incoming actions
     def __init__(self):
+
+
+
+        # Starts a thread that will scrape for data
+        thread = Thread(target = self.thread_function)
+        thread.start()
+
         # Change this variable to true if you are going to run this on Heroku
         self.deployment = False
-
-
-        # todo: Create thread to set all data in the database, start scraping
-
-
-
         # The port to run webserver on
         self.port = int(os.getenv('PORT', 8080))
 
         # Run application
         app.run(debug=True, port=self.port, host='localhost')
         print("Starting chatbot-app on port %d" % self.port)
+
+
+
+        thread.join()
+
+
+    def thread_function(self):
+        scraper = ItsLearningScraper("mariukoh", "481559A0n352").get_all_assignments()
+        print("finished threading")
 
     # Receives action-name, gets the data and returns a string ready to send back to API.AI
     @staticmethod
