@@ -32,11 +32,10 @@ class ChatBot:
         # Change this variable to true if you are going to run this on Heroku
         self.deployment = False
 
-        # todo: Setup connection to database
+
+        # todo: Create thread to set all data in the database, start scraping
 
 
-
-        # todo: Create thread to set all data in the database
 
         # The port to run webserver on
         self.port = int(os.getenv('PORT', 8080))
