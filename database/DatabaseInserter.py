@@ -178,8 +178,13 @@ def add_user(username: str, password: str, facebook_id: int):
     # Adds the data to the table
     conn = DatabaseConnector.connection
     cur = conn.cursor()
-    cur.execute("INSERT INTO `user`(`username`,`password`,`facebook_id`) VALUES (?,?,?)", data)
+    try:
+        cur.execute("INSERT INTO `user`(`username`,`password`,`facebook_id`) VALUES (?,?,?)", data)
+    except:
+        cur.execute("UPDATE `user` SET password = ?, facebook_id = ? where username = \"" + username + "\"", data[1:3])
     conn.commit()
+
+
 
 """
 
@@ -272,3 +277,5 @@ def format_date(date: str) -> str:
     date_time = datetime(year, month, day)
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
+
+add_user("marihl", "hei", 198376567)
