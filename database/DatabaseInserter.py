@@ -48,10 +48,10 @@ def add_subject_data(course_code: str):
     data.append(prereq_knowledge)
 
     # Adds the data to the table
-    conn = DatabaseConnector.connection
-    cur = conn.cursor()
-    cur.execute("INSERT INTO `subject`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`contact_website`,`url`, `course_material`, `teaching_form`, `prereq_knowledge`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
-    conn.commit()
+    connection = DatabaseConnector.connection
+    cursor = connection.cursor()
+    cursor.execute("INSERT INTO `subject`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`contact_website`,`url`, `course_material`, `teaching_form`, `prereq_knowledge`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+    connection.commit()
 
 
 def get_prereq_knowledge(data):
