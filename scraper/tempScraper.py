@@ -3,7 +3,7 @@ import os
 import platform
 
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
-# When running Selenium it is necessary to close the driver. A call to self.close_driver() is needed when done.
+# When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
 
 # TODO: move these variables and make them member variables in the class below if needed?
 
@@ -18,7 +18,7 @@ chrome_profile = webdriver.ChromeOptions()
 driver = webdriver.Chrome(executable_path=absolute_file_path)
 driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
 
-class ItsLearningScraper:
+class tempScraper:
     def __init__(self, username, password):
         # TODO: add functionality for user credentials as parameters
 
@@ -86,8 +86,6 @@ class ItsLearningScraper:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
             course_list.append(course.text)
 
-        driver.quit()
-
         return course_list
 
     # Should be splitted into several methods, but have not found a solution that Selenium supports yet.
@@ -101,7 +99,7 @@ class ItsLearningScraper:
         courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
 
         # Navigates to the relevant course based in course index
-        course_code = courses[course_index].text[0:7]
+        course_code = courses[course_index].split()[0]
         print("Extracting info from: " + course_code)
         courses[course_index].click()
 
@@ -184,7 +182,7 @@ class ItsLearningScraper:
         courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
 
 
-        # TODO: This code needs further testing.
+        # TODO: This code works for Programvareutvikling, needs further testing.
         # Navigates to the first course
         print("Getting messages from: " + courses[1].text[0:7]+"\n")
         courses[1].click()
@@ -204,13 +202,10 @@ class ItsLearningScraper:
         driver.quit()
 
 
-
+username = input("Username: ")
 password = input("Password: ")
 
-myScrape = ItsLearningScraper("evenkal", password)
+myScraper = tempScraper(username, password)
+myScraper.get_all_assignments()
 
-myScrape.get_all_assignments()
-
-myScrape.close_driver()
-
-
+myScraper.close_driver()
