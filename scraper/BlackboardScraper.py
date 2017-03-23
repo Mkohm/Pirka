@@ -1,22 +1,27 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
+import os
+import platform
 
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
-
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
 
 # TODO: move these varibles and make them member varibales in the class below if needed @Kohm?
+driver_directory = os.path.dirname(__file__)
+if platform.system() == "Windows":
+    relative_path = "chromedriver.exe"
+else:
+    relative_path = "chromedriver"
+absolute_file_path = os.path.join(driver_directory, relative_path)
+
 chrome_profile = webdriver.ChromeOptions()
-driver = webdriver.Chrome(chrome_options=chrome_profile)
+driver = webdriver.Chrome(executable_path=absolute_file_path)
 driver.get("https://ntnu.blackboard.com/")
 
 class BlackboardScraper:
-    def __init__(self):
+    def __init__(self, username, password):
 
         # TODO: add functionality for user credentials as parameters
-
-        # self.username = username
-        # self.password = password
 
         login_button = driver.find_elements_by_class_name("loginPrimary")
         login_button[0].click()
@@ -26,11 +31,14 @@ class BlackboardScraper:
         driver.find_element_by_class_name("submit").click()
 
         # logs into BB. After this the "driver" contains the main page in Its Learning
-        username = driver.find_element_by_name("feidename")
-        username.send_keys(input("Username: "))
-        password = driver.find_element_by_name("password")
-        password.send_keys(input("Password: "))
-        password.submit()
+        username_field = driver.find_element_by_name("feidename")
+        username_field.send_keys(username)
+        password_field = driver.find_element_by_name("password")
+        password_field.send_keys(password)
+        password_field.submit()
+
+        # necassary to locate the course list
+        self.current_term = "(2017 VÅR)"
 
     # this function returns a users calendar feed in iCalendar-format
     # TODO: add functionality to extract the content from the feed
@@ -50,26 +58,41 @@ class BlackboardScraper:
 
     def get_course_list(self):
 
-        driver.implicitly_wait(5)
-        class_table = driver.find_elements_by_id("_3_1termCourses_noterm")
+        driver.implicitly_wait(1)
+        courses = driver.find_elements_by_partial_link_text(self.current_term)
 
-        print(class_table[0].text)
+        course_list = []
+
+        for course in courses:
+            print(course.text[0:7])
+            course_list.append(course.text[0:7])
+
+        courses[0].click()
+
+        return course_list
 
     def get_first_course(self):
 
-        current_term = "(2017 VÅR)"
 
         driver.implicitly_wait(2)
 
-        courses = driver.find_elements_by_partial_link_text(current_term)
+        courses = driver.find_elements_by_partial_link_text(self.current_term)
         courses[0].click()
 
         driver.find_element_by_id("menuPuller").click()
 
         assignments = driver.find_element_by_partial_link_text("Mine evaluering")
+        driver.implicitly_wait(2)
         assignments.click()
 
+        item = driver.find_elements_by_css_selector("div.cell.gradable")
+        driver.implicitly_wait(2)
+        timestamp = driver.find_elements_by_class_name("lastActivityDate")
 
+
+        for i in range(1, len(item)):
+            print("Item " + str(i) + "\n" + item[i].text)
+            print("Timestamp: " + timestamp[i].text + "\n\n")
 
 
     def get_completed_assignments(self):
@@ -108,13 +131,17 @@ class BlackboardScraper:
     def close_driver(self):
         driver.quit()
 
-myScrape = BlackboardScraper()
+user = "evenkal"
+password = input("Password: ")
+
+myScrape = BlackboardScraper(user, password)
 
 # myScrape.get_first_course()
 
 myScrape.get_completed_assignments()
 #
-# myScrape.get_course_list()
+
+# myScrape.get_first_course()
 
 myScrape.close_driver()
 
