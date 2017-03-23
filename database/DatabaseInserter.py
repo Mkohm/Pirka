@@ -278,28 +278,32 @@ def format_date(date: str) -> str:
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
 
-def add_exercise_data(course_code, title, index, mandatory, published, deadline, location):
-    category="exercise"
-    description = "null"
+def add_assignment_data(course_code, title, index, mandatory, published, deadline, location, category, description):
     # Adds data to a list for insertion into table
-    exercise=[]
-    exercise.add(course_code)
-    exercise.add(index)
-    exercise.add(category)
-    exercise.add(title)
-    exercise.ass(description)
-    exercise.add(published)
-    exercise.add(deadline)
-    exercise.add(location)
-    exercise.add(mandatory)
+    assignment=[]
+    assignment.append(course_code)
+    assignment.append(index)
+    assignment.append(category)
+    assignment.append(title)
+    assignment.append(description)
+    assignment.append(published)
+    assignment.append(deadline)
+    assignment.append(location)
+    assignment.append(mandatory)
+    print(assignment)
 
 # Adds the data to the table
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
+    print("prøvde her")
     try:
-        cursor.execute("INSERT INTO `assignment`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+        print("prøv2")
+        cursor.execute("INSERT INTO assignment(course_code, nr, category, title, description, published, deadline, delivery_location, mandatory) VALUES (?,?,?,?,?,?,?,?,?)", assignment)
+        print("prøvde")
     except:
-        cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, teaching_form = ? WHERE course_code = \"" + course_code + "\"", data[1:13])
-
+        print("klatre ikke")
+        cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \"" + course_code + "\" and category = \""+ category +"\" and nr = \"" + index + "\"", assignment )
 
     connection.commit()
+
+add_subject_data("TKT4123")
