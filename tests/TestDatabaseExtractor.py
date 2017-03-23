@@ -5,9 +5,9 @@ from database import DatabaseExtractor
 class TestCourse(TestCase):
 
     def test_get_exam_date_ok_input(self):
-        self.assertEqual("Exam date for TDT4100 Object-Oriented Programming is May 16, 2017", DatabaseExtractor.get_exam_date("TDT4100"))
-        self.assertEqual("Exam date for TFE4120 Electromagnetics is May 29, 2017", DatabaseExtractor.get_exam_date("TFE4120"))
-        self.assertEqual("Exam date for TTK4135 Optimization and Control is May 20, 2017", DatabaseExtractor.get_exam_date("TTK4135"))
+        self.assertEqual("Exam date in TDT4100 Object-Oriented Programming is May 16, 2017", DatabaseExtractor.get_exam_date("TDT4100"))
+        self.assertEqual("Exam date in TFE4120 Electromagnetics is May 29, 2017", DatabaseExtractor.get_exam_date("TFE4120"))
+        self.assertEqual("Exam date in TTK4135 Optimization and Control is May 20, 2017", DatabaseExtractor.get_exam_date("TTK4135"))
 
     def test_get_exam_date_no_exam(self):
         self.assertEqual("No exam date available because assessment form is: Work", DatabaseExtractor.get_exam_date("TDT4140"))
@@ -22,18 +22,18 @@ class TestCourse(TestCase):
         self.assertEqual("No exam date available because the course is not active.", DatabaseExtractor.get_exam_date("TMA4140"))
 
     def test_assessment_form_written(self):
-        self.assertEqual("Written examination", DatabaseExtractor.get_assessment_form("TDT4100"))
-        self.assertEqual("Written examination", DatabaseExtractor.get_assessment_form("TDT4105"))
+        self.assertEqual("Assessment form in TDT4100 Object-Oriented is Written examination", DatabaseExtractor.get_assessment_form("TDT4100"))
+        self.assertEqual("Assessment form in TDT4105 Information Technology, Introduction is Written examination", DatabaseExtractor.get_assessment_form("TDT4105"))
 
     def test_assessment_form_work(self):
-        self.assertEqual("Work", DatabaseExtractor.get_assessment_form("TDT4140"))
-        self.assertEqual("Work", DatabaseExtractor.get_assessment_form("TMR4160"))
+        self.assertEqual("Assessment form in TDT4140 Software Engineering is Work", DatabaseExtractor.get_assessment_form("TDT4140"))
+        self.assertEqual("Assessment form in TMR4160 Computer Methods for the Engineer is Work", DatabaseExtractor.get_assessment_form("TMR4160"))
 
     def test_assessment_form_combination(self):
-        self.assertEqual("Written examination and Work and Semester assignment", DatabaseExtractor.get_assessment_form("TTK4135"))
-        self.assertEqual("Work and Oral examination", DatabaseExtractor.get_assessment_form("TMR4105"))
-        self.assertEqual("Oral examination and Semester assignment", DatabaseExtractor.get_assessment_form("TMR4230"))
-        self.assertEqual("Written examination and Semester assignment", DatabaseExtractor.get_assessment_form("TMA4140"))
+        self.assertEqual("Assessment form in TTK4135 NAVN is Written examination and Work and Semester assignment", DatabaseExtractor.get_assessment_form("TTK4135"))
+        self.assertEqual("Assessment form in TMR4105 NAVN is Work and Oral examination", DatabaseExtractor.get_assessment_form("TMR4105"))
+        self.assertEqual("Assessment form in TMR4230 NAVN is Oral examination and Semester assignment", DatabaseExtractor.get_assessment_form("TMR4230"))
+        self.assertEqual("Assessment form in TMA4140 NAVN is Written examination and Semester assignment", DatabaseExtractor.get_assessment_form("TMA4140"))
 
     def test_get_term(self):
         self.assertEqual("Spring", DatabaseExtractor.get_term("TMA4105"))
