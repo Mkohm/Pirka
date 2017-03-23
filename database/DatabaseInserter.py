@@ -31,7 +31,7 @@ def add_subject_data(course_code: str):
     teaching_form = get_teaching_form(data)
     prereq_knowledge = get_prereq_knowledge(data)
 
-    # Adds the data to an list for insertion into the table
+    # Adds the data to a list for insertion into the table
     data = []
     data.append(course_code)
     data.append(course_name)
@@ -278,4 +278,28 @@ def format_date(date: str) -> str:
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
 
-add_user("marihl", "hei", 198376567)
+def add_exercise_data(course_code, title, index, mandatory, published, deadline, location):
+    category="exercise"
+    description = "null"
+    # Adds data to a list for insertion into table
+    exercise=[]
+    exercise.add(course_code)
+    exercise.add(index)
+    exercise.add(category)
+    exercise.add(title)
+    exercise.ass(description)
+    exercise.add(published)
+    exercise.add(deadline)
+    exercise.add(location)
+    exercise.add(mandatory)
+
+# Adds the data to the table
+    connection = DatabaseConnector.connection
+    cursor = connection.cursor()
+    try:
+        cursor.execute("INSERT INTO `assignment`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+    except:
+        cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, teaching_form = ? WHERE course_code = \"" + course_code + "\"", data[1:13])
+
+
+    connection.commit()
