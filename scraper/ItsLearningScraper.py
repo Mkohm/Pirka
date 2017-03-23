@@ -18,7 +18,6 @@ driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
 
 class ItsLearningScraper:
     def __init__(self, username, password):
-
         # TODO: add functionality for user credentials as parameters
 
         # self.username = username
@@ -30,6 +29,16 @@ class ItsLearningScraper:
         password_field = driver.find_element_by_name("password")
         password_field.send_keys(password)
         password_field.submit()
+
+    @staticmethod
+    def login(username, password):
+        username_field = driver.find_element_by_name("feidename")
+        username_field.send_keys(username)
+        password_field = driver.find_element_by_name("password")
+        password_field.send_keys(password)
+        password_field.submit()
+        driver.close()
+
 
     # this function returns a users calendar feed in iCalendar-format
     # TODO: add functionality to extract the content from the feed
@@ -58,7 +67,15 @@ class ItsLearningScraper:
 
     # returns the user course list as a list of strings
     # TODO: Write the result to database.user_has_subject
-    def get_course_list(self):
+
+    @staticmethod
+    def get_course_list(username, password):
+
+        username_field = driver.find_element_by_name("feidename")
+        username_field.send_keys(username)
+        password_field = driver.find_element_by_name("password")
+        password_field.send_keys(password)
+        password_field.submit()
 
         # gets the course overveiw page
         driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
@@ -72,6 +89,9 @@ class ItsLearningScraper:
         for course in courses:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
             course_list.append(course.text)
+
+
+        driver.quit()
 
         return course_list
 
@@ -188,3 +208,6 @@ class ItsLearningScraper:
     def close_driver(self):
         driver.quit()
 
+
+#scra = ItsLearningScraper("mariukoh", "Smudpassord1!")
+#scra.get_course_list()

@@ -18,7 +18,6 @@ app.debug = True
 
 # Change this variable to true if you are going to run this on Heroku
 deployment = False
-pirka_users = {}
 
 if deployment:
     deployment_link = "webhook"
@@ -32,9 +31,8 @@ class ChatBot:
     def __init__(self):
 
 
-        # Starts a thread that will scrape for data
-        thread = Thread(target = self.thread_function)
-        thread.start()
+
+
 
         # Change this variable to true if you are going to run this on Heroku
         self.deployment = False
@@ -47,12 +45,8 @@ class ChatBot:
 
 
 
-        thread.join()
 
 
-    def thread_function(self):
-        scraper = ItsLearningScraper("mariukoh", "481559A0n352").get_all_assignments()
-        print("finished threading")
 
     # Receives action-name, gets the data and returns a string ready to send back to API.AI
     @staticmethod
@@ -80,15 +74,15 @@ class ChatBot:
         elif action_name == "get_credit":
             return ChatBot.create_data_response(DatabaseExtractor.get_credit(parameter))
         elif action_name == "get_url":
-            return ChatBot.create_data_response(Course(parameter).get_url())
+            return ChatBot.create_data_response(DatabaseExtractor.get_url(parameter))
         elif action_name == "get_prereq_knowledge":
-            return ChatBot.create_data_response(Course(parameter)).get_prereq_knowledge()
+            return ChatBot.create_data_response(DatabaseExtractor.get_prereq_knowledge(parameter))
         elif action_name =="get_course_content":
-            return ChatBot.create_data_response(Course(parameter).get_course_content())
+            return ChatBot.create_data_response(DatabaseExtractor.get_course_content(parameter))
         elif action_name == "get_course_material":
-            return ChatBot.create_data_response(Course(parameter).get_course_material())
+            return ChatBot.create_data_response(DatabaseExtractor.get_course_material(parameter))
         elif action_name == "get_teaching_form":
-            return ChatBot.create_data_response(Course(parameter).get_teaching_form())
+            return ChatBot.create_data_response(DatabaseExtractor.get_teaching_form(parameter))
         else:
             return "I didn't understand shit, you probably broke me :("
 
@@ -125,8 +119,6 @@ def login(current_sender_id):
     :return:
     """
 
-    print("login test")
-
     error = None
     if request.method == 'POST':
 
@@ -135,10 +127,12 @@ def login(current_sender_id):
 
         # If the login is successfull we return a template saying you can start using pirka
         if valid_login(username, password):
-
-            #pirka_users[current_sender_id] = {username, password}
-
             DatabaseInserter.add_user(username, password, current_sender_id)
+
+            # Starts a thread that will scrape for data
+            thread = Thread(target=thread_function(username, password))
+            thread.start()
+
 
             return render_template("login_success.html")
         else:
@@ -148,19 +142,24 @@ def login(current_sender_id):
     return render_template('login.html', error=error)
 
 
-def valid_login(username: str, password: str):
-    # Try to do blackboard scraping
+def thread_function(username: str, password: str):
+    print("start threading")
+    scraper = ItsLearningScraper.get_course_list(username, password)
+    print(scraper)
 
-    print(username)
-    print(password)
+def valid_login(username: str, password: str):
+
     try:
-        scraper = ItsLearningScraper(username, password)
+        print(username, password)
+        scraper = ItsLearningScraper.login(username, password)
 
         print("Login success")
         return True
     except:
         print("Login failed")
         return False
+
+
 
 
 @app.route('/' + deployment_link, methods=['POST'])
