@@ -83,6 +83,12 @@ class ChatBot:
             return ChatBot.create_data_response(DatabaseExtractor.get_course_material(parameter))
         elif action_name == "get_teaching_form":
             return ChatBot.create_data_response(DatabaseExtractor.get_teaching_form(parameter))
+        elif action_name =="get_exercise_status":
+            return ChatBot.create_data_response(DatabaseExtractor.get_exercise_status(parameter, "marihl"))
+        elif action_name == "get_project_status":
+            return ChatBot.create_data_response(DatabaseExtractor.get_project_status(parameter, "marihl"))
+        elif action_name == "get_lab_status":
+            return ChatBot.create_data_response(DatabaseExtractor.get_lab_status(parameter, "marihl"))
         else:
             return "I didn't understand shit, you probably broke me :("
 
