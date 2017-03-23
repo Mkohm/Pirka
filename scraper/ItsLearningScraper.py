@@ -1,24 +1,18 @@
 from selenium import webdriver
 import os
-# DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
+import platform
 
+# DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
 
 # TODO: move these variables and make them member variables in the class below if needed?
 
 
-driver_directory = os.path.dirname(__file__)
-relative_path = "chromedriver"
-absolute_file_path = os.path.join(driver_directory, relative_path)
-
-
-chrome_profile = webdriver.ChromeOptions()
-driver = webdriver.Chrome(executable_path=absolute_file_path)
-driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
 
 class ItsLearningScraper:
-    def __init__(self, username, password):
 
+    """"
+    def __init__(self, username, password):
         # TODO: add functionality for user credentials as parameters
 
         # self.username = username
@@ -30,6 +24,33 @@ class ItsLearningScraper:
         password_field = driver.find_element_by_name("password")
         password_field.send_keys(password)
         password_field.submit()
+
+    """
+
+    @staticmethod
+    def login(username, password):
+
+        driver_directory = os.path.dirname(__file__)
+        if (platform.system() == "Windows"):
+            relative_path = "chromedriver.exe"
+        else:
+            relative_path = "chromedriver"
+        absolute_file_path = os.path.join(driver_directory, relative_path)
+        driver = webdriver.Chrome(executable_path=absolute_file_path)
+        driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
+
+
+
+
+
+
+        username_field = driver.find_element_by_name("feidename")
+        username_field.send_keys(username)
+        password_field = driver.find_element_by_name("password")
+        password_field.send_keys(password)
+        password_field.submit()
+        driver.close()
+
 
     # this function returns a users calendar feed in iCalendar-format
     # TODO: add functionality to extract the content from the feed
@@ -58,7 +79,33 @@ class ItsLearningScraper:
 
     # returns the user course list as a list of strings
     # TODO: Write the result to database.user_has_subject
-    def get_course_list(self):
+
+    @staticmethod
+    def get_course_list(username, password):
+
+        driver_directory = os.path.dirname(__file__)
+        if (platform.system() == "Windows"):
+            relative_path = "chromedriver.exe"
+        else:
+            relative_path = "chromedriver"
+        absolute_file_path = os.path.join(driver_directory, relative_path)
+
+        driver = webdriver.Chrome(executable_path=absolute_file_path)
+        driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
+
+
+
+
+
+        username_field = driver.find_element_by_name("feidename")
+        username_field.send_keys(username)
+        password_field = driver.find_element_by_name("password")
+        password_field.send_keys(password)
+        password_field.submit()
+
+
+
+
 
         # gets the course overveiw page
         driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
@@ -71,7 +118,10 @@ class ItsLearningScraper:
 
         for course in courses:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
-            course_list.append(course.text)
+            course_list.append(course.text.split()[0])
+
+
+        driver.quit()
 
         return course_list
 
@@ -187,4 +237,5 @@ class ItsLearningScraper:
 
     def close_driver(self):
         driver.quit()
+
 
