@@ -118,7 +118,7 @@ class ItsLearningScraper:
 
         for course in courses:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
-            course_list.append(course.text)
+            course_list.append(course.text.split()[0])
 
 
         driver.quit()

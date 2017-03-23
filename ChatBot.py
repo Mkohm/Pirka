@@ -144,8 +144,11 @@ def login(current_sender_id):
 
 def thread_function(username: str, password: str):
     print("start threading")
-    scraper = ItsLearningScraper.get_course_list(username, password)
-    print(scraper)
+    course_list = ItsLearningScraper.get_course_list(username, password)
+
+    # Adds the users courses to the database
+    for course in course_list:
+        DatabaseInserter.add_subject_data(course)
 
 def valid_login(username: str, password: str):
 
