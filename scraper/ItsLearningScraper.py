@@ -1,16 +1,18 @@
 from selenium import webdriver
 import os
-# DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
+import platform
 
+# DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
 
 # TODO: move these variables and make them member variables in the class below if needed?
 
-
 driver_directory = os.path.dirname(__file__)
-relative_path = "chromedriver"
+if(platform.system() == "Windows"):
+    relative_path = "chromedriver.exe"
+else:
+    relative_path = "chromedriver"
 absolute_file_path = os.path.join(driver_directory, relative_path)
-
 
 chrome_profile = webdriver.ChromeOptions()
 driver = webdriver.Chrome(executable_path=absolute_file_path)
@@ -209,5 +211,3 @@ class ItsLearningScraper:
         driver.quit()
 
 
-#scra = ItsLearningScraper("mariukoh", "Smudpassord1!")
-#scra.get_course_list()
