@@ -32,7 +32,7 @@ class TestDatabaseInserter(TestCase):
                                            "\"TMR4160\"")
         self.assertEqual("null", ans[0][0])
 
-    
+
 
 
 

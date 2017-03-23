@@ -144,12 +144,12 @@ def get_contact_name(data):
 def get_assessment_form(data):
     assessment_form = "null"
     number = len(data["course"]["assessment"])
-    liste = [0] * number
+    liste = [" "] * number
     for i in range(0, number):
         try:
             liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
         except:
-            assessment_form = "null"
+            liste[i] = "null"
 
         assessment_form = ' and '.join(liste)
 
@@ -272,6 +272,3 @@ def format_date(date: str) -> str:
     date_time = datetime(year, month, day)
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
-
-
-add_subject_data("TTK4105")
