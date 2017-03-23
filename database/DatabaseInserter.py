@@ -50,7 +50,12 @@ def add_subject_data(course_code: str):
     # Adds the data to the table
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
-    cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+    try:
+        cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+    except:
+        cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, teaching_form = ? WHERE course_code = \"" + course_code + "\"", data[1:13])
+
+
     connection.commit()
 
 
@@ -267,3 +272,6 @@ def format_date(date: str) -> str:
     date_time = datetime(year, month, day)
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
+
+
+add_subject_data("TTK4105")
