@@ -104,21 +104,16 @@ def get_exercise_status(course_code, username):
                                         "S.username ;")
 
 
-
-    print(ans)
     try:
         score = str(ans[0][1])
         course_name= ans[0][3]
 
-        print(score)
-        print(course_name)
-
-        try:
-            required = str(ans[0][2])
-        except:
-            return "You have done" + score + "exercises in " + course_code + " " + course_name+"."
-
-        return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name+"."
+        required = str(ans[0][2])
+        print(required.__class__)
+        if required == "None":
+            return "You have done " + score + " exercises in " + course_code + " " + course_name+"."
+        else:
+            return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name+"."
     except:
         return "null"
 
