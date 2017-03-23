@@ -1,6 +1,7 @@
 from selenium import webdriver
 import os
 import platform
+from database import DatabaseInserter
 
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
@@ -99,7 +100,7 @@ class tempScraper:
         courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
 
         # Navigates to the relevant course based in course index
-        course_code = courses[course_index].split()[0]
+        course_code = courses[course_index].text.split()[0]
         print("Extracting info from: " + course_code)
         courses[course_index].click()
 
@@ -147,6 +148,7 @@ class tempScraper:
                 print("Obligatory: " + str(obligatory))
                 print("Anonym: " + str(anonymous))
                 print("Group: " + group)
+                DatabaseInserter.add_assignment_data(course_code, title, i+1, str(obligatory), published, deadline, "its", "exercise", " ingen ")
 
                 try:
                     assessment = driver.find_element_by_class_name("colorbox_green").text
