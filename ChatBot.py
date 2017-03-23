@@ -85,11 +85,11 @@ class ChatBot:
             return ChatBot.create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
         #personal:
         elif action_name =="get_exercise_status":
-            return ChatBot.create_data_response(DatabaseExtractor.get_exercise_status(parameter[0], parameter[1]))
+            return ChatBot.create_data_response(DatabaseExtractor.get_exercise_status(parameter[1], parameter[0]))
         elif action_name == "get_project_status":
-            return ChatBot.create_data_response(DatabaseExtractor.get_project_status(parameter[0], parameter[1]))
+            return ChatBot.create_data_response(DatabaseExtractor.get_project_status(parameter[1], parameter[0]))
         elif action_name == "get_lab_status":
-            return ChatBot.create_data_response(DatabaseExtractor.get_lab_status(parameter[0], parameter[1]))
+            return ChatBot.create_data_response(DatabaseExtractor.get_lab_status(parameter[1], parameter[0]))
         else:
             return "I didn't understand shit, you probably broke me :("
 
@@ -210,13 +210,19 @@ def webhook():
         else:
             parameter = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
     else:
+        facebook_id = ""
         if len(result.get("contexts")) > 1:
             facebook_id = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
+        elif len(result.get("contexts")) == 0:
+            facebook_id = json_request.get("originalRequest").get("data").get("sender").get("id")
         else:
             facebook_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
 
+        print(facebook_id, " er face id")
         username = DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id +"\"")[0][0]
         parameter = [username, parameters.get("course_code")]
+
+        print(parameter[0], parameter[1])
 
 
 

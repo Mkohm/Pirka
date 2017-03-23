@@ -96,15 +96,28 @@ def get_teaching_form(course_code):
     return teaching_form[0][0]
 
 def get_exercise_status(course_code, username):
+    print(course_code.__class__)
+    print(username.__class__)
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
                                        "status_exercise as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
 
+
+
+    print(ans)
     try:
         score = str(ans[0][1])
-        required = str(ans[0][2])
         course_name= ans[0][3]
+
+        print(score)
+        print(course_name)
+
+        try:
+            required = str(ans[0][2])
+        except:
+            return "You have done" + score + "exercises in " + course_code + " " + course_name+"."
+
         return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name+"."
     except:
         return "null"
@@ -136,3 +149,6 @@ def get_lab_status(course_code, username):
         return "You have done " + score + " out of " + required + " lab in " + course_code + " " + course_name+"."
     except:
         return "null"
+
+course_code = "TKT4123"
+
