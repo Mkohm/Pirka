@@ -1,6 +1,5 @@
 import json
 import os
-
 from flask import Flask
 from flask import make_response
 from flask import render_template
@@ -10,6 +9,7 @@ from database import DatabaseConnector
 from database import DatabaseInserter
 from database.Course import Course
 from threading import Thread
+from database import DatabaseExtractor
 from scraper.ItsLearningScraper import ItsLearningScraper
 
 # Flask app should start in global layout
@@ -30,7 +30,6 @@ else:
 class ChatBot:
     # Starts the webserver and is ready to listen to incoming actions
     def __init__(self):
-
 
 
         # Starts a thread that will scrape for data
@@ -61,25 +60,25 @@ class ChatBot:
         if action_name == "login":
             return ChatBot.create_followup_event_data(parameter)
         elif action_name == "get_exam_date":
-            return ChatBot.create_data_response(Course(parameter).get_exam_date())
+            return ChatBot.create_data_response(DatabaseExtractor.get_exam_date(parameter))
         elif action_name == "get_assessment_form":
-            return ChatBot.create_data_response(Course(parameter).get_assessment_form())
+            return ChatBot.create_data_response(DatabaseExtractor.get_assessment_form(parameter))
         elif action_name == "get_contact_mail":
-            return ChatBot.create_data_response(Course(parameter).get_contact_mail())
+            return ChatBot.create_data_response(DatabaseExtractor.get_contact_mail(parameter))
         elif action_name == "get_contact_name":
-            return ChatBot.create_data_response(Course(parameter).get_contact_name())
+            return ChatBot.create_data_response(DatabaseExtractor.get_course_name(parameter))
         elif action_name =="get_contact_phone":
-            return ChatBot.create_data_response(Course(parameter).get_contact_phone())
+            return ChatBot.create_data_response(DatabaseExtractor.get_contact_phone(parameter))
         elif action_name =="get_contact_website":
-            return ChatBot.create_data_response(Course(parameter).get_contact_website())
+            return ChatBot.create_data_response(DatabaseExtractor.get_contact_website(parameter))
         elif action_name== "get_office":
-            return ChatBot.create_data_response(Course(parameter).get_office())
+            return ChatBot.create_data_response(DatabaseExtractor.get_contact_office(parameter))
         elif action_name == "get_teaching_form":
-            return ChatBot.create_data_response(Course(parameter).get_teaching_form())
+            return ChatBot.create_data_response(DatabaseExtractor.get_teaching_form(parameter))
         elif action_name == "get_course_name":
-            return ChatBot.create_data_response(Course(parameter).get_course_name())
+            return ChatBot.create_data_response(DatabaseExtractor.get_course_name(parameter))
         elif action_name == "get_credit":
-            return ChatBot.create_data_response(Course(parameter).get_credit())
+            return ChatBot.create_data_response(DatabaseExtractor.get_credit(parameter))
         elif action_name == "get_url":
             return ChatBot.create_data_response(Course(parameter).get_url())
         elif action_name == "get_prereq_knowledge":

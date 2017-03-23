@@ -22,10 +22,4 @@ def get_values(statement: str):
     return cur.fetchall()
 
 
-def add_values(statement: str):
-    print("adding values")
-    cur = connection.cursor()
-    cur.execute(statement)
-    connection.commit()
-
 

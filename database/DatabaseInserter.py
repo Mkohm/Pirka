@@ -43,14 +43,14 @@ def add_subject_data(course_code: str):
     data.append(contact_phone)
     data.append(credit)
     data.append(url)
+    data.append(prereq_knowledge)
     data.append(course_material)
     data.append(teaching_form)
-    data.append(prereq_knowledge)
 
     # Adds the data to the table
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
-    cursor.execute("INSERT INTO `subject`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`contact_website`,`url`, `course_material`, `teaching_form`, `prereq_knowledge`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+    cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
     connection.commit()
 
 

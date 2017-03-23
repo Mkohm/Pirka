@@ -2,8 +2,12 @@ from database import DatabaseConnector
 #todo: make possible for nontype fields
 
 def get_exam_date(course_code):
+    print("Getting exam date ...")
+    print(course_code)
     ans = DatabaseConnector.get_values("Select exam_date, course_name from course where "
                                                "course.course_code = \"" + course_code + "\";")
+
+    print(str(ans) + " is the date for lala")
     date = ans[0][0]
     name=ans[0][1]
     return "Exam date in " + course_code + " " + name + " is " + date
