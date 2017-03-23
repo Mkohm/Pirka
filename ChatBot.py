@@ -10,7 +10,7 @@ from database import DatabaseInserter
 from database.Course import Course
 from threading import Thread
 from database import DatabaseExtractor
-from scraper.ItsLearningScraper import ItsLearningScraper
+from scraper import LoginHandler
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -149,20 +149,36 @@ def login(current_sender_id):
     return render_template('login.html', error=error)
 
 
-def thread_function(username: str, password: str):
-    print("start threading")
-    course_list = ItsLearningScraper.get_course_list(username, password)
 
-    # Adds the users courses to the database
+
+
+def thread_function(username: str, password: str):
+    """
+    This function runs when the user has logged in. It adds the data that is relevant for this user in its own thread.
+
+    It first add all the non-user specific data to the database
+    :param username:
+    :param password:
+    :return:
+    """
+
+    #Get a list of course codes that the user has
+    course_list = LoginHandler.get_course_list(username, password)
+
+    # Adds the users courses (and course-data) to the database
     for course in course_list:
         DatabaseInserter.add_subject_data(course)
+
+    # Scrapes for additional data that is user specific
+    scraper =
+
+
 
 def valid_login(username: str, password: str):
 
     try:
         print(username, password)
-        scraper = ItsLearningScraper.login(username, password)
-
+        scraper = LoginHandler.login(username, password)
         print("Login success")
         return True
     except:

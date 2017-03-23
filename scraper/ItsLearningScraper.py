@@ -8,10 +8,20 @@ import platform
 # TODO: move these variables and make them member variables in the class below if needed?
 
 
+driver_directory = os.path.dirname(__file__)
+if (platform.system() == "Windows"):
+    relative_path = "chromedriver.exe"
+else:
+    relative_path = "chromedriver"
+absolute_file_path = os.path.join(driver_directory, relative_path)
+
+driver = webdriver.Chrome(executable_path=absolute_file_path)
+driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
+
 
 class ItsLearningScraper:
 
-    """"
+
     def __init__(self, username, password):
         # TODO: add functionality for user credentials as parameters
 
@@ -25,31 +35,6 @@ class ItsLearningScraper:
         password_field.send_keys(password)
         password_field.submit()
 
-    """
-
-    @staticmethod
-    def login(username, password):
-
-        driver_directory = os.path.dirname(__file__)
-        if (platform.system() == "Windows"):
-            relative_path = "chromedriver.exe"
-        else:
-            relative_path = "chromedriver"
-        absolute_file_path = os.path.join(driver_directory, relative_path)
-        driver = webdriver.Chrome(executable_path=absolute_file_path)
-        driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
-
-
-
-
-
-
-        username_field = driver.find_element_by_name("feidename")
-        username_field.send_keys(username)
-        password_field = driver.find_element_by_name("password")
-        password_field.send_keys(password)
-        password_field.submit()
-        driver.close()
 
 
     # this function returns a users calendar feed in iCalendar-format
@@ -82,30 +67,6 @@ class ItsLearningScraper:
 
     @staticmethod
     def get_course_list(username, password):
-
-        driver_directory = os.path.dirname(__file__)
-        if (platform.system() == "Windows"):
-            relative_path = "chromedriver.exe"
-        else:
-            relative_path = "chromedriver"
-        absolute_file_path = os.path.join(driver_directory, relative_path)
-
-        driver = webdriver.Chrome(executable_path=absolute_file_path)
-        driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
-
-
-
-
-
-        username_field = driver.find_element_by_name("feidename")
-        username_field.send_keys(username)
-        password_field = driver.find_element_by_name("password")
-        password_field.send_keys(password)
-        password_field.submit()
-
-
-
-
 
         # gets the course overveiw page
         driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
