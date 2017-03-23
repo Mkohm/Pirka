@@ -30,10 +30,10 @@ class TestCourse(TestCase):
         self.assertEqual("Assessment form in TMR4160 Computer Methods for the Engineer is Work", DatabaseExtractor.get_assessment_form("TMR4160"))
 
     def test_assessment_form_combination(self):
-        self.assertEqual("Assessment form in TTK4135 NAVN is Written examination and Work and Semester assignment", DatabaseExtractor.get_assessment_form("TTK4135"))
-        self.assertEqual("Assessment form in TMR4105 NAVN is Work and Oral examination", DatabaseExtractor.get_assessment_form("TMR4105"))
-        self.assertEqual("Assessment form in TMR4230 NAVN is Oral examination and Semester assignment", DatabaseExtractor.get_assessment_form("TMR4230"))
-        self.assertEqual("Assessment form in TMA4140 NAVN is Written examination and Semester assignment", DatabaseExtractor.get_assessment_form("TMA4140"))
+        self.assertEqual("Assessment form in TTK4135 Optimization and Control is Written examination and Work and Semester assignment", DatabaseExtractor.get_assessment_form("TTK4135"))
+        self.assertEqual("Assessment form in TMR4105 Marine Technology - Elementary Course is Work and Oral examination", DatabaseExtractor.get_assessment_form("TMR4105"))
+        self.assertEqual("Assessment form in TMR4230 Oceanography is Oral examination and Semester assignment", DatabaseExtractor.get_assessment_form("TMR4230"))
+        self.assertEqual("Assessment form in TMA4140 Descrete Mathematics is Written examination and Semester assignment", DatabaseExtractor.get_assessment_form("TMA4140"))
 
     def test_get_term(self):
         self.assertEqual("Spring", DatabaseExtractor.get_term("TMA4105"))
