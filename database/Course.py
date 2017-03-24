@@ -329,5 +329,3 @@ class Course:
         date_time = datetime(year, month, day)
         date_string = "{:%B %d, %Y}".format(date_time)
         return date_string
-
-
