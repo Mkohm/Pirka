@@ -96,32 +96,68 @@ def get_teaching_form(course_code):
     return teaching_form[0][0]
 
 def get_exercise_status(course_code, username):
+    print(course_code.__class__)
+    print(username.__class__)
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
                                        "status_exercise as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
+<<<<<<< HEAD
     score = str(ans[0][1])
     required = str(ans[0][2])
     course_name= ans[0][3]
     return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name+"."
+=======
+
+
+    try:
+        score = str(ans[0][1])
+        course_name= ans[0][3]
+
+        required = str(ans[0][2])
+        print(required.__class__)
+        if required == "None":
+            return "You have done " + score + " exercises in " + course_code + " " + course_name+"."
+        else:
+            return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name+"."
+    except:
+        return "null"
+>>>>>>> origin/dev
 
 def get_project_status(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
                                        "status_project as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
-    score = str(ans[0][1])
-    required = str(ans[0][2])
-    course_name= ans[0][3]
-    return "You have done " + score + " out of " + required + " projects in " + course_code + " " + course_name+"."
+
+    try:
+        score = str(ans[0][1])
+        required = str(ans[0][2])
+        course_name= ans[0][3]
+        return "You have done " + score + " out of " + required + " projects in " + course_code + " " + course_name+"."
+    except:
+        return "null"
 
 def get_lab_status(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
                                        "status_lab as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
+<<<<<<< HEAD
     score = str(ans[0][1])
     required = str(ans[0][2])
     course_name= ans[0][3]
     return "You have done " + score + " out of " + required + " lab in " + course_code + " " + course_name+"."
+=======
+
+    try:
+        score = str(ans[0][1])
+        required = str(ans[0][2])
+        course_name= ans[0][3]
+        return "You have done " + score + " out of " + required + " lab in " + course_code + " " + course_name+"."
+    except:
+        return "null"
+
+course_code = "TKT4123"
+>>>>>>> origin/dev
 
