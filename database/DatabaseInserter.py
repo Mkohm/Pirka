@@ -290,20 +290,14 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
     assignment.append(deadline)
     assignment.append(location)
     assignment.append(mandatory)
-    print(assignment)
 
 # Adds the data to the table
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
-    print("prøvde her")
     try:
-        print("prøv2")
         cursor.execute("INSERT INTO assignment(course_code, nr, category, title, description, published, deadline, delivery_location, mandatory) VALUES (?,?,?,?,?,?,?,?,?)", assignment)
-        print("prøvde")
     except:
-        print("klatre ikke")
-        cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \"" + course_code + "\" and category = \""+ category +"\" and nr = \"" + index + "\"", assignment )
+        cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \"" + course_code + "\" and category = \""+ category +"\" and nr = " + str(index), assignment)
 
     connection.commit()
 
-add_subject_data("TKT4123")

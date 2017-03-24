@@ -100,7 +100,6 @@ def get_exercise_status(course_code, username):
                                        "status_exercise as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
-    return(ans)
     score = str(ans[0][1])
     required = str(ans[0][2])
     course_name= ans[0][3]
@@ -125,3 +124,4 @@ def get_lab_status(course_code, username):
     required = str(ans[0][2])
     course_name= ans[0][3]
     return "You have done " + score + " out of " + required + " lab in " + course_code + " " + course_name+"."
+
