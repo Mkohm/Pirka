@@ -53,9 +53,9 @@ def add_subject_data(course_code: str):
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
     try:
-        cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, course_material, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+        cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `course_material`, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
     except:
-        cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, teaching_form = ? WHERE course_code = \"" + course_code + "\"", data[1:13])
+        cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, course_material = ?, teaching_form = ? WHERE course_code = \"" + course_code + "\"", data[1:14])
 
 
     connection.commit()
@@ -346,3 +346,4 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
     connection.commit()
 
 
+add_subject_data("TMA4105")

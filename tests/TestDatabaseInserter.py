@@ -195,7 +195,10 @@ class TestDatabaseInserter(TestCase):
     # end of testing add_subject_data
 
     def test_insert_add_assignment_data(self):
-        DatabaseInserter.add_assignment_data("TDT4100", "Assignment 3", 3, 1, "January 23, 2017", "Blackboard", )
+        DatabaseInserter.add_assignment_data("TDT4100", "Assignment 3", 3, 1, "January 23, 2017", "Blackboard",
+                                             "exercise", "The first exercise in this course")
+        ans = DatabaseConnector.get_values("Select * from course where course.course_code = \"TDT4100\"")
+
 
 
 
