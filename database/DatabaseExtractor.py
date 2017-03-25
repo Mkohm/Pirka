@@ -133,10 +133,7 @@ def get_exercise_status(course_code, username):
             return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name+"."
     except:
         return "null"
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/dev
 
 def get_project_status(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
@@ -157,10 +154,6 @@ def get_lab_status(course_code, username):
                                        "status_lab as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
-<<<<<<< HEAD
-=======
-
->>>>>>> origin/dev
 
     try:
         score = str(ans[0][1])
