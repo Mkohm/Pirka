@@ -303,6 +303,9 @@ def format_date(date: str) -> str:
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
 
+<<<<<<< HEAD
+add_subject_data("TKT4123")
+=======
 def add_assignment_data(course_code, title, index, mandatory, published, deadline, location, category, description):
     # Adds data to a list for insertion into table
     assignment=[]
@@ -325,4 +328,5 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
         cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \"" + course_code + "\" and category = \""+ category +"\" and nr = " + str(index), assignment)
 
     connection.commit()
+>>>>>>> origin/dev
 
