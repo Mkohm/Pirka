@@ -31,7 +31,7 @@ def add_subject_data(course_code: str):
     teaching_form = get_teaching_form(data)
     prereq_knowledge = get_prereq_knowledge(data)
 
-    # Adds the data to an list for insertion into the table
+    # Adds the data to a list for insertion into the table
     data = []
     data.append(course_code)
     data.append(course_name)
@@ -278,5 +278,30 @@ def format_date(date: str) -> str:
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
 
+<<<<<<< HEAD
 add_subject_data("TKT4123")
+=======
+def add_assignment_data(course_code, title, index, mandatory, published, deadline, location, category, description):
+    # Adds data to a list for insertion into table
+    assignment=[]
+    assignment.append(course_code)
+    assignment.append(index)
+    assignment.append(category)
+    assignment.append(title)
+    assignment.append(description)
+    assignment.append(published)
+    assignment.append(deadline)
+    assignment.append(location)
+    assignment.append(mandatory)
+
+# Adds the data to the table
+    connection = DatabaseConnector.connection
+    cursor = connection.cursor()
+    try:
+        cursor.execute("INSERT INTO assignment(course_code, nr, category, title, description, published, deadline, delivery_location, mandatory) VALUES (?,?,?,?,?,?,?,?,?)", assignment)
+    except:
+        cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \"" + course_code + "\" and category = \""+ category +"\" and nr = " + str(index), assignment)
+
+    connection.commit()
+>>>>>>> origin/dev
 

@@ -1,37 +1,46 @@
 from selenium import webdriver
 import os
 import platform
+from database import DatabaseInserter
 
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
 
 # TODO: move these variables and make them member variables in the class below if needed?
 
-
 driver_directory = os.path.dirname(__file__)
-if (platform.system() == "Windows"):
+if(platform.system() == "Windows"):
     relative_path = "chromedriver.exe"
 else:
     relative_path = "chromedriver"
 absolute_file_path = os.path.join(driver_directory, relative_path)
 
+chrome_profile = webdriver.ChromeOptions()
 driver = webdriver.Chrome(executable_path=absolute_file_path)
 driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
 
-
-class ItsLearningScraper:
-
-
+class tempScraper:
     def __init__(self, username, password):
         # TODO: add functionality for user credentials as parameters
+
         # self.username = username
         # self.password = password
+
         # logs into Its Learning. After this the "driver" contains the main page in Its Learning
         username_field = driver.find_element_by_name("feidename")
         username_field.send_keys(username)
         password_field = driver.find_element_by_name("password")
         password_field.send_keys(password)
         password_field.submit()
+
+    @staticmethod
+    def login(username, password):
+        username_field = driver.find_element_by_name("feidename")
+        username_field.send_keys(username)
+        password_field = driver.find_element_by_name("password")
+        password_field.send_keys(password)
+        password_field.submit()
+        driver.close()
 
 
     # this function returns a users calendar feed in iCalendar-format
@@ -62,8 +71,8 @@ class ItsLearningScraper:
     # returns the user course list as a list of strings
     # TODO: Write the result to database.user_has_subject
 
-    @staticmethod
-    def get_course_list(username, password):
+
+    def get_course_list(self):
 
         # gets the course overveiw page
         driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
@@ -76,10 +85,7 @@ class ItsLearningScraper:
 
         for course in courses:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
-            course_list.append(course.text.split()[0])
-
-
-        driver.quit()
+            course_list.append(course.text)
 
         return course_list
 
@@ -94,7 +100,7 @@ class ItsLearningScraper:
         courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
 
         # Navigates to the relevant course based in course index
-        course_code = courses[course_index].text[0:7]
+        course_code = courses[course_index].text.split()[0]
         print("Extracting info from: " + course_code)
         courses[course_index].click()
 
@@ -142,6 +148,7 @@ class ItsLearningScraper:
                 print("Obligatory: " + str(obligatory))
                 print("Anonym: " + str(anonymous))
                 print("Group: " + group)
+                DatabaseInserter.add_assignment_data(course_code, title, i+1, str(obligatory), published, deadline, "its", "exercise", " ingen ")
 
                 try:
                     assessment = driver.find_element_by_class_name("colorbox_green").text
@@ -195,3 +202,12 @@ class ItsLearningScraper:
 
     def close_driver(self):
         driver.quit()
+
+
+username = input("Username: ")
+password = input("Password: ")
+
+myScraper = tempScraper(username, password)
+myScraper.get_all_assignments()
+
+myScraper.close_driver()
