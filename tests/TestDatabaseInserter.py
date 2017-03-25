@@ -104,6 +104,60 @@ class TestDatabaseInserter(TestCase):
                                            "\"TTK4115\"")
         self.assertEqual("null", ans[0][0])
 
+    def test_insert_contact_phone_exists(self):
+        DatabaseInserter.add_subject_data("TDT4145")
+        ans = DatabaseConnector.get_values("Select contact_phone from course where course.course_code = "
+                                           "\"TDT4145\"")
+        self.assertEqual("73550382", ans[0][0])
+
+        DatabaseInserter.add_subject_data("TTK4105")
+        ans = DatabaseConnector.get_values("Select contact_phone from course where course.course_code = "
+                                           "\"TTK4105\"")
+        self.assertEqual("73594358", ans[0][0])
+
+    def test_insert_contact_phone_not_exists(self):
+        DatabaseInserter.add_subject_data("TTK4115")
+        ans = DatabaseConnector.get_values("Select contact_phone from course where course.course_code = "
+                                           "\"TTK4115\"")
+        self.assertEqual("null", ans[0][0])
+
+    def test_insert_credit(self):
+        DatabaseInserter.add_subject_data("IØ1000")
+        ans = DatabaseConnector.get_values("Select credit from course where course.course_code = "
+                                           "\"IØ1000\"")
+        self.assertEqual("15", ans[0][0])
+
+        DatabaseInserter.add_subject_data("TEO4100")
+        ans = DatabaseConnector.get_values("Select contact_phone from course where course.course_code = "
+                                           "\"TEP4100\"")
+        self.assertEqual("7.5", ans[0][0])
+
+    def test_insert_url_exists(self):
+        DatabaseInserter.add_subject_data("TDT4105")
+        ans = DatabaseConnector.get_values("Select url from course where course.course_code = "
+                                           "\"TDT4105\"")
+        self.assertEqual("http://itgk.idi.ntnu.no", ans[0][0])
+
+        DatabaseInserter.add_subject_data("TMA4105")
+        ans = DatabaseConnector.get_values("Select url from course where course.course_code = "
+                                           "\"TMA4105\"")
+        self.assertEqual("http://wiki.math.ntnu.no/tma4105", ans[0][0])
+
+    def test_insert_url_not_exists(self):
+        DatabaseInserter.add_subject_data("TTK4105")
+        ans = DatabaseConnector.get_values("Select url from course where course.course_code = "
+                                           "\"TTK4105\"")
+        self.assertEqual("null", ans[0][0])
+
+    def test_insert_course_material(self):
+        D
+
+
+
+
+
+
+
 
 
 

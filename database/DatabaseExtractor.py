@@ -148,5 +148,3 @@ def get_lab_status(course_code, username):
         return "null"
 
 
-def get_next_event(username):
-    ans =
