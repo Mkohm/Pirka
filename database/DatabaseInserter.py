@@ -31,6 +31,7 @@ def add_subject_data(course_code: str):
     course_material = get_course_material(data)
     teaching_form = get_teaching_form(data)
     prereq_knowledge = get_prereq_knowledge(data)
+    term = get_term(data)
 
     # Adds the data to a list for insertion into the table
     data = []
@@ -48,14 +49,15 @@ def add_subject_data(course_code: str):
     data.append(course_content)
     data.append(course_material)
     data.append(teaching_form)
+    data.append(term)
 
     # Adds the data to the table
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
     try:
-        cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `course_material`, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+        cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `course_material`, `teaching_form`, `term`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
     except:
-        cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, course_material = ?, teaching_form = ? WHERE course_code = \"" + course_code + "\"", data[1:14])
+        cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, course_material = ?, teaching_form = ?, term = ? WHERE course_code = \"" + course_code + "\"", data[1:15])
 
 
     connection.commit()
@@ -229,18 +231,18 @@ def add_user(username: str, password: str, facebook_id: int):
 
 
 
-"""
 
 
-def set_term():
-    # Fetch the course
-    data = get_data()
+
+def get_term(data):
+
     try:
         term = data["course"]["assessment"][0]["realExecutionTerm"]
     except KeyError:
         term = "Term not available"
+    return term
 
-
+"""
 def set_year():
     # Fetch the course
     data = get_data()
@@ -345,3 +347,8 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
 
     connection.commit()
 
+<<<<<<< HEAD
+=======
+add_subject_data("TMA4110")
+
+>>>>>>> origin/dev
