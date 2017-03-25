@@ -86,10 +86,6 @@ class TestCourse(TestCase):
     def test_get_contact_phone_notexists(self):
         self.assertEqual("There is no phone number available in TTK4115 Linear System Theory", DatabaseExtractor.get_contact_phone("TTK4115"))
 
-    def test_get_contact_website_exists(self):
-        self.assertEqual("The website of the contact person in TTK4105 Control Systems is https://www.ntnu.no/ansatte/trond.andresen", DatabaseExtractor.get_contact_website("TTK4105"))
-        self.assertEqual("The website of the contact person in TTK4115 Linear System Theory is https://www.ntnu.no/ansatte/morten.d.pedersen", DatabaseExtractor.get_contact_website("TTK4115"))
-        self.assertEqual("The website of the contact person in TMR4105 Marine Technology - Elementary Course is https://www.ntnu.no/ansatte/haavard.holm", DatabaseExtractor.get_contact_website("TMR4105"))
 
     #OK
     def test_get_course_name(self):
@@ -132,7 +128,7 @@ class TestCourse(TestCase):
 
 
     def test_get_course_content(self):
-        self.assertEqual("Will be announced at the start of the course.", DatabaseExtractor.get_course_content("TMA4105"))
+        self.assertEqual("Curves in space. Functions of several variables. Taylor's theorem in two dimensions, extremal values in several variables, Lagrange multipliers. Double and triple integrals, line and surface integrals. Vector calculus. The theorems of Green, Stokes, and Gauss.", DatabaseExtractor.get_course_content("TMA4105"))
         self.assertEqual("Statically determinate structures: Beams, plane trusses and frames. Axial force, "
                          "shear force and bending moment distribution in structures. Introduction to mechanics of "
                          "materials: Stress, strain and elasticity. Linear theory for beams: Bending stresses, "
@@ -144,8 +140,8 @@ class TestCourse(TestCase):
 
 
     def test_get_course_material(self):
-        self.assertEqual("Information will be given when the course starts.", DatabaseExtractor.get_course_material("TTK4115"))
-        self.assertEqual("Will be announced at the start of the course.", DatabaseExtractor.get_course_material("TMA4100"))
+        self.assertEqual("Oppgis ved semesterstart.", DatabaseExtractor.get_course_material("TTK4115"))
+        self.assertEqual("Oppgis ved semesterstart.", DatabaseExtractor.get_course_material("TMA4100"))
         self.assertEqual("Konstruksjonsmekanikk, Del 1-Likevektslære, Fagbokforlaget. Konstruksjonsmekanikk, "
                          "Del 2-Fasthetslære\r, Fagbokforlaget. ", DatabaseExtractor.get_course_material("TKT4123"))
 
