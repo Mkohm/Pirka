@@ -38,14 +38,22 @@ def get_contact_office(course_code):
                                        + course_code + "\";")
     contact_office=ans[0][0]
     name=ans[0][1]
-    return "The office address of the contact person in " + course_code + " " + name + " is " + contact_office
+
+    if contact_office == "null":
+        return "There is no existing office address in " + course_code + " " + name
+    else:
+        return "The office address of the contact person in " + course_code + " " + name + " is " + contact_office
 
 def get_contact_phone(course_code):
     ans = DatabaseConnector.get_values("Select contact_phone, course_name from course where course.course_code = \""
                                                        + course_code + "\";")
     contact_phone=ans[0][0]
     name=ans[0][1]
-    return "The phone number of the contact person in " + course_code + " " + name + " is " + contact_phone
+
+    if contact_phone == "null":
+        return "There is no phone number available in " + course_code + " " + name
+    else:
+        return "The phone number of the contact person in " + course_code + " " + name + " is " + contact_phone
 
 def get_contact_website(course_code):
     ans = DatabaseConnector.get_values("Select contact_website, course_name from course where "
@@ -71,13 +79,21 @@ def get_url(course_code):
     ans = DatabaseConnector.get_values("Select url, course_name from course where course.course_code = \""+
                                              course_code + "\" ;")
     url=ans[0][0]
-    return url
+
+    if url == "null":
+        return "Course url not available."
+    else:
+        return url
 
 def get_prereq_knowledge(course_code):
     ans = DatabaseConnector.get_values("Select prereq_knowledge, course_name from course where course.course_code"+
                                                 " = \"" + course_code + "\" ;")
     prereq=ans[0][0]
-    return prereq
+
+    if prereq == "null":
+        return "Prerequisite knowledge is not available for this course."
+    else:
+        return prereq
 
 def get_course_content(course_code):
     ans = DatabaseConnector.get_values("Select course_content, course_name from course where" +
@@ -118,6 +134,7 @@ def get_exercise_status(course_code, username):
     except:
         return "null"
 
+
 def get_project_status(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
                                        "status_project as S, course as C where S.course_code = \"" +course_code+"\" "
@@ -145,7 +162,6 @@ def get_lab_status(course_code, username):
         return "You have done " + score + " out of " + required + " lab in " + course_code + " " + course_name+"."
     except:
         return "null"
-
 
 def get_next_event(username):
     ans = DatabaseConnector.get_values("Select U.description, U.date_time, U.room, U.course_code, C.course_name from user_eventss as U, course as C where U.username = \"mariukoh\" and U.course_code = C.course_code order by date_time LIMIT 1")
