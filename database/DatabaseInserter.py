@@ -27,6 +27,7 @@ def add_subject_data(course_code: str):
     contact_phone = get_contact_phone(data)
     credit = get_credit(data)
     url = get_url(data)
+    course_content= get_course_content(data)
     course_material = get_course_material(data)
     teaching_form = get_teaching_form(data)
     prereq_knowledge = get_prereq_knowledge(data)
@@ -44,6 +45,7 @@ def add_subject_data(course_code: str):
     data.append(credit)
     data.append(url)
     data.append(prereq_knowledge)
+    data.append(course_content)
     data.append(course_material)
     data.append(teaching_form)
 
@@ -51,7 +53,7 @@ def add_subject_data(course_code: str):
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
     try:
-        cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+        cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, course_material, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
     except:
         cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, teaching_form = ? WHERE course_code = \"" + course_code + "\"", data[1:13])
 
@@ -74,6 +76,22 @@ def get_prereq_knowledge(data):
         prereq_knowledge = "null"
 
     return prereq_knowledge
+
+def get_course_content(data):
+    value = ""
+    for i in range(0, 6):
+        try:
+            value = data["course"]["infoType"][i]["code"]
+            if (value == "INNHOLD"):
+                index = i
+        except:
+            course_content = "null"
+    try:
+        course_content = data["course"]["infoType"][index]["text"]
+    except:
+        course_content = "null"
+
+    return course_content
 
 
 def get_teaching_form(data):
@@ -303,9 +321,7 @@ def format_date(date: str) -> str:
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
 
-<<<<<<< HEAD
-add_subject_data("TKT4123")
-=======
+
 def add_assignment_data(course_code, title, index, mandatory, published, deadline, location, category, description):
     # Adds data to a list for insertion into table
     assignment=[]
@@ -328,5 +344,5 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
         cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \"" + course_code + "\" and category = \""+ category +"\" and nr = " + str(index), assignment)
 
     connection.commit()
->>>>>>> origin/dev
+
 
