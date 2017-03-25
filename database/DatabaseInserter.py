@@ -345,9 +345,6 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
 
     connection.commit()
 
-<<<<<<< Updated upstream
-=======
 
 
->>>>>>> Stashed changes
-
+add_subject_data("TMA4105")
