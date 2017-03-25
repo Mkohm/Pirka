@@ -14,10 +14,6 @@ class TestCourse(TestCase):
         self.assertEqual("No exam date available because assessment form is: Work", DatabaseExtractor.get_exam_date("TDT4140"))
         self.assertEqual("No exam date available because assessment form is: Work", DatabaseExtractor.get_exam_date("TMR4160"))
 
-    def test_get_exam_date_wrong_input(self):
-        self.assertEqual("You entered an invalid course code.", DatabaseExtractor.get_exam_date("TMR1111"))
-        self.assertEqual("You entered an invalid course code.", DatabaseExtractor.get_exam_date("jflsh"))
-
     def test_get_exam_date_course_not_active(self):
         self.assertEqual("No exam date available because the course is not active.", DatabaseExtractor.get_exam_date("TMA4100"))
         self.assertEqual("No exam date available because the course is not active.", DatabaseExtractor.get_exam_date("TMA4140"))
@@ -44,18 +40,6 @@ class TestCourse(TestCase):
         self.assertEqual("Autumn", DatabaseExtractor.get_term("TMA4140"))
         self.assertEqual("Spring", DatabaseExtractor.get_term("TDT4145"))
 
-    def test_get_year(self):
-        self.assertEqual(2017, DatabaseExtractor.get_year("TMR4230"))
-        self.assertEqual(2016, DatabaseExtractor.get_year("TMA4140"))
-
-    def test_get_is_active_course_active(self):
-        self.assertEqual(True, DatabaseExtractor.get_is_active_course("TTK4135"))
-        self.assertEqual(True, DatabaseExtractor.get_is_active_course("TTK4105"))
-
-    def test_get_is_active_course_notactive(self):
-        self.assertEqual(False, DatabaseExtractor.get_is_active_course("TDT4120"))
-        self.assertEqual(False, DatabaseExtractor.get_is_active_course("TMA4140"))
-        self.assertEqual(False, DatabaseExtractor.get_is_active_course("TMA4100"))
 
     #OK
     def test_get_contact_name(self):
@@ -127,6 +111,7 @@ class TestCourse(TestCase):
         self.assertEqual("None.", DatabaseExtractor.get_prereq_knowledge("TDT4105"))
 
 
+    #OK
     def test_get_course_content(self):
         self.assertEqual("Curves in space. Functions of several variables. Taylor's theorem in two dimensions, extremal values in several variables, Lagrange multipliers. Double and triple integrals, line and surface integrals. Vector calculus. The theorems of Green, Stokes, and Gauss.", DatabaseExtractor.get_course_content("TMA4105"))
         self.assertEqual("Statically determinate structures: Beams, plane trusses and frames. Axial force, "
@@ -139,21 +124,13 @@ class TestCourse(TestCase):
                          "processes and random signals.\r\n", DatabaseExtractor.get_course_content("TTK4115"))
 
 
+    #OK
     def test_get_course_material(self):
         self.assertEqual("Information will be given when the course starts.", DatabaseExtractor.get_course_material("TTK4115"))
-        #self.assertEqual("Will be announced at the start of the course."", DatabaseExtractor.get_course_material("TMA4100"))
-        #self.assertEqual("Konstruksjonsmekanikk, Del 1-Likevektslære, Fagbokforlaget.\r\nKonstruksjonsmekanikk, Del 2-Fasthetslære, Fagbokforlaget.\r\n", DatabaseExtractor.get_course_material("TKT4123"))
+        self.assertEqual("Will be announced at the start of the course.", DatabaseExtractor.get_course_material("TMA4100"))
+        self.assertEqual("Konstruksjonsmekanikk, Del 1-Likevektslære, Fagbokforlaget.\r\nKonstruksjonsmekanikk, Del 2-Fasthetslære, Fagbokforlaget.\r\n", DatabaseExtractor.get_course_material("TKT4123"))
 
+    #OK
     def test_get_teaching_form(self):
         self.assertEqual("Lectures and exercises.", DatabaseExtractor.get_teaching_form("TMR4160"))
-        self.assertEqual("The themes are illustrated through lectures, assignments, laboratory activities and project "
-                         "work. Portfolio assessment is the basis for the grade in the course. The portfolio includes "
-                         "a final oral exam and multiple choice (60%) and a design project report (40%). The results "
-                         "for the parts are given in %-scores, while the entire portfolio is assigned a letter grade. "
-                         "The course will also include mandatory courses in basic occupational safety and health (OSH)"
-                         " and in practical work operations.", DatabaseExtractor.get_teaching_form("TMR4105"))
-
-
-
-
-
+        self.assertEqual("Lectures and compulsory exercises. Grade based on final written examination. Retake of examination may be given as an oral examination. The lectures may be given in English.", DatabaseExtractor.get_teaching_form("TMA4130"))
