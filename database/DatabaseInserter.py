@@ -77,27 +77,52 @@ def get_prereq_knowledge(data):
 
 
 def get_teaching_form(data):
+    value = ""
+    for i in range(0, 6):
+        try:
+            value = data["course"]["infoType"][i]["code"]
+            if (value == "LÆRFORM"):
+                index = i
+        except:
+            teaching_form = "null"
     try:
-        teaching_form = data["course"]["infoType"][5]["text"]
+        teaching_form = data["course"]["infoType"][index]["text"]
     except:
         teaching_form = "null"
 
     return teaching_form
 
-
 def get_course_material(data):
+    value = ""
+    for i in range(0, 6):
+        try:
+            value = data["course"]["infoType"][i]["code"]
+            if (value == "KURSMAT"):
+                index = i
+        except:
+            course_material = "null"
     try:
-        course_material = data["course"]["infoType"][4]["text"]
+        course_material = data["course"]["infoType"][index]["text"]
     except:
         course_material = "null"
+
     return course_material
 
 
 def get_url(data):
+    value = ""
+    for i in range(0, 6):
+        try:
+            value = data["course"]["infoType"][i]["code"]
+            if (value == "E-URL"):
+                index = i
+        except:
+            url = "null"
     try:
-        url = data["course"]["infoType"][1]["text"]
+        url = data["course"]["infoType"][index]["text"]
     except:
         url = "null"
+
     return url
 
 
