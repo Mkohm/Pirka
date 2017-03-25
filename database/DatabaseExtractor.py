@@ -147,3 +147,16 @@ def get_lab_status(course_code, username):
         return "null"
 
 
+def get_next_event(username):
+    ans = DatabaseConnector.get_values("Select U.description, U.date_time, U.room, U.course_code, C.course_name from user_eventss as U, course as C where U.username = \"mariukoh\" and U.course_code = C.course_code order by date_time LIMIT 1")
+
+    try:
+        description = ans[0][0]
+        date = ans[0][1]
+        room = ans[0][2]
+        course_code = ans[0][3]
+        course_name = ans[0][4]
+        return "Your next event is a " + description + " in the course " + course_name + "in " + room + ", " + date
+    except:
+        return "null"
+

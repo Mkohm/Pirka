@@ -60,7 +60,7 @@ class ChatBot:
         elif action_name == "get_contact_mail":
             return ChatBot.create_data_response(DatabaseExtractor.get_contact_mail(parameter[1]))
         elif action_name == "get_contact_name":
-            return ChatBot.create_data_response(DatabaseExtractor.get_course_name(parameter[1]))
+            return ChatBot.create_data_response(DatabaseExtractor.get_contact_name(parameter[1]))
         elif action_name =="get_contact_phone":
             return ChatBot.create_data_response(DatabaseExtractor.get_contact_phone(parameter[1]))
         elif action_name =="get_contact_website":
@@ -90,6 +90,8 @@ class ChatBot:
             return ChatBot.create_data_response(DatabaseExtractor.get_project_status(parameter[1], parameter[0]))
         elif action_name == "get_lab_status":
             return ChatBot.create_data_response(DatabaseExtractor.get_lab_status(parameter[1], parameter[0]))
+        elif action_name == "get_next_event":
+            return ChatBot.create_data_response(DatabaseExtractor.get_next_event(parameter[0]))
         else:
             return "I didn't understand shit, you probably broke me :("
 
@@ -133,12 +135,16 @@ def login(current_sender_id):
         password = request.form["password"]
 
         # If the login is successfull we return a template saying you can start using pirka
+
+        # todo: fix that this starts its own thread so the valid-login is too late
         if valid_login(username, password):
+
             DatabaseInserter.add_user(username, password, current_sender_id)
 
             # Starts a thread that will scrape for data
-            thread = Thread(target=thread_function(username, password))
-            thread.start()
+
+            #thread = Thread(target=thread_function(username, password))
+            #thread.start()
 
 
             return render_template("login_success.html")
