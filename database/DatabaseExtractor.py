@@ -143,7 +143,6 @@ def get_exercise_status(course_code, username):
     try:
         score = str(ans[0][1])
         course_name= ans[0][3]
-
         required = str(ans[0][2])
         print(required.__class__)
         if required == "None":
@@ -153,6 +152,28 @@ def get_exercise_status(course_code, username):
     except:
         return "null"
 
+def get_exercises_left(course_code, username):
+    ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
+                                       "status_exercise as S, course as C where S.course_code = \"" +course_code+"\" "
+                                       "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
+                                        "S.username ;")
+
+
+
+    try:
+        score = ans[0][1]
+        course_name= ans[0][3]
+        required = ans[0][2]
+
+
+        if required == "None":
+
+            return "You have done " + str(score) + " exercises in " + course_code + " " + course_name+"."
+        else:
+            left = str(required - score)
+            return "You have " + left + " exercises left in " + course_code + " " + course_name+"."
+    except:
+        return "You haven't done any exercises in this course yet."
 
 def get_project_status(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
@@ -183,16 +204,30 @@ def get_lab_status(course_code, username):
         return "null"
 
 def get_next_event(username):
-    ans = DatabaseConnector.get_values("Select U.description, U.date_time, U.room, U.course_code, C.course_name from user_eventss as U, course as C where U.username = \"mariukoh\" and U.course_code = C.course_code order by date_time LIMIT 1")
-
+    ans = DatabaseConnector.get_values("Select U.category, U.date_time, U.room, U.course_code, C.course_name "
+                                       "from user_event as U, course as C "
+                                       "where U.username = \"mariukoh\" and U.course_code = C.course_code order by date_time LIMIT 1")
     try:
         description = ans[0][0]
         date = ans[0][1]
         room = ans[0][2]
-        course_code = ans[0][3]
         course_name = ans[0][4]
-        return "Your next event is a " + description + " in the course " + course_name + "in " + room + ", " + date
+        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + date
     except:
         return "null"
 
-print(get_exam_date("TDT4100"))
+def get_next_assignment(username):
+    ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
+                                       "from user_assignment as A, course as C "
+                                       "where A.username = \"" + username + "\" and A.course_code = C.course_code order by deadline LIMIT 1")
+    try:
+        title = ans[0][0]
+        date = ans[0][1]
+        course_name = ans[0][2]
+        return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name
+    except:
+        return "null"
+
+print(get_next_event("mariukoh"))
+print(get_next_assignment("mariukoh"))
+print(get_exercises_left("TMR4105", "mariukoh"))
