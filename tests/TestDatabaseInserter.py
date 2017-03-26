@@ -178,6 +178,12 @@ class TestDatabaseInserter(TestCase):
                          "Algorithms and Data Structures. Java is used as the programming language in "
                          "projects and exercises.", ans[0][0])
 
+    def test_insert_term(self):
+        DatabaseInserter.add_subject_data("TMA4110")
+        ans = DatabaseConnector.get_values("Select term from course where course.course_code = "
+                                           "\"TMA4110\"")
+        self.assertEqual("Autumn", ans[0][0])
+
     # end of testing add_subject_data
 
     def test_insert_add_assignment_data(self):
