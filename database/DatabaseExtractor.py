@@ -9,7 +9,14 @@ def get_exam_date(course_code):
 
     date = ans[0][0]
     name=ans[0][1]
-    return "Exam date in " + course_code + " " + name + " is " + date
+
+    if date == "null":
+        if not "Written examination" in get_assessment_form(course_code):
+            return "No date available because there is another assessment form."
+        else:
+            return "No exam data available."
+    else:
+        return "Exam date in " + course_code + " " + name + " is " + date
     #todo: add reason if field is empty
 
 def get_assessment_form(course_code):
@@ -84,6 +91,18 @@ def get_url(course_code):
         return "Course url not available."
     else:
         return url
+
+def get_term(course_code):
+    ans = DatabaseConnector.get_values("Select term from course where course.course_code = \"" + course_code + "\"")
+
+    term = ans[0][0]
+
+    if term == "null":
+        return "Term is not available."
+    else:
+        return term
+
+
 
 def get_prereq_knowledge(course_code):
     ans = DatabaseConnector.get_values("Select prereq_knowledge, course_name from course where course.course_code"+
@@ -176,3 +195,4 @@ def get_next_event(username):
     except:
         return "null"
 
+print(get_exam_date("TDT4100"))

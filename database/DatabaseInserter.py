@@ -347,8 +347,4 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
 
     connection.commit()
 
-<<<<<<< HEAD
-=======
-add_subject_data("TMA4110")
-
->>>>>>> origin/dev
+add_subject_data("TDT4145")
