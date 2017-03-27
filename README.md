@@ -27,6 +27,7 @@ The result will be something like this:
 
 ![Ngrok forwards requests to localhost](https://raw.githubusercontent.com/Mkohm/Pirka/dev/demo_pictures/ngrok.png "Ngrok forwards requests to localhost")
 
+
 Ngrok will now forward all connections to localhost.
 
 2. Copy the address that is hightligted in the picture above.

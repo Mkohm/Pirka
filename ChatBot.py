@@ -5,7 +5,6 @@ from flask import make_response
 from flask import render_template
 from flask import request
 
-from scraper import tempScraper
 from database import DatabaseConnector
 from database import DatabaseInserter
 from database.Course import Course
@@ -15,10 +14,10 @@ from scraper import LoginHandler
 
 # Flask app should start in global layout
 app = Flask(__name__)
-app.debug = True
 
 # Change this variable to true if you are going to run this on Heroku
 deployment = False
+
 
 if deployment:
     deployment_link = "webhook"
@@ -30,22 +29,14 @@ else:
 class ChatBot:
     # Starts the webserver and is ready to listen to incoming actions
     def __init__(self):
-
-
-
-
-
         # Change this variable to true if you are going to run this on Heroku
-        self.deployment = False
-        # The port to run webserver on
-        self.port = int(os.getenv('PORT', 8080))
-
-        # Run application
-        app.run(debug=True, port=self.port, host='localhost')
-        print("Starting chatbot-app on port %d" % self.port)
+        self.deployment = deployment
 
 
-
+        # Bind to PORT if defined, otherwise default to 5000.
+        port = int(os.environ.get('PORT', 8080))
+        print(port, "er porten")
+        app.run(debug=True,host='', port=port)
 
 
 
@@ -144,14 +135,10 @@ def login(current_sender_id):
 
             # Starts a thread that will scrape for data
 
-            #thread = Thread(target=thread_function(username, password))
-            #thread.start()
+            thread = Thread(target=thread_function(username, password))
+            thread.start()
 
-            scraper = tempScraper()
-            course_list = scraper.get_course_list()
 
-            for course in course_list:
-                DatabaseInserter.add_user_has_course(username, )
             return render_template("login_success.html")
         else:
             error = 'Invalid username/password'
@@ -202,6 +189,8 @@ def valid_login(username: str, password: str):
 @app.route('/' + deployment_link, methods=['POST'])
 def webhook():
     json_request = request.get_json(silent=True, force=True)
+
+    print(json.dumps(json_request, indent=4))
 
     # Extract the data from the json-request (first get the result section of the json)
     result = json_request.get("result")

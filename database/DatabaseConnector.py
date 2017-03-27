@@ -1,10 +1,12 @@
 import sqlite3
 from os.path import expanduser
-
+import os
 
 # Connect to the database
-home_dir = expanduser("~")
-sqlite_file = home_dir + "/PycharmProjects/Pirka/pirkabase.db"
+home_dir = os.path.dirname(os.path.abspath(__file__)).replace("/database", "")
+sqlite_file = home_dir + "/pirkabase.db"
+print(sqlite_file)
+
 connection = sqlite3.connect(database=sqlite_file, check_same_thread=False)
 
 

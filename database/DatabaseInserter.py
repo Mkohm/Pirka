@@ -370,5 +370,3 @@ def add_user_has_course(username, course_code):
 
 def add_user_completed_assignment():
     pass
-
-
