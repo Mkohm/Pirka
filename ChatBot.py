@@ -5,7 +5,6 @@ from flask import make_response
 from flask import render_template
 from flask import request
 
-from scraper import tempScraper
 from database import DatabaseConnector
 from database import DatabaseInserter
 from database.Course import Course
