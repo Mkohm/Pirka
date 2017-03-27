@@ -346,8 +346,4 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
         cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \"" + course_code + "\" and category = \""+ category +"\" and nr = " + str(index), assignment)
 
     connection.commit()
-<<<<<<< HEAD
 
-add_subject_data("TDT4145")
-=======
->>>>>>> origin/dev
