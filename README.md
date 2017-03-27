@@ -9,14 +9,13 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 ## Features
 
 - [x] Can ask when an exam in a course is
-- [ ] Can get a list of exersizes to do
+- [ ] Can get a list of exercises to do
 
 ## Setup for contributing to Pirka
 
 ### Requirements
 - Python 3.6 (or some other Python 3 version)
 - Ngrok (download here: https://ngrok.com/)
-- Python libraries
 - API.AI account and an agent (go to https://api.ai/ to create one)
 
 ### Installation
@@ -26,11 +25,15 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 ```
 The result will be something like this:
 
-![Ngrok forwards requests to localhost](https://github.com/Mkohm/Pirka/blob/master/ngrok.png "Ngrok forwards requests to localhost")
+![Ngrok forwards requests to localhost](https://raw.githubusercontent.com/Mkohm/Pirka/dev/demo_pictures/ngrok.png "Ngrok forwards requests to localhost")
 
 Ngrok will now forward all connections to localhost.
 
 2. Copy the address that is hightligted in the picture above.
 3. Log in to API.AI and go to fulfillment and enable webhook. Paste the address so API.AI can send POST requests to Ngrok.
 4. Clone this project into a new folder
-5. You can now run ChatBot.py to start the webserver and start developing
+5. Get all the required python libraries: Cd into the project folder and do:
+```
+pip install requirements.txt
+```
+You can now run ChatBot.py to start the webserver and start developing

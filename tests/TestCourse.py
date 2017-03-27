@@ -1,5 +1,7 @@
 from unittest import TestCase
-from imeapi.Course import Course
+
+from database.DatabaseInserter import Course
+
 
 class TestCourse(TestCase):
 
@@ -110,14 +112,14 @@ class TestCourse(TestCase):
                          "projects and exercises.", Course("TDT4145").get_prereq_knowledge())
         self.assertEqual("TMA4100 Calculus 1 or equivalent.", Course("TMA4115").get_prereq_knowledge())
         self.assertEqual("TKT4116/TKT4118 Mechanics 1. ", Course("TKT4123").get_prereq_knowledge())
+        self.assertEqual("TMA4100 Calculus 1.", Course("TKT4116").get_prereq_knowledge())
 
     def test_get_prereq_knowledge_notexists(self):
         self.assertEqual("Prerequisite knowledge is not available for this course",
                          Course("TMA4100").get_prereq_knowledge())
-        self.assertEqual("Prerequisite knowledge is not available for this course",
+        self.assertEqual("None.",
                          Course("TDT4105").get_prereq_knowledge())
-        self.assertEqual("Prerequisite knowledge is not available for this course",
-                         Course("").get_prereq_knowledge("TKT4116"))
+
 
     def test_get_course_content(self):
         self.assertEqual("Curves in space. Functions of several variables. Taylor's theorem in two dimensions, "
@@ -131,14 +133,14 @@ class TestCourse(TestCase):
         self.assertEqual("Theory for linear multivariable systems, state space models, discretization, "
                          "canonical forms and realizations, Lyapunov stability, controllability and observability, "
                          "state feedback, LQ control, state estimation, the Kalman filter, descriptions of stochastic "
-                         "processes and random signals. ", Course("TTK4115").get_course_content())
+                         "processes and random signals.\r\n", Course("TTK4115").get_course_content())
 
 
     def test_get_course_material(self):
         self.assertEqual("Information will be given when the course starts.", Course("TTK4115").get_course_material())
         self.assertEqual("Will be announced at the start of the course.", Course("TMA4100").get_course_material())
         self.assertEqual("Konstruksjonsmekanikk, Del 1-Likevektslære, Fagbokforlaget. Konstruksjonsmekanikk, "
-                         "Del 2-Fasthetslære, Fagbokforlaget. ", Course("TKT4123").get_course_material())
+                         "Del 2-Fasthetslære\r, Fagbokforlaget. ", Course("TKT4123").get_course_material())
 
     def test_get_teaching_form(self):
         self.assertEqual("Lectures and exercises.", Course("TMR4160").get_teaching_form())
