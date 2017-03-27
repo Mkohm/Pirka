@@ -353,13 +353,18 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
 def add_user_has_course(username, course_code):
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
+
+    data_list = []
+    data_list.append(username)
+    data_list.append(course_code)
+
     try:
         cursor.execute("INSERT INTO user_has_course(username, course_code) "
-                       "VALUES(?,?)", username, course_code)
+                       "VALUES(?,?)", data_list)
     except:
-        cursor.execute("UPDATE user_has_course SET username = ?, course_code = ? "
+        cursor.execute("UPDATE user_has_course SET username = ?, course_code = ? " +
                        "WHERE course_code =\"" + course_code + "\ and  username =\""
-                       + username + "\"", username, course_code)
+                       + username + "\"", data_list)
 
     connection.commit()
 
