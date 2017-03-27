@@ -23,8 +23,8 @@ class tempScraper:
     def __init__(self, username, password):
         # TODO: add functionality for user credentials as parameters
 
-        # self.username = username
-        # self.password = password
+        self.username = username
+        self.password = password
 
         # logs into Its Learning. After this the "driver" contains the main page in Its Learning
         username_field = driver.find_element_by_name("feidename")
@@ -86,6 +86,9 @@ class tempScraper:
         for course in courses:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
             course_list.append(course.text)
+            print(type(course.text[0:7]))
+            print(self.username)
+            DatabaseInserter.add_user_has_course(self.username, str(course.text[0:7]))
 
         return course_list
 
@@ -204,10 +207,10 @@ class tempScraper:
         driver.quit()
 
 
-username = input("Username: ")
+username = "marihl"
 password = input("Password: ")
 
 myScraper = tempScraper(username, password)
-myScraper.get_all_assignments()
+myScraper.get_course_list()
 
 myScraper.close_driver()

@@ -341,9 +341,27 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
     try:
-        cursor.execute("INSERT INTO assignment(course_code, nr, category, title, description, published, deadline, delivery_location, mandatory) VALUES (?,?,?,?,?,?,?,?,?)", assignment)
+        cursor.execute("INSERT INTO assignment(course_code, nr, category, title, description, published, deadline, "
+                       "delivery_location, mandatory) VALUES (?,?,?,?,?,?,?,?,?)", assignment)
     except:
-        cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \"" + course_code + "\" and category = \""+ category +"\" and nr = " + str(index), assignment)
+        cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, "
+                       "published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \""
+                       + course_code + "\" and category = \""+ category +"\" and nr = " + str(index), assignment)
 
     connection.commit()
 
+def add_user_has_course(username, course_code):
+    connection = DatabaseConnector.connection
+    cursor = connection.cursor()
+    try:
+        cursor.execute("INSERT INTO user_has_course(username, course_code) "
+                       "VALUES(?,?)", username, course_code)
+    except:
+        cursor.execute("UPDATE user_has_course SET username = ?, course_code = ? "
+                       "WHERE course_code =\"" + course_code + "\ and  username =\""
+                       + username + "\"", username, course_code)
+
+    connection.commit()
+
+def add_user_completed_assignment():
+    pass
