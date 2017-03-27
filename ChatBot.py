@@ -5,6 +5,7 @@ from flask import make_response
 from flask import render_template
 from flask import request
 
+from scraper import tempScraper
 from database import DatabaseConnector
 from database import DatabaseInserter
 from database.Course import Course
@@ -146,7 +147,11 @@ def login(current_sender_id):
             #thread = Thread(target=thread_function(username, password))
             #thread.start()
 
+            scraper = tempScraper()
+            course_list = scraper.get_course_list()
 
+            for course in course_list:
+                DatabaseInserter.add_user_has_course(username, )
             return render_template("login_success.html")
         else:
             error = 'Invalid username/password'

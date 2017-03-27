@@ -228,6 +228,8 @@ def get_next_assignment(username):
     except:
         return "null"
 
+
+
 print(get_next_event("mariukoh"))
 print(get_next_assignment("mariukoh"))
 print(get_exercises_left("TMR4105", "mariukoh"))
