@@ -1,20 +1,23 @@
 import json
 import os
 from flask import Flask
-from flask import request
 from flask import make_response
 from flask import render_template
-from scraper.BlackboardScraper import BlackboardScraper
+from flask import request
 
-from imeapi.Course import Course
+from database import DatabaseConnector
+from database import DatabaseInserter
+from database.Course import Course
+from threading import Thread
+from database import DatabaseExtractor
+from scraper import LoginHandler
 
 # Flask app should start in global layout
 app = Flask(__name__)
-app.debug = True
 
 # Change this variable to true if you are going to run this on Heroku
-deployment = False
-pirka_users = {}
+deployment = True
+
 
 if deployment:
     deployment_link = "webhook"
@@ -22,19 +25,27 @@ else:
     deployment_link = ""
 
 
+
 class ChatBot:
     # Starts the webserver and is ready to listen to incoming actions
     def __init__(self):
         # Change this variable to true if you are going to run this on Heroku
-        self.deployment = False
+        self.deployment = deployment
 
 
-        # The port to run webserver on
-        self.port = int(os.getenv('PORT', 8080))
+        # Bind to PORT if defined, otherwise default to 5000.
+        port = int(os.environ.get('PORT', 8080))
+        print(port, "er porten")
+        app.run(debug=True,host='0.0.0.0', port=port)
 
-        # Run application
-        app.run(debug=True, port=self.port, host='localhost')
-        print("Starting chatbot-app on port %d" % self.port)
+
+
+
+
+
+
+
+
 
     # Receives action-name, gets the data and returns a string ready to send back to API.AI
     @staticmethod
@@ -42,9 +53,44 @@ class ChatBot:
         if action_name == "login":
             return ChatBot.create_followup_event_data(parameter)
         elif action_name == "get_exam_date":
-            return ChatBot.create_data_response(Course(parameter).get_exam_date())
+            return ChatBot.create_data_response(DatabaseExtractor.get_exam_date(parameter[1]))
         elif action_name == "get_assessment_form":
-            return ChatBot.create_data_response(Course(parameter).get_assessment_form())
+            return ChatBot.create_data_response(DatabaseExtractor.get_assessment_form(parameter[1]))
+        elif action_name == "get_contact_mail":
+            return ChatBot.create_data_response(DatabaseExtractor.get_contact_mail(parameter[1]))
+        elif action_name == "get_contact_name":
+            return ChatBot.create_data_response(DatabaseExtractor.get_contact_name(parameter[1]))
+        elif action_name =="get_contact_phone":
+            return ChatBot.create_data_response(DatabaseExtractor.get_contact_phone(parameter[1]))
+        elif action_name =="get_contact_website":
+            return ChatBot.create_data_response(DatabaseExtractor.get_contact_website(parameter[1]))
+        elif action_name== "get_office":
+            return ChatBot.create_data_response(DatabaseExtractor.get_contact_office(parameter[1]))
+        elif action_name == "get_teaching_form":
+            return ChatBot.create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
+        elif action_name == "get_course_name":
+            return ChatBot.create_data_response(DatabaseExtractor.get_course_name(parameter[1]))
+        elif action_name == "get_credit":
+            return ChatBot.create_data_response(DatabaseExtractor.get_credit(parameter[1]))
+        elif action_name == "get_url":
+            return ChatBot.create_data_response(DatabaseExtractor.get_url(parameter[1]))
+        elif action_name == "get_prereq_knowledge":
+            return ChatBot.create_data_response(DatabaseExtractor.get_prereq_knowledge(parameter[1]))
+        elif action_name =="get_course_content":
+            return ChatBot.create_data_response(DatabaseExtractor.get_course_content(parameter[1]))
+        elif action_name == "get_course_material":
+            return ChatBot.create_data_response(DatabaseExtractor.get_course_material(parameter[1]))
+        elif action_name == "get_teaching_form":
+            return ChatBot.create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
+        #personal:
+        elif action_name =="get_exercise_status":
+            return ChatBot.create_data_response(DatabaseExtractor.get_exercise_status(parameter[1], parameter[0]))
+        elif action_name == "get_project_status":
+            return ChatBot.create_data_response(DatabaseExtractor.get_project_status(parameter[1], parameter[0]))
+        elif action_name == "get_lab_status":
+            return ChatBot.create_data_response(DatabaseExtractor.get_lab_status(parameter[1], parameter[0]))
+        elif action_name == "get_next_event":
+            return ChatBot.create_data_response(DatabaseExtractor.get_next_event(parameter[0]))
         else:
             return "I didn't understand shit, you probably broke me :("
 
@@ -69,12 +115,12 @@ class ChatBot:
                 }
             }
         }
+
         return data
 
 
 @app.route('/login/<current_sender_id>', methods=['POST', 'GET'])
 def login(current_sender_id):
-
     """
     This method handles the login so we can get user information to the blackboard scraper.
     We load a template so the user can login and send us the email and password.
@@ -87,10 +133,19 @@ def login(current_sender_id):
         username = request.form["username"]
         password = request.form["password"]
 
-        #If the login is successfull we return a template saying you can start using pirka
+        # If the login is successfull we return a template saying you can start using pirka
+
+        # todo: fix that this starts its own thread so the valid-login is too late
         if valid_login(username, password):
 
-            pirka_users[current_sender_id] = {username, password}
+            DatabaseInserter.add_user(username, password, current_sender_id)
+
+            # Starts a thread that will scrape for data
+
+            thread = Thread(target=thread_function(username, password))
+            thread.start()
+
+
             return render_template("login_success.html")
         else:
             error = 'Invalid username/password'
@@ -98,19 +153,48 @@ def login(current_sender_id):
     # was GET or the credentials were invalid
     return render_template('login.html', error=error)
 
-def valid_login(username:str, password:str):
-    #Try to do blackboard scraping
+
+
+
+
+def thread_function(username: str, password: str):
+    """
+    This function runs when the user has logged in. It adds the data that is relevant for this user in its own thread.
+
+    It first add all the non-user specific data to the database
+    :param username:
+    :param password:
+    :return:
+    """
+
+    #Get a list of course codes that the user has
+    course_list = LoginHandler.get_course_list(username, password)
+
+    # Adds the users courses (and course-data) to the database
+    for course in course_list:
+        DatabaseInserter.add_subject_data(course)
+
+    # Scrapes for additional data that is user specific
+    #scraper = ItsLearningScraper(username, password)
+
+
+
+def valid_login(username: str, password: str):
 
     try:
-        scraper = BlackboardScraper(username, password)
+        print(username, password)
+        scraper = LoginHandler.login(username, password)
+        print("Login success")
         return True
     except:
+        print("Login failed")
         return False
+
+
 
 
 @app.route('/' + deployment_link, methods=['POST'])
 def webhook():
-    print(pirka_users)
     json_request = request.get_json(silent=True, force=True)
 
     print(json.dumps(json_request, indent=4))
@@ -132,19 +216,32 @@ def webhook():
             parameter = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
         else:
             parameter = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
-    elif action_name == "get_exam_date":
-        parameter = parameters.get("course_code")
+    else:
+        facebook_id = ""
+        if len(result.get("contexts")) > 1:
+            facebook_id = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
+        elif len(result.get("contexts")) == 0:
+            facebook_id = json_request.get("originalRequest").get("data").get("sender").get("id")
+        else:
+            facebook_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
+
+        print(facebook_id, " er face id")
+        username = DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id +"\"")[0][0]
+        parameter = [username, parameters.get("course_code")]
+
+        print(parameter[0], parameter[1])
+
 
 
     speech = ChatBot.process_actions(parameter, action_name)
 
 
-    print(json.dumps(speech, indent=4))
     response = json.dumps(speech, indent=4)
     created_response = make_response(response)
     created_response.headers['Content-Type'] = 'application/json'
 
     return created_response
+
 
 # Start the application
 bot = ChatBot()

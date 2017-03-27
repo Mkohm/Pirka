@@ -9,7 +9,7 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 ## Features
 
 - [x] Can ask when an exam in a course is
-- [ ] Can get a list of exersizes to do
+- [ ] Can get a list of exercises to do
 
 ## Setup for contributing to Pirka
 
@@ -25,7 +25,8 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 ```
 The result will be something like this:
 
-![Ngrok forwards requests to localhost](https://raw.githubusercontent.com/Mkohm/Pirka/master/demo_pictures/ngrok.png "Ngrok forwards requests to localhost")
+![Ngrok forwards requests to localhost](https://raw.githubusercontent.com/Mkohm/Pirka/dev/demo_pictures/ngrok.png "Ngrok forwards requests to localhost")
+
 
 Ngrok will now forward all connections to localhost.
 
