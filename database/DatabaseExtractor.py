@@ -194,5 +194,3 @@ def get_next_event(username):
         return "Your next event is a " + description + " in the course " + course_name + "in " + room + ", " + date
     except:
         return "null"
-
-print(get_exam_date("TDT4100"))
