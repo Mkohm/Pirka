@@ -86,8 +86,7 @@ class tempScraper:
         for course in courses:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
             course_list.append(course.text)
-            print(type(course.text[0:7]))
-            print(self.username)
+            course_list.append(course.text)
             DatabaseInserter.add_user_has_course(self.username, str(course.text[0:7]))
 
         return course_list
@@ -151,7 +150,7 @@ class tempScraper:
                 print("Obligatory: " + str(obligatory))
                 print("Anonym: " + str(anonymous))
                 print("Group: " + group)
-                DatabaseInserter.add_assignment_data(course_code, title, i+1, str(obligatory), published, deadline, "its", "exercise", " ingen ")
+
 
                 try:
                     assessment = driver.find_element_by_class_name("colorbox_green").text
@@ -160,6 +159,18 @@ class tempScraper:
                     print(" ")
 
                 print(" ")
+
+                if "Godkjent/Vurdert" in assessment:
+                    score = 1
+                else:
+                    score = 0
+
+                DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
+                                                     "its", "exercise", " ingen ")
+                print(score)
+                print("skal adde")
+                DatabaseInserter.add_user_completed_assignment(username, course_code, i + 1, "exercise", score)
+                print("Har addet.")
 
                 driver.back()
                 driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
@@ -212,5 +223,8 @@ password = input("Password: ")
 
 myScraper = tempScraper(username, password)
 myScraper.get_course_list()
+myScraper.get_assignments(3)
+
+
 
 myScraper.close_driver()
