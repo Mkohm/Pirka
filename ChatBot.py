@@ -21,7 +21,7 @@ class ChatBot:
     def __init__(self):
 
         # Bind to PORT if defined, otherwise default to 5000.
-        port = int(os.environ.get('PORT', 8083))
+        port = int(os.environ.get('PORT', 8080))
         print(port, "er porten")
         app.run(debug=True,host='', port=port)
 
@@ -165,14 +165,15 @@ def thread_function(username: str, password: str):
 
 def valid_login(username: str, password: str):
 
-    #try:
-    print(username, password)
-    scraper = LoginHandler.login(username, password)
-    print("Login success")
-    return True
-    #except:
-    #    print("Login failed")
-    #    return False
+    try:
+        print(username, password)
+        scraper = LoginHandler.login(username, password)
+        print("Login success")
+        return True
+
+    except:
+        print("Login failed")
+        return False
 
 
 
