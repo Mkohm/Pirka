@@ -19,9 +19,6 @@ app = Flask(__name__)
 class ChatBot:
     # Starts the webserver and is ready to listen to incoming actions
     def __init__(self):
-        # Change this variable to true if you are going to run this on Heroku
-        self.deployment = deployment
-
 
         # Bind to PORT if defined, otherwise default to 5000.
         port = int(os.environ.get('PORT', 8082))
