@@ -92,8 +92,7 @@ class ChatBot:
             "followupEvent": {
                 "name": "custom_event",
                 "data": {
-                    "user_id": parameter_value,
-                    "ip_address": ip
+                    "user_id": parameter_value
                 }
             }
         }
