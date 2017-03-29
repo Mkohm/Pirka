@@ -224,3 +224,5 @@ def get_next_assignment(username):
         return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name
     except:
         return "null"
+
+print(get_exercises_left("TTK4105", "marihl"))
