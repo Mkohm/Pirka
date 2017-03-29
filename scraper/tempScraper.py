@@ -154,9 +154,10 @@ class tempScraper:
 
                 try:
                     assessment = driver.find_element_by_class_name("colorbox_green").text
-                    print("Assessment: " + assessment)
                 except:
-                    print(" ")
+                    assessment = "not available"
+                print("Assessmnet: " + assessment)
+
 
                 print(" ")
 
@@ -164,13 +165,12 @@ class tempScraper:
                     score = 1
                 else:
                     score = 0
+                print(score)
 
                 DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
                                                      "its", "exercise", " ingen ")
-                print(score)
-                print("skal adde")
-                DatabaseInserter.add_user_completed_assignment(username, course_code, i + 1, "exercise", score)
-                print("Har addet.")
+
+                DatabaseInserter.add_user_completed_assignment(self.username, course_code, i + 1, "exercise", score)
 
                 driver.back()
                 driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
@@ -216,15 +216,3 @@ class tempScraper:
 
     def close_driver(self):
         driver.quit()
-
-
-username = "marihl"
-password = input("Password: ")
-
-myScraper = tempScraper(username, password)
-myScraper.get_course_list()
-myScraper.get_assignments(3)
-
-
-
-myScraper.close_driver()

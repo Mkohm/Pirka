@@ -366,6 +366,10 @@ def add_user_has_course(username, course_code):
 
     connection.commit()
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> e2bfe34284a1257b78009cf6bc00294d213f60b3
 def add_user_completed_assignment(username, course_code, nr, category, score):
     data_list=[]
     data_list.append(username)
@@ -376,18 +380,16 @@ def add_user_completed_assignment(username, course_code, nr, category, score):
 
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
-    print(data_list)
     try:
-        print("prøver å inserte")
         cursor.execute("INSERT INTO user_completed_assignment(username, course_code, nr, category, score)"
                        "values(?,?,?,?,?)", data_list)
-        print("klarte å inserte")
     except:
-        print("utfører exception")
-        cursor.execute("UPDATE user_completed_assignment SET score = ? " +
-                       "WHERE username = \"" + username +"\", course_code = \"" + course_code +
-                       "nr = \"" + nr + "\", category =\"" + category + "\", nr = \"" + str(nr) + "\"", score)
-        print("vellykket exception")
+        cursor.execute("UPDATE user_completed_assignment "
+                       "SET score = ? " +
+                       "WHERE username = \"" + username +"\" " +
+                        "and  course_code = \"" + course_code + "\" " +
+                        "and  nr = \"" + str(nr) + "\" " +
+                        "and category =\"" + category + "\"", str(score))
 
     connection.commit()
 

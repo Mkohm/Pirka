@@ -225,4 +225,8 @@ def get_next_assignment(username):
     except:
         return "null"
 
+<<<<<<< HEAD
 
+=======
+print(get_exercises_left("TTK4105", "marihl"))
+>>>>>>> e2bfe34284a1257b78009cf6bc00294d213f60b3
