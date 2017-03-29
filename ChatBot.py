@@ -21,7 +21,7 @@ class ChatBot:
     def __init__(self):
 
         # Bind to PORT if defined, otherwise default to 5000.
-        port = int(os.environ.get('PORT', 8082))
+        port = int(os.environ.get('PORT', 8083))
         print(port, "er porten")
         app.run(debug=True,host='', port=port)
 
