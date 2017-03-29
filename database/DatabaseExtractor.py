@@ -9,7 +9,14 @@ def get_exam_date(course_code):
 
     date = ans[0][0]
     name=ans[0][1]
-    return "Exam date in " + course_code + " " + name + " is " + date
+
+    if date == "null":
+        if not "Written examination" in get_assessment_form(course_code):
+            return "No date available because there is another assessment form."
+        else:
+            return "No exam data available."
+    else:
+        return "Exam date in " + course_code + " " + name + " is " + date
     #todo: add reason if field is empty
 
 def get_assessment_form(course_code):
@@ -38,14 +45,22 @@ def get_contact_office(course_code):
                                        + course_code + "\";")
     contact_office=ans[0][0]
     name=ans[0][1]
-    return "The office address of the contact person in " + course_code + " " + name + " is " + contact_office
+
+    if contact_office == "null":
+        return "There is no existing office address in " + course_code + " " + name
+    else:
+        return "The office address of the contact person in " + course_code + " " + name + " is " + contact_office
 
 def get_contact_phone(course_code):
     ans = DatabaseConnector.get_values("Select contact_phone, course_name from course where course.course_code = \""
                                                        + course_code + "\";")
     contact_phone=ans[0][0]
     name=ans[0][1]
-    return "The phone number of the contact person in " + course_code + " " + name + " is " + contact_phone
+
+    if contact_phone == "null":
+        return "There is no phone number available in " + course_code + " " + name
+    else:
+        return "The phone number of the contact person in " + course_code + " " + name + " is " + contact_phone
 
 def get_contact_website(course_code):
     ans = DatabaseConnector.get_values("Select contact_website, course_name from course where "
@@ -71,13 +86,33 @@ def get_url(course_code):
     ans = DatabaseConnector.get_values("Select url, course_name from course where course.course_code = \""+
                                              course_code + "\" ;")
     url=ans[0][0]
-    return url
+
+    if url == "null":
+        return "Course url not available."
+    else:
+        return url
+
+def get_term(course_code):
+    ans = DatabaseConnector.get_values("Select term from course where course.course_code = \"" + course_code + "\"")
+
+    term = ans[0][0]
+
+    if term == "null":
+        return "Term is not available."
+    else:
+        return term
+
+
 
 def get_prereq_knowledge(course_code):
     ans = DatabaseConnector.get_values("Select prereq_knowledge, course_name from course where course.course_code"+
                                                 " = \"" + course_code + "\" ;")
     prereq=ans[0][0]
-    return prereq
+
+    if prereq == "null":
+        return "Prerequisite knowledge is not available for this course."
+    else:
+        return prereq
 
 def get_course_content(course_code):
     ans = DatabaseConnector.get_values("Select course_content, course_name from course where" +
@@ -96,32 +131,100 @@ def get_teaching_form(course_code):
     return teaching_form[0][0]
 
 def get_exercise_status(course_code, username):
+    print(course_code.__class__)
+    print(username.__class__)
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
                                        "status_exercise as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
-    return(ans)
-    score = str(ans[0][1])
-    required = str(ans[0][2])
-    course_name= ans[0][3]
-    return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name+"."
+
+
+
+    try:
+        score = str(ans[0][1])
+        course_name= ans[0][3]
+        required = str(ans[0][2])
+        print(required.__class__)
+        if required == "None":
+            return "You have done " + score + " exercises in " + course_code + " " + course_name+"."
+        else:
+            return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name+"."
+    except:
+        return "null"
+
+def get_exercises_left(course_code, username):
+    ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
+                                       "status_exercise as S, course as C where S.course_code = \"" +course_code+"\" "
+                                       "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
+                                        "S.username ;")
+
+
+
+    try:
+        score = ans[0][1]
+        course_name= ans[0][3]
+        required = ans[0][2]
+
+
+        if required == "None":
+
+            return "You have done " + str(score) + " exercises in " + course_code + " " + course_name+"."
+        else:
+            left = str(required - score)
+            return "You have " + left + " exercises left in " + course_code + " " + course_name+"."
+    except:
+        return "You haven't done any exercises in this course yet."
 
 def get_project_status(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
                                        "status_project as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
-    score = str(ans[0][1])
-    required = str(ans[0][2])
-    course_name= ans[0][3]
-    return "You have done " + score + " out of " + required + " projects in " + course_code + " " + course_name+"."
+
+    try:
+        score = str(ans[0][1])
+        required = str(ans[0][2])
+        course_name= ans[0][3]
+        return "You have done " + score + " out of " + required + " projects in " + course_code + " " + course_name+"."
+    except:
+        return "null"
 
 def get_lab_status(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
                                        "status_lab as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
-    score = str(ans[0][1])
-    required = str(ans[0][2])
-    course_name= ans[0][3]
-    return "You have done " + score + " out of " + required + " lab in " + course_code + " " + course_name+"."
+
+    try:
+        score = str(ans[0][1])
+        required = str(ans[0][2])
+        course_name= ans[0][3]
+        return "You have done " + score + " out of " + required + " lab in " + course_code + " " + course_name+"."
+    except:
+        return "null"
+
+def get_next_event(username):
+    ans = DatabaseConnector.get_values("Select U.category, U.date_time, U.room, U.course_code, C.course_name "
+                                       "from user_event as U, course as C "
+                                       "where U.username = \"mariukoh\" and U.course_code = C.course_code order by date_time LIMIT 1")
+    try:
+        description = ans[0][0]
+        date = ans[0][1]
+        room = ans[0][2]
+        course_name = ans[0][4]
+        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + date
+    except:
+        return "null"
+
+def get_next_assignment(username):
+    ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
+                                       "from user_assignment as A, course as C "
+                                       "where A.username = \"" + username + "\" and A.course_code = C.course_code order by deadline LIMIT 1")
+    try:
+        title = ans[0][0]
+        date = ans[0][1]
+        course_name = ans[0][2]
+        return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name
+    except:
+        return "null"
+

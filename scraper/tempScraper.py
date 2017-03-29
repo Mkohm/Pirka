@@ -1,6 +1,7 @@
 from selenium import webdriver
 import os
 import platform
+from database import DatabaseInserter
 
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
@@ -22,8 +23,8 @@ class tempScraper:
     def __init__(self, username, password):
         # TODO: add functionality for user credentials as parameters
 
-        # self.username = username
-        # self.password = password
+        self.username = username
+        self.password = password
 
         # logs into Its Learning. After this the "driver" contains the main page in Its Learning
         username_field = driver.find_element_by_name("feidename")
@@ -85,6 +86,9 @@ class tempScraper:
         for course in courses:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
             course_list.append(course.text)
+            print(type(course.text[0:7]))
+            print(self.username)
+            DatabaseInserter.add_user_has_course(self.username, str(course.text[0:7]))
 
         return course_list
 
@@ -99,7 +103,7 @@ class tempScraper:
         courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
 
         # Navigates to the relevant course based in course index
-        course_code = courses[course_index].split()[0]
+        course_code = courses[course_index].text.split()[0]
         print("Extracting info from: " + course_code)
         courses[course_index].click()
 
@@ -147,6 +151,7 @@ class tempScraper:
                 print("Obligatory: " + str(obligatory))
                 print("Anonym: " + str(anonymous))
                 print("Group: " + group)
+                DatabaseInserter.add_assignment_data(course_code, title, i+1, str(obligatory), published, deadline, "its", "exercise", " ingen ")
 
                 try:
                     assessment = driver.find_element_by_class_name("colorbox_green").text
@@ -202,10 +207,10 @@ class tempScraper:
         driver.quit()
 
 
-username = input("Username: ")
+username = "marihl"
 password = input("Password: ")
 
 myScraper = tempScraper(username, password)
-myScraper.get_all_assignments()
+myScraper.get_course_list()
 
 myScraper.close_driver()

@@ -27,11 +27,13 @@ def add_subject_data(course_code: str):
     contact_phone = get_contact_phone(data)
     credit = get_credit(data)
     url = get_url(data)
+    course_content= get_course_content(data)
     course_material = get_course_material(data)
     teaching_form = get_teaching_form(data)
     prereq_knowledge = get_prereq_knowledge(data)
+    term = get_term(data)
 
-    # Adds the data to an list for insertion into the table
+    # Adds the data to a list for insertion into the table
     data = []
     data.append(course_code)
     data.append(course_name)
@@ -44,16 +46,18 @@ def add_subject_data(course_code: str):
     data.append(credit)
     data.append(url)
     data.append(prereq_knowledge)
+    data.append(course_content)
     data.append(course_material)
     data.append(teaching_form)
+    data.append(term)
 
     # Adds the data to the table
     connection = DatabaseConnector.connection
     cursor = connection.cursor()
     try:
-        cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `teaching_form`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+        cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `course_material`, `teaching_form`, `term`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
     except:
-        cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, teaching_form = ? WHERE course_code = \"" + course_code + "\"", data[1:13])
+        cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, course_material = ?, teaching_form = ?, term = ? WHERE course_code = \"" + course_code + "\"", data[1:15])
 
 
     connection.commit()
@@ -75,29 +79,70 @@ def get_prereq_knowledge(data):
 
     return prereq_knowledge
 
+def get_course_content(data):
+    value = ""
+    for i in range(0, 6):
+        try:
+            value = data["course"]["infoType"][i]["code"]
+            if (value == "INNHOLD"):
+                index = i
+        except:
+            course_content = "null"
+    try:
+        course_content = data["course"]["infoType"][index]["text"]
+    except:
+        course_content = "null"
+
+    return course_content
+
 
 def get_teaching_form(data):
+    value = ""
+    for i in range(0, 6):
+        try:
+            value = data["course"]["infoType"][i]["code"]
+            if (value == "LÆRFORM"):
+                index = i
+        except:
+            teaching_form = "null"
     try:
-        teaching_form = data["course"]["infoType"][5]["text"]
+        teaching_form = data["course"]["infoType"][index]["text"]
     except:
         teaching_form = "null"
 
     return teaching_form
 
-
 def get_course_material(data):
+    value = ""
+    for i in range(0, 6):
+        try:
+            value = data["course"]["infoType"][i]["code"]
+            if (value == "KURSMAT"):
+                index = i
+        except:
+            course_material = "null"
     try:
-        course_material = data["course"]["infoType"][4]["text"]
+        course_material = data["course"]["infoType"][index]["text"]
     except:
         course_material = "null"
+
     return course_material
 
 
 def get_url(data):
+    value = ""
+    for i in range(0, 6):
+        try:
+            value = data["course"]["infoType"][i]["code"]
+            if (value == "E-URL"):
+                index = i
+        except:
+            url = "null"
     try:
-        url = data["course"]["infoType"][1]["text"]
+        url = data["course"]["infoType"][index]["text"]
     except:
         url = "null"
+
     return url
 
 
@@ -186,18 +231,18 @@ def add_user(username: str, password: str, facebook_id: int):
 
 
 
-"""
 
 
-def set_term():
-    # Fetch the course
-    data = get_data()
+
+def get_term(data):
+
     try:
         term = data["course"]["assessment"][0]["realExecutionTerm"]
     except KeyError:
         term = "Term not available"
+    return term
 
-
+"""
 def set_year():
     # Fetch the course
     data = get_data()
@@ -278,4 +323,50 @@ def format_date(date: str) -> str:
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
 
-add_user("marihl", "hei", 198376567)
+
+def add_assignment_data(course_code, title, index, mandatory, published, deadline, location, category, description):
+    # Adds data to a list for insertion into table
+    assignment=[]
+    assignment.append(course_code)
+    assignment.append(index)
+    assignment.append(category)
+    assignment.append(title)
+    assignment.append(description)
+    assignment.append(published)
+    assignment.append(deadline)
+    assignment.append(location)
+    assignment.append(mandatory)
+
+# Adds the data to the table
+    connection = DatabaseConnector.connection
+    cursor = connection.cursor()
+    try:
+        cursor.execute("INSERT INTO assignment(course_code, nr, category, title, description, published, deadline, "
+                       "delivery_location, mandatory) VALUES (?,?,?,?,?,?,?,?,?)", assignment)
+    except:
+        cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, "
+                       "published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \""
+                       + course_code + "\" and category = \""+ category +"\" and nr = " + str(index), assignment)
+
+    connection.commit()
+
+def add_user_has_course(username, course_code):
+    connection = DatabaseConnector.connection
+    cursor = connection.cursor()
+
+    data_list = []
+    data_list.append(username)
+    data_list.append(course_code)
+
+    try:
+        cursor.execute("INSERT INTO user_has_course(username, course_code) "
+                       "VALUES(?,?)", data_list)
+    except:
+        cursor.execute("UPDATE user_has_course SET username = ?, course_code = ? " +
+                       "WHERE course_code =\"" + course_code + "\ and  username =\""
+                       + username + "\"", data_list)
+
+    connection.commit()
+
+def add_user_completed_assignment():
+    pass
