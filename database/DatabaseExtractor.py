@@ -131,8 +131,6 @@ def get_teaching_form(course_code):
     return teaching_form[0][0]
 
 def get_exercise_status(course_code, username):
-    print(course_code.__class__)
-    print(username.__class__)
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
                                        "status_exercise as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
@@ -144,7 +142,6 @@ def get_exercise_status(course_code, username):
         score = str(ans[0][1])
         course_name= ans[0][3]
         required = str(ans[0][2])
-        print(required.__class__)
         if required == "None":
             return "You have done " + score + " exercises in " + course_code + " " + course_name+"."
         else:
@@ -228,3 +225,9 @@ def get_next_assignment(username):
     except:
         return "null"
 
+<<<<<<< Updated upstream
+=======
+
+
+print(get_exercise_status("TTK4105", "marihl"))
+>>>>>>> Stashed changes
