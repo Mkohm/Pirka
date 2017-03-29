@@ -224,10 +224,3 @@ def get_next_assignment(username):
         return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name
     except:
         return "null"
-
-<<<<<<< Updated upstream
-=======
-
-
-print(get_exercise_status("TTK4105", "marihl"))
->>>>>>> Stashed changes

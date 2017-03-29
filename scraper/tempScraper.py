@@ -167,10 +167,8 @@ class tempScraper:
 
                 DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
                                                      "its", "exercise", " ingen ")
-                print(score)
-                print("skal adde")
+
                 DatabaseInserter.add_user_completed_assignment(username, course_code, i + 1, "exercise", score)
-                print("Har addet.")
 
                 driver.back()
                 driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
@@ -218,13 +216,3 @@ class tempScraper:
         driver.quit()
 
 
-username = "marihl"
-password = input("Password: ")
-
-myScraper = tempScraper(username, password)
-myScraper.get_course_list()
-myScraper.get_assignments(3)
-
-
-
-myScraper.close_driver()

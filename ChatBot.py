@@ -11,6 +11,7 @@ from database.Course import Course
 from threading import Thread
 from database import DatabaseExtractor
 from scraper import LoginHandler
+from scraper import tempScraper
 
 import netifaces as ni
 ni.ifaddresses('en0')
@@ -145,6 +146,7 @@ def login(current_sender_id):
 
             # Starts a thread that will scrape for data
 
+
             thread = Thread(target=thread_function(username, password))
             thread.start()
 
@@ -170,17 +172,26 @@ def thread_function(username: str, password: str):
     :return:
     """
 
+    #To be removed?
     #Get a list of course codes that the user has
-    course_list = LoginHandler.get_course_list(username, password)
+    #course_list = LoginHandler.get_course_list(username, password)
+
+
+
+    # Scrapes for additional data that is user specific
+    #scraper = ItsLearningScraper(username, password)
+    myScraper = tempScraper(username, password)
+
+    #returns a list of courses that the user has, and adds user-course relation to database
+    course_list = myScraper.get_course_list()
+
+    #adds user's associated assignment data
+    for i in range (0, len(course_list)):
+        myScraper.get_assignments(i)
 
     # Adds the users courses (and course-data) to the database
     for course in course_list:
         DatabaseInserter.add_subject_data(course)
-
-    # Scrapes for additional data that is user specific
-    #scraper = ItsLearningScraper(username, password)
-
-
 
 def valid_login(username: str, password: str):
 
