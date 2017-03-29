@@ -12,23 +12,8 @@ from threading import Thread
 from database import DatabaseExtractor
 from scraper import LoginHandler
 
-import netifaces as ni
-ni.ifaddresses('en0')
-ip = ni.ifaddresses('en0')[2][0]['addr']
-print("my ip address is: ", ip)  # should print "192.168.100.37"
-
 # Flask app should start in global layout
 app = Flask(__name__)
-
-# Change this variable to true if you are going to run this on Heroku
-deployment = False
-
-
-if deployment:
-    deployment_link = "webhook"
-else:
-    deployment_link = ""
-
 
 
 class ChatBot:
@@ -196,7 +181,7 @@ def valid_login(username: str, password: str):
 
 
 
-@app.route('/' + deployment_link, methods=['POST'])
+@app.route('/', methods=['POST'])
 def webhook():
     json_request = request.get_json(silent=True, force=True)
 
