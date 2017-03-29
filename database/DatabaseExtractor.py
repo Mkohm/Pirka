@@ -225,9 +225,4 @@ def get_next_assignment(username):
     except:
         return "null"
 
-<<<<<<< Updated upstream
-=======
 
-
-print(get_exercise_status("TTK4105", "marihl"))
->>>>>>> Stashed changes

@@ -366,10 +366,6 @@ def add_user_has_course(username, course_code):
 
     connection.commit()
 
-<<<<<<< Updated upstream
-def add_user_completed_assignment():
-    pass
-=======
 def add_user_completed_assignment(username, course_code, nr, category, score):
     data_list=[]
     data_list.append(username)
@@ -396,6 +392,3 @@ def add_user_completed_assignment(username, course_code, nr, category, score):
     connection.commit()
 
 
-
-
->>>>>>> Stashed changes
