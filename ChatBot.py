@@ -12,6 +12,11 @@ from threading import Thread
 from database import DatabaseExtractor
 from scraper import LoginHandler
 
+import netifaces as ni
+ni.ifaddresses('en0')
+ip = ni.ifaddresses('en0')[2][0]['addr']
+print("my ip address is: ", ip)  # should print "192.168.100.37"
+
 # Flask app should start in global layout
 app = Flask(__name__)
 
@@ -44,6 +49,7 @@ class ChatBot:
     @staticmethod
     def process_actions(parameter: str, action_name: str) -> str:
         if action_name == "login":
+            print(parameter)
             return ChatBot.create_followup_event_data(parameter)
         elif action_name == "get_exam_date":
             return ChatBot.create_data_response(DatabaseExtractor.get_exam_date(parameter[1]))
@@ -104,10 +110,14 @@ class ChatBot:
             "followupEvent": {
                 "name": "custom_event",
                 "data": {
-                    "user_id": parameter_value
+                    "user_id": parameter_value,
+                    "ip_address": ip
                 }
             }
         }
+
+
+        print(json.dumps(data, indent=4))
 
         return data
 
@@ -221,8 +231,6 @@ def webhook():
         print(facebook_id, " er face id")
         username = DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id +"\"")[0][0]
         parameter = [username, parameters.get("course_code")]
-
-        print(parameter[0], parameter[1])
 
 
 
