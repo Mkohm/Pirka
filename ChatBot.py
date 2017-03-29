@@ -165,14 +165,14 @@ def thread_function(username: str, password: str):
 
 def valid_login(username: str, password: str):
 
-    try:
-        print(username, password)
-        scraper = LoginHandler.login(username, password)
-        print("Login success")
-        return True
-    except:
-        print("Login failed")
-        return False
+    #try:
+    print(username, password)
+    scraper = LoginHandler.login(username, password)
+    print("Login success")
+    return True
+    #except:
+    #    print("Login failed")
+    #    return False
 
 
 
