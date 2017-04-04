@@ -86,23 +86,24 @@ class BlackboardScraper:
 
         for i in range(1, len(assignments)):
 
-            assignment = driver.find_element_by_partial_link_text("Øving " + str(i))
-            title = assignment.text
+            print("\nLooking for link 'Øving " + str(i) + "'")
 
             try:
+                assignment = driver.find_element_by_partial_link_text("Øving " + str(i))
+                title = assignment.text
                 print("Title: " + title + " (" + current_course + ", i=" + str(i) + ")")
-                assignments.click()
+                assignment.click()
                 try:
                     score = driver.find_element_by_id("aggregateGrade")
                     print(score.get_attribute("value"))
                 except:
-                    score = 0
-                    print(score)
+                    print("Score not available")
                 max_score = driver.find_element_by_id("aggregateGrade_pointsPossible")
                 print(max_score.text)
                 driver.back()
             except:
-                print("Score not available")
+                print("Exercise info not available")
+                driver.back()
 
 
 
