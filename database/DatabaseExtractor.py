@@ -239,7 +239,23 @@ def get_next_assignment(username):
         return "null"
 
 
+def get_days_until_first_exam(username):
+    pass
 
+def get_this_weeks_schedule(username):
+    # Lists all the assignments that should be done this week
+
+    pass
+
+def get_next_weeks_schedule(username):
+    # Lists all the assignments that should be done by next week
+
+    pass
+
+def get_all_remaining_assignments(username):
+    # Lists all the remaining assignments
+
+    pass
 
 
 def get_users() -> list:
