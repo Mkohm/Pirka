@@ -130,27 +130,28 @@ class tempScraper:
                 attribute = driver.find_elements_by_class_name("h-mrb5")
 
                 published = attribute[0].text[11:]
+                published = str(datetime_converter(published))
                 deadline = attribute[1].text[11:]
                 deadline = str(datetime_converter(deadline))
 
-                if ("Ja" in attribute[2].text):
+                if "Ja" in attribute[2].text:
                     obligatory = True
                 else:
                     obligatory = False
 
-                if ("Ja" in attribute[3].text):
+                if "Ja" in attribute[3].text:
                     anonymous = True
                 else:
                     anonymous = False
 
                 group = attribute[4].text[14:]
 
-                print("Title: " + title)
-                print("Published: " + published)
-                print("Deadline: " + deadline)
-                print("Obligatory: " + str(obligatory))
-                print("Anonym: " + str(anonymous))
-                print("Group: " + group)
+                # print("Title: " + title)
+                # print("Published: " + published)
+                # print("Deadline: " + deadline)
+                # print("Obligatory: " + str(obligatory))
+                # print("Anonym: " + str(anonymous))
+                # print("Group: " + group)
 
 
                 try:

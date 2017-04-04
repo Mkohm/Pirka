@@ -1,6 +1,8 @@
 from selenium import webdriver
 import os
 import platform
+from database import DatabaseInserter
+import timestring
 
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
@@ -9,12 +11,13 @@ import platform
 
 
 driver_directory = os.path.dirname(__file__)
-if (platform.system() == "Windows"):
+if platform.system() == "Windows":
     relative_path = "chromedriver.exe"
 else:
     relative_path = "chromedriver"
 absolute_file_path = os.path.join(driver_directory, relative_path)
 
+chrome_profile = webdriver.ChromeOptions()
 driver = webdriver.Chrome(executable_path=absolute_file_path)
 driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
 
@@ -23,9 +26,10 @@ class ItsLearningScraper:
 
 
     def __init__(self, username, password):
-        # TODO: add functionality for user credentials as parameters
-        # self.username = username
-        # self.password = password
+
+        self.username = username
+        self.password = password
+
         # logs into Its Learning. After this the "driver" contains the main page in Its Learning
         username_field = driver.find_element_by_name("feidename")
         username_field.send_keys(username)
@@ -60,12 +64,9 @@ class ItsLearningScraper:
         return driver.find_element_by_id("ctl00_ContentPlaceHolder_ICalFeedModalDialog_ICalFeedLink").text
 
     # returns the user course list as a list of strings
-    # TODO: Write the result to database.user_has_subject
+    def get_course_list(self):
 
-    @staticmethod
-    def get_course_list(username, password):
-
-        # gets the course overveiw page
+        # gets the course overview page
         driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
         driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
 
@@ -77,9 +78,7 @@ class ItsLearningScraper:
         for course in courses:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
             course_list.append(course.text.split()[0])
-
-
-        driver.quit()
+            DatabaseInserter.add_user_has_course(self.username, str(course.text.split()[0]))
 
         return course_list
 
@@ -99,6 +98,7 @@ class ItsLearningScraper:
         courses[course_index].click()
 
         # Try to find a folder containing assignments
+        # TODO: cleanup the nested try-except
         try:
             link = driver.find_element_by_link_text("Assignments")
         except:
@@ -123,33 +123,41 @@ class ItsLearningScraper:
 
                 published = attribute[0].text[11:]
                 deadline = attribute[1].text[11:]
+                deadline = str(datetime_converter(deadline))
 
-                if ("Ja" in attribute[2].text):
+                if "Ja" in attribute[2].text:
                     obligatory = True
                 else:
                     obligatory = False
 
-                if ("Ja" in attribute[3].text):
+                if "Ja" in attribute[3].text:
                     anonymous = True
                 else:
                     anonymous = False
 
                 group = attribute[4].text[14:]
 
-                print("Title: " + title)
-                print("Published: " + published)
-                print("Deadline: " + deadline)
-                print("Obligatory: " + str(obligatory))
-                print("Anonym: " + str(anonymous))
-                print("Group: " + group)
+                # print("Title: " + title)
+                # print("Published: " + published)
+                # print("Deadline: " + deadline)
+                # print("Obligatory: " + str(obligatory))
+                # print("Anonym: " + str(anonymous))
+                # print("Group: " + group)
+
 
                 try:
                     assessment = driver.find_element_by_class_name("colorbox_green").text
-                    print("Assessment: " + assessment)
                 except:
                     print(" ")
 
-                print(" ")
+                if "Godkjent/Vurdert" == assessment:
+                    score = 1
+                else:
+                    score = 0
+
+                DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
+                                                     "its", "exercise", " ingen ")
+                DatabaseInserter.add_user_completed_assignment(self.username, course_code, i + 1, "exercise", score)
 
                 driver.back()
                 driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
@@ -195,3 +203,34 @@ class ItsLearningScraper:
 
     def close_driver(self):
         driver.quit()
+
+def datetime_converter(datestring):
+    split = datestring.split()
+    inp = translate(split[1]) + " " + split[0][0:2] + " " + split[2] + split[3]
+    dt = timestring.Date(inp)
+
+    return dt
+
+
+def translate(month):
+    if month == "januar":
+        return "january"
+    elif month == "februar":
+        return "february"
+    elif month == "mars":
+        return "march"
+    elif month == "april":
+        return "april"
+    elif month == "mai":
+        return "may"
+    elif month == "juni":
+        return "june"
+    elif month == "juli":
+        return "july"
+    elif month == "oktober":
+        return "october"
+    elif month == "desember":
+        return "december"
+    else:
+        return month
+
