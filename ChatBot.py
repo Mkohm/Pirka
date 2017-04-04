@@ -25,6 +25,7 @@ print("my ip address is: ", ip)
 # Flask app should start in global layout
 app = Flask(__name__)
 
+# Holds the current state of the login
 validLogin = False
 
 
@@ -34,7 +35,6 @@ class ChatBot:
 
         # Bind to PORT if defined, otherwise default to 5000.
         port = int(os.environ.get('PORT', 8080))
-        print(port, "er porten")
         app.run(debug=True, host='', port=port, threaded=True)
 
     # Receives action-name, gets the data and returns a string ready to send back to API.AI
