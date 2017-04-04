@@ -80,6 +80,12 @@ def process_actions(parameter: str, action_name: str) -> str:
         return create_data_response(DatabaseExtractor.get_exam_dates(username=parameter[0]))
     elif action_name == "get_days_until_first_exam":
         return create_data_response(DatabaseExtractor.get_days_until_first_exam(username=parameter[0]))
+    elif action_name == "get_course_codes":
+        return create_data_response(DatabaseExtractor.get_course_codes(username=parameter[0]))
+    elif action_name == "get_course_names":
+        return create_data_response(DatabaseExtractor.get_course_names(username=parameter[0]))
+    elif action_name == "get_number_of_courses":
+        return create_data_response(DatabaseExtractor.get_number_of_courses(username=parameter[0]))
     else:
         return "I didn't understand anything, you probably broke me :("
 

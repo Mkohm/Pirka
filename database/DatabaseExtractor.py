@@ -42,6 +42,26 @@ def get_course_codes(username):
 
     return string
 
+def get_course_names(username):
+
+    list = get_course_codes_list(username)
+
+    string = ""
+    for course_code in list:
+        ans = DatabaseConnector.get_values("Select course_name from course where course_code = \"" + course_code[0] + "\";")
+
+        course_name = ans[0][0]
+        string += course_name + "\n"
+
+    return string
+
+def get_number_of_courses(username):
+
+    list = get_course_codes_list(username)
+
+
+    return "You have " + str(len(list)) + " courses."
+
 
 def get_assessment_form(course_code):
     ans = DatabaseConnector.get_values('Select assessment_form, course_name from course where '
