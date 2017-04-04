@@ -2,7 +2,7 @@ from datetime import datetime
 
 import requests
 
-from database import DatabaseConnector
+import database.DatabaseConnector
 
 base_url = "http://www.ime.ntnu.no/api/course/en/"
 
@@ -15,7 +15,7 @@ def add_subject_data(course_code: str):
     :return: nothing
     """
 
-    #Get data to work with
+    # Get data to work with
     data = get_data(course_code)
 
     course_name = get_course_name(data)
@@ -27,7 +27,7 @@ def add_subject_data(course_code: str):
     contact_phone = get_contact_phone(data)
     credit = get_credit(data)
     url = get_url(data)
-    course_content= get_course_content(data)
+    course_content = get_course_content(data)
     course_material = get_course_material(data)
     teaching_form = get_teaching_form(data)
     prereq_knowledge = get_prereq_knowledge(data)
@@ -52,13 +52,16 @@ def add_subject_data(course_code: str):
     data.append(term)
 
     # Adds the data to the table
-    connection = DatabaseConnector.connection
+    connection = database.DatabaseConnector.connection
     cursor = connection.cursor()
     try:
-        cursor.execute("INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `course_material`, `teaching_form`, `term`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", data)
+        cursor.execute(
+            "INSERT INTO `course`(`course_code`,`course_name`,`exam_date`, `assessment_form`,`contact_name`, `contact_mail`,`contact_office`,`contact_phone`,`credit`, `url`, `prereq_knowledge`, `course_content`, `course_material`, `teaching_form`, `term`) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            data)
     except:
-        cursor.execute("UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, course_material = ?, teaching_form = ?, term = ? WHERE course_code = \"" + course_code + "\"", data[1:15])
-
+        cursor.execute(
+            "UPDATE `course` SET course_name = ?, exam_date = ?, assessment_form = ?, contact_name = ?, contact_mail = ?, contact_office = ?, contact_phone = ?, credit = ?, url = ?, prereq_knowledge = ?, course_content = ?, course_material = ?, teaching_form = ?, term = ? WHERE course_code = \"" + course_code + "\"",
+            data[1:15])
 
     connection.commit()
 
@@ -78,6 +81,7 @@ def get_prereq_knowledge(data):
         prereq_knowledge = "null"
 
     return prereq_knowledge
+
 
 def get_course_content(data):
     value = ""
@@ -111,6 +115,7 @@ def get_teaching_form(data):
         teaching_form = "null"
 
     return teaching_form
+
 
 def get_course_material(data):
     value = ""
@@ -211,17 +216,14 @@ def get_exam_date(data):
     return exam_date
 
 
-
 def add_user(username: str, password: str, facebook_id: int):
     data = []
     data.append(username)
     data.append(password)
     data.append(facebook_id)
 
-
-
     # Adds the data to the table
-    conn = DatabaseConnector.connection
+    conn = database.DatabaseConnector.connection
     cur = conn.cursor()
     try:
         cur.execute("INSERT INTO `user`(`username`,`password`,`facebook_id`) VALUES (?,?,?)", data)
@@ -233,14 +235,13 @@ def add_user(username: str, password: str, facebook_id: int):
 
 
 
-
 def get_term(data):
-
     try:
         term = data["course"]["assessment"][0]["realExecutionTerm"]
     except KeyError:
         term = "Term not available"
     return term
+
 
 """
 def set_year():
@@ -302,6 +303,7 @@ def is_valid_course():
         return False
 """
 
+
 def get_data(course_code):
     data = requests.get(base_url + course_code).json()
     return data
@@ -315,6 +317,7 @@ def get_course_name(data) -> str:
 
     return course_name
 
+
 def format_date(date: str) -> str:
     year = int(float(date[0:4]))
     month = int(float(date[5:7]))
@@ -326,7 +329,7 @@ def format_date(date: str) -> str:
 
 def add_assignment_data(course_code, title, index, mandatory, published, deadline, location, category, description):
     # Adds data to a list for insertion into table
-    assignment=[]
+    assignment = []
     assignment.append(course_code)
     assignment.append(index)
     assignment.append(category)
@@ -337,8 +340,8 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
     assignment.append(location)
     assignment.append(mandatory)
 
-# Adds the data to the table
-    connection = DatabaseConnector.connection
+    # Adds the data to the table
+    connection = database.DatabaseConnector.connection
     cursor = connection.cursor()
     try:
         cursor.execute("INSERT INTO assignment(course_code, nr, category, title, description, published, deadline, "
@@ -346,12 +349,13 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
     except:
         cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, "
                        "published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \""
-                       + course_code + "\" and category = \""+ category +"\" and nr = " + str(index), assignment)
+                       + course_code + "\" and category = \"" + category + "\" and nr = " + str(index), assignment)
 
     connection.commit()
 
+
 def add_user_has_course(username, course_code):
-    connection = DatabaseConnector.connection
+    connection = database.DatabaseConnector.connection
     cursor = connection.cursor()
 
     data_list = []
@@ -366,19 +370,16 @@ def add_user_has_course(username, course_code):
 
     connection.commit()
 
-<<<<<<< HEAD
-=======
 
->>>>>>> e2bfe34284a1257b78009cf6bc00294d213f60b3
 def add_user_completed_assignment(username, course_code, nr, category, score):
-    data_list=[]
+    data_list = []
     data_list.append(username)
     data_list.append(course_code)
     data_list.append(nr)
     data_list.append(category)
     data_list.append(score)
 
-    connection = DatabaseConnector.connection
+    connection = database.DatabaseConnector.connection
     cursor = connection.cursor()
     try:
         cursor.execute("INSERT INTO user_completed_assignment(username, course_code, nr, category, score)"
@@ -386,11 +387,9 @@ def add_user_completed_assignment(username, course_code, nr, category, score):
     except:
         cursor.execute("UPDATE user_completed_assignment "
                        "SET score = ? " +
-                       "WHERE username = \"" + username +"\" " +
-                        "and  course_code = \"" + course_code + "\" " +
-                        "and  nr = \"" + str(nr) + "\" " +
-                        "and category =\"" + category + "\"", str(score))
+                       "WHERE username = \"" + username + "\" " +
+                       "and  course_code = \"" + course_code + "\" " +
+                       "and  nr = \"" + str(nr) + "\" " +
+                       "and category =\"" + category + "\"", str(score))
 
     connection.commit()
-
-

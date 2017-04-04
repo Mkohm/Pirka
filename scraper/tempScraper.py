@@ -86,8 +86,7 @@ class tempScraper:
         for course in courses:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
             course_list.append(course.text)
-            course_list.append(course.text)
-            DatabaseInserter.add_user_has_course(self.username, str(course.text[0:7]))
+            DatabaseInserter.add_user_has_course(self.username, str(course.text.split()[0]))
 
         return course_list
 
