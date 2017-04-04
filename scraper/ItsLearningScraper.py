@@ -147,13 +147,14 @@ class ItsLearningScraper:
 
                 try:
                     assessment = driver.find_element_by_class_name("colorbox_green").text
+                    if "Godkjent/Vurdert" == assessment:
+                        score = 1
+                    else:
+                        score = 0
                 except:
-                    print(" ")
-
-                if "Godkjent/Vurdert" == assessment:
-                    score = 1
-                else:
                     score = 0
+
+
 
                 DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
                                                      "its", "exercise", " ingen ")
