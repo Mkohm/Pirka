@@ -2,8 +2,6 @@ from database import DatabaseConnector
 #todo: make possible for nontype fields
 
 def get_exam_date(course_code):
-    print("Getting exam date ...")
-    print(course_code)
     ans = DatabaseConnector.get_values("Select exam_date, course_name from course where "
                                                "course.course_code = \"" + course_code + "\";")
 
@@ -18,6 +16,21 @@ def get_exam_date(course_code):
     else:
         return "Exam date in " + course_code + " " + name + " is " + date
     #todo: add reason if field is empty
+
+def get_exam_dates(username):
+    ans = DatabaseConnector.get_values("Select course_code from user_has_course where "
+                                       "user_has_course.username = \"" + username + "\";")
+
+    string = ""
+    for course_code in ans:
+        string += course_code[0] + ": " + get_exam_date(course_code[0]) + "\n\n"
+
+
+
+    return string
+
+
+
 
 def get_assessment_form(course_code):
     ans = DatabaseConnector.get_values('Select assessment_form, course_name from course where '
@@ -155,7 +168,7 @@ def get_exercises_left(course_code, username):
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
 
-
+    print(ans)
 
     try:
         score = ans[0][1]
@@ -221,9 +234,12 @@ def get_next_assignment(username):
         title = ans[0][0]
         date = ans[0][1]
         course_name = ans[0][2]
-        return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name
+        return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name + "."
     except:
         return "null"
+
+
+
 
 
 def get_users() -> list:

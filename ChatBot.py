@@ -27,6 +27,12 @@ port = int(os.environ.get('PORT', 8080))
 
 
 def process_actions(parameter: str, action_name: str) -> str:
+    """
+    Explanation of parameters
+    :param parameter:
+    :param action_name:
+    :return:
+    """
     if action_name == "login":
         return create_followup_event_data(parameter)
     elif action_name == "get_exam_date":
@@ -70,6 +76,8 @@ def process_actions(parameter: str, action_name: str) -> str:
         return create_data_response(DatabaseExtractor.get_next_event(username=parameter[0]))
     elif action_name == "get_next_assignment":
         return create_data_response(DatabaseExtractor.get_next_assignment(username=parameter[0]))
+    elif action_name == "get_exam_dates":
+        return create_data_response(DatabaseExtractor.get_exam_dates(username=parameter[0]))
     else:
         return "I didn't understand anything, you probably broke me :("
 
@@ -104,9 +112,15 @@ def create_followup_event_data(parameter_value: str):
 def add_ime_api_data():
     file = open("/Users/mariuskohmann/PycharmProjects/Pirka/imeapi/course_codes.txt")
     for line in file:
-        course_code = line.split(",")[0].replace("\"", "")
-        print(course_code)
-        DatabaseInserter.add_subject_data(course_code)
+        course = line.split(",")
+
+        for element in course:
+            if "\"code" in element:
+                course_code = element.split(":")[1].replace("\"", "")
+                if "\\" in course_code or "{" in course_code:
+                    continue
+                print(course_code)
+                DatabaseInserter.add_subject_data(course_code)
 
 
 def thread_function(username: str, password: str):
