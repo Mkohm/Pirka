@@ -28,7 +28,6 @@ port = int(os.environ.get('PORT', 8080))
 
 def process_actions(parameter: str, action_name: str) -> str:
     if action_name == "login":
-        print(parameter)
         return create_followup_event_data(parameter)
     elif action_name == "get_exam_date":
         return create_data_response(DatabaseExtractor.get_exam_date(parameter[1]))
@@ -68,7 +67,9 @@ def process_actions(parameter: str, action_name: str) -> str:
     elif action_name == "get_lab_status":
         return create_data_response(DatabaseExtractor.get_lab_status(parameter[1], parameter[0]))
     elif action_name == "get_next_event":
-        return create_data_response(DatabaseExtractor.get_next_event(parameter[0]))
+        return create_data_response(DatabaseExtractor.get_next_event(username=parameter[0]))
+    elif action_name == "get_next_assignment":
+        return create_data_response(DatabaseExtractor.get_next_assignment(username=parameter[0]))
     else:
         return "I didn't understand anything, you probably broke me :("
 
@@ -100,21 +101,23 @@ def create_followup_event_data(parameter_value: str):
     return data
 
 
+def add_ime_api_data():
+    file = open("/Users/mariuskohmann/PycharmProjects/Pirka/imeapi/course_codes.txt")
+    for line in file:
+        course_code = line.split(",")[0].replace("\"", "")
+        print(course_code)
+        DatabaseInserter.add_subject_data(course_code)
+
+
 def thread_function(username: str, password: str):
     """
     This function runs when the user has logged in. It adds the data that is relevant for this user in its own thread.
 
-    It first add all the non-user specific data to the database
-    :param username:
-    :param password:
-    :return:
+    It first add all the user specific data to the database, and then it adds all the IME-API data.
+
     """
 
-    # To be removed?
-    # Get a list of course codes that the user has
-    # course_list = LoginHandler.get_course_list(username, password)
 
-    print("starter scraping")
 
     # Scrapes for additional data that is user specific
     myScraper = ItsLearningScraper(username, password)
@@ -124,10 +127,6 @@ def thread_function(username: str, password: str):
 
     # adds user's associated assignment data
     myScraper.get_all_assignments()
-
-    # Adds the users courses (and course-data) to the database
-    # for course in course_list:
-    #    DatabaseInserter.add_subject_data(course.split()[0])
 
 
 def valid_login(username: str, password: str):
@@ -152,7 +151,6 @@ All web endpoint functions is listed below
 def webhook():
     json_request = request.get_json(silent=True, force=True)
 
-    print(json.dumps(json_request, indent=4))
 
     # Extract the data from the json-request (first get the result section of the json)
     result = json_request.get("result")
@@ -163,6 +161,7 @@ def webhook():
     action_name = result.get("action")
 
     # Handles different parameters to the process-actions method
+    # todo: This method should be fixed better
     if action_name == "login":
 
         # Depending on if the event "WELCOME_FACEBOOK" or if the user typed "login, get started ect" the
@@ -180,7 +179,6 @@ def webhook():
         else:
             facebook_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
 
-        print(facebook_id, " er face id")
         username = \
         DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id + "\"")[0][0]
         parameter = [username, parameters.get("course_code")]
@@ -245,5 +243,10 @@ def login(current_sender_id):
 """
 Start app
 """
+
 if __name__ == '__main__':
+    # Add all the IME-API data to the database
+
+    #add_ime_api_data()
+
     app.run(debug=True, host='', port=port, threaded=True)  # Receives action-name, gets the data and returns a string ready to send back to API.AI

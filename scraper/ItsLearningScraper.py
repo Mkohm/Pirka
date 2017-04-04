@@ -122,7 +122,7 @@ class ItsLearningScraper:
                 attribute = driver.find_elements_by_class_name("h-mrb5")
 
                 published = attribute[0].text[11:]
-                deadline = attribute[1].text[11:]
+                deadline = attribute[1].text.replace("Deadline: ", "")
                 deadline = str(datetime_converter(deadline))
 
                 if "Ja" in attribute[2].text:
@@ -206,6 +206,7 @@ class ItsLearningScraper:
         driver.quit()
 
 def datetime_converter(datestring):
+    print(datestring)
     split = datestring.split()
     inp = translate(split[1]) + " " + split[0][0:2] + " " + split[2] + split[3]
     dt = timestring.Date(inp)

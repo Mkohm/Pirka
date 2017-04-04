@@ -216,7 +216,7 @@ def get_next_event(username):
 def get_next_assignment(username):
     ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
                                        "from user_assignment as A, course as C "
-                                       "where A.username = \"" + username + "\" and A.course_code = C.course_code order by deadline LIMIT 1")
+                                       "where A.username = \"" + username + "\" and A.course_code = C.course_code order by deadline DESC LIMIT 1")
     try:
         title = ans[0][0]
         date = ans[0][1]
