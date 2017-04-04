@@ -1,5 +1,11 @@
 from database import DatabaseConnector
+from datetime import datetime, date
 #todo: make possible for nontype fields
+
+"""
+Functions that returs strings that the user will see is listed under here
+"""
+
 
 def get_exam_date(course_code):
     ans = DatabaseConnector.get_values("Select exam_date, course_name from course where "
@@ -25,11 +31,16 @@ def get_exam_dates(username):
     for course_code in ans:
         string += course_code[0] + ": " + get_exam_date(course_code[0]) + "\n\n"
 
-
-
     return string
 
+def get_course_codes(username):
+    ans = DatabaseConnector.get_values("Select course_code from user_has_course")
 
+    string = ""
+    for course_code in ans:
+        string += course_code[0] + "\n"
+
+    return string
 
 
 def get_assessment_form(course_code):
@@ -150,7 +161,6 @@ def get_exercise_status(course_code, username):
                                         "S.username ;")
 
 
-
     try:
         score = str(ans[0][1])
         course_name= ans[0][3]
@@ -168,7 +178,6 @@ def get_exercises_left(course_code, username):
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
 
-    print(ans)
 
     try:
         score = ans[0][1]
@@ -239,8 +248,35 @@ def get_next_assignment(username):
         return "null"
 
 
+
 def get_days_until_first_exam(username):
-    pass
+
+    course_list = get_course_codes_list(username)
+
+    dates = []
+
+    for course_code in course_list:
+        ans = DatabaseConnector.get_values("Select exam_date, course_name from course where "
+                                       "course.course_code = \"" + course_code[0] + "\";")
+
+
+        date = ans[0][0]
+        if date == "null":
+            continue
+        else:
+            #dato = datetime.date(datetime.strptime("Jun 02, 2017", "%b %d, %Y"))
+            dato = datetime.date(datetime.strptime(str(date).split(" ")[0][0:3] + " " + str(date).split(" ")[1] + " " + str(date).split(" ")[2], "%b %d, %Y"))
+            dates.append(dato)
+
+    closestDate = min(dates)
+
+    days_to_exam = (closestDate - datetime.now().date())
+
+    return "There is " + str(days_to_exam.days) + " days to your first exam."
+
+
+
+
 
 def get_this_weeks_schedule(username):
     # Lists all the assignments that should be done this week
@@ -256,6 +292,23 @@ def get_all_remaining_assignments(username):
     # Lists all the remaining assignments
 
     pass
+
+
+
+"""
+Functions that returns other types and is used as helper methods is listed here
+"""
+
+
+def get_course_codes_list(username):
+    ans = DatabaseConnector.get_values("Select course_code from user_has_course")
+
+    course_codes = []
+    for course_code in ans:
+        course_codes.append(course_code)
+
+    return course_codes
+
 
 
 def get_users() -> list:

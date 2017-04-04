@@ -235,7 +235,7 @@ for key in my_event.get_week_dict():
 # print(my_event.get_next_event())
 #
 #
-# my_course = CourseEvents()
-# print(my_course.get_next_event())
-# print(my_course.get_weekly_overview(8))
+#my_course = CourseEvents()
+#print(my_course.get_next_event())
+#print(my_course.get_weekly_overview(8))
 

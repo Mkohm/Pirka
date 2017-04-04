@@ -78,6 +78,8 @@ def process_actions(parameter: str, action_name: str) -> str:
         return create_data_response(DatabaseExtractor.get_next_assignment(username=parameter[0]))
     elif action_name == "get_exam_dates":
         return create_data_response(DatabaseExtractor.get_exam_dates(username=parameter[0]))
+    elif action_name == "get_days_until_first_exam":
+        return create_data_response(DatabaseExtractor.get_days_until_first_exam(username=parameter[0]))
     else:
         return "I didn't understand anything, you probably broke me :("
 
