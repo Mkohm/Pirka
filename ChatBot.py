@@ -10,7 +10,7 @@ from database import DatabaseConnector
 from database import DatabaseExtractor
 from database import DatabaseInserter
 from scraper import LoginHandler
-from scraper.tempScraper import tempScraper
+from scraper.ItsLearningScraper import ItsLearningScraper
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -117,8 +117,7 @@ def thread_function(username: str, password: str):
     print("starter scraping")
 
     # Scrapes for additional data that is user specific
-    # scraper = ItsLearningScraper(username, password)
-    myScraper = tempScraper(username, password)
+    myScraper = ItsLearningScraper(username, password)
 
     # returns a list of courses that the user has, and adds user-course relation to database
     course_list = myScraper.get_course_list()
