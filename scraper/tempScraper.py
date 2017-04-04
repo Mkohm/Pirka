@@ -2,7 +2,6 @@ from selenium import webdriver
 import os
 import platform
 from database import DatabaseInserter
-import timestring
 
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
