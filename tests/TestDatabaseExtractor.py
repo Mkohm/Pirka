@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from database import DatabaseExtractor
 
-class TestCourse(TestCase):
+class TestDatabaseExtractor(TestCase):
 
     #OK
     def test_get_exam_date_ok_input(self):

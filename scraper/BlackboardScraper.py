@@ -37,7 +37,7 @@ class BlackboardScraper:
         password_field.send_keys(password)
         password_field.submit()
 
-        # necassary to locate the course list
+        # necessary to locate the course list
         self.current_term = "(2017 VÅR)"
         self.course_list = self.get_course_list()
 
@@ -66,6 +66,7 @@ class BlackboardScraper:
 
         return course_list
 
+
     def get_course(self, index):
         driver.get("https://ntnu.blackboard.com/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_70_1")
         courses = driver.find_elements_by_partial_link_text(self.current_term)
@@ -85,7 +86,13 @@ class BlackboardScraper:
         print("Course: " + current_course)
         courses[index].click()
 
-        driver.find_element_by_id("menuPuller").click()
+    def get_assignments(self, index):
+        driver.get("https://ntnu.blackboard.com/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_70_1")
+        courses = driver.find_elements_by_partial_link_text(self.current_term)
+
+
+        current_course = courses[index].text.split()[0]
+
 
         assignment_folder = driver.find_element_by_partial_link_text("Øvinger")
         assignment_folder.click()
@@ -130,24 +137,45 @@ class BlackboardScraper:
         #     print("Item " + str(i) + "\n" + item[i].text)
         #     print("Timestamp: " + timestamp[i].text + "\n\n")
 
+        print("Course: " + current_course)
+        courses[index].click()
 
-    def get_completed_assignments(self):
+        # driver.find_element_by_id("menuPuller").click()
 
-        driver.get("https://ntnu.blackboard.com/webapps/bb-social-learning-BBLEARN/execute/mybb?cmd=display&toolId=MyGradesOnMyBb_____MyGradesTool")
-        driver.implicitly_wait(5)
+        assignment_folder = driver.find_element_by_partial_link_text("Øvinger")
+        assignment_folder.click()
 
-        driver.switch_to.frame("mybbCanvas")
-        driver.switch_to.frame("right_stream_mygrades")
+        assignments = driver.find_elements_by_partial_link_text("Øving")
+        print("Num of assign: " + str(len(assignments)))
 
-        # sorts the assignments by ascending deadlines.
-        select = Select(driver.find_element_by_name('sortby'))
-        select.select_by_visible_text("Innleveringsfrist (eldste først)")
+
+        for i in range(1, len(assignments)):
+
+            print("\nLooking for link 'Øving " + str(i) + "'")
+
+            try:
+                assignment = driver.find_element_by_partial_link_text("Øving " + str(i))
+                title = assignment.text
+                print("Title: " + title + " (" + current_course + ", i=" + str(i) + ")")
+                assignment.click()
+                try:
+                    score = driver.find_element_by_id("aggregateGrade")
+                    print(score.get_attribute("value"))
+                except:
+                    print("Score not available")
+                max_score = driver.find_element_by_id("aggregateGrade_pointsPossible")
+                print(max_score.text)
+                driver.back()
+            except:
+                print("Exercise info not available")
+                driver.back()
 
         assignments = driver.find_elements_by_css_selector("sortable.item_row.graded_item_row.row.expanded")
 
         assignment = assignments[0]
         grade = assignment.get_attribute("grade")
         print("Grade: " + grade)
+
 
 
         # activity = driver.find_elements_by_class_name("activityType")
@@ -168,6 +196,12 @@ class BlackboardScraper:
         #         print(" ")
 
 
+    def get_all_assignments(self):
+
+
+        for i in range(0, len(self.course_list)):
+            self.get_assignments(i)
+
     def close_driver(self):
         driver.quit()
 
@@ -176,10 +210,17 @@ password = input("Password: ")
 myScrape = BlackboardScraper(user, password)
 
 
+
 try:
     myScrape.get_all_assignments()
 
     # myScrape.get_completed_assignments()
+except:
+    print("failed")
+
+
+try:
+    myScrape.get_all_assignments()
 except:
     print("failed")
 

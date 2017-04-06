@@ -25,8 +25,6 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 ```
 The result will be something like this:
 
-<<<<<<< HEAD
-
 ![Ngrok forwards requests to localhost](https://raw.githubusercontent.com/Mkohm/Pirka/master/demo_pictures/ngrok.png "Ngrok forwards requests to localhost")
 
 

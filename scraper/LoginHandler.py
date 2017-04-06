@@ -17,7 +17,10 @@ def login(username, password):
     password_field = driver.find_element_by_name("password")
     password_field.send_keys(password)
     password_field.submit()
+    login_success_field = driver.find_element_by_name("mainmenu")
+
     driver.close()
+    driver.quit()
 
 
 def get_course_list(username, password):
