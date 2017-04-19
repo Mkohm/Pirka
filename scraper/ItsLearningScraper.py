@@ -26,7 +26,6 @@ class ItsLearningScraper:
 
         # TODO: add functionality for user credentials as parameters
 
-
         self.username = username
         self.password = password
 
@@ -157,17 +156,12 @@ class ItsLearningScraper:
 
                 except:
                     assessment = "not available"
-                print("Assessmnet: " + assessment)
+                    print("Assessmnet: " + assessment)
 
                     if "Godkjent/Vurdert" == assessment:
                         score = 1
                     else:
                         score = 0
-                except:
-                    score = 0
-
-
-
 
                 DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
                                                      "its", "exercise", " ingen ")
@@ -259,4 +253,3 @@ def translate(month):
         return "december"
     else:
         return month
-
