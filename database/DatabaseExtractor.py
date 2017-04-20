@@ -107,7 +107,7 @@ def get_contact_phone(course_code):
     else:
         return "The phone number of the contact person in " + course_code + " " + name + " is " + contact_phone
 
-def get_contact_website(course_code):
+def get_contact_(course_code):
     ans = DatabaseConnector.get_values("Select contact_website, course_name from course where "
                                                          'course.course_code = "' + course_code + '";')
     contact_website=ans[0][0]
@@ -256,6 +256,8 @@ def get_next_event(username):
     except:
         return "null"
 
+
+# todo: fix this method, this method will return the latest assignment, not the next
 def get_next_assignment(username):
     ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
                                        "from user_assignment as A, course as C "
@@ -267,8 +269,6 @@ def get_next_assignment(username):
         return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name + "."
     except:
         return "null"
-
-
 
 def get_days_until_first_exam(username):
 
@@ -295,14 +295,20 @@ def get_days_until_first_exam(username):
 
     return "There is " + str(days_to_exam.days) + " days to your first exam."
 
-
-
-
-
 def get_this_weeks_schedule(username):
     # Lists all the assignments that should be done this week
 
-    pass
+
+    ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
+                                        "from user_assignment as A, course as C "
+                                        "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now') AND DATE('now', 'weekday 0')) order by deadline DESC")
+
+
+
+
+
+
+
 
 def get_next_weeks_schedule(username):
     # Lists all the assignments that should be done by next week
@@ -336,3 +342,5 @@ def get_users() -> list:
     ans = DatabaseConnector.get_values("Select * from user")
 
     return ans
+
+get_this_weeks_schedule("mariukoh")

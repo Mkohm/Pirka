@@ -206,7 +206,7 @@ def webhook():
         course_code = parameters.get("course_code")
         parameter = [username, course_code]
 
-    print("process actions, parameter:" + parameter[1] + " actioname: " + action_name)
+    print("process actions, parameter:" + str(parameter[1]) + " actioname: " + action_name)
     speech = process_actions(parameter, action_name)
 
     response = json.dumps(speech, indent=4)
