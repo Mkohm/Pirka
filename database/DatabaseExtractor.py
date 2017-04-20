@@ -96,6 +96,7 @@ def get_contact_office(course_code):
         return "The office address of the contact person in " + course_code + " " + name + " is " + contact_office
 
 def get_contact_phone(course_code):
+    print(course_code)
     ans = DatabaseConnector.get_values("Select contact_phone, course_name from course where course.course_code = \""
                                                        + course_code + "\";")
     contact_phone=ans[0][0]

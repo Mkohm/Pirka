@@ -201,10 +201,12 @@ def webhook():
         else:
             facebook_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
 
-        username = \
-        DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id + "\"")[0][0]
-        parameter = [username, parameters.get("course_code")]
+        username = DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id + "\"")[0][0]
 
+        course_code = parameters.get("course_code")
+        parameter = [username, course_code]
+
+    print("process actions, parameter:" + parameter[1] + " actioname: " + action_name)
     speech = process_actions(parameter, action_name)
 
     response = json.dumps(speech, indent=4)
