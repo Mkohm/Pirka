@@ -11,6 +11,7 @@ from database import DatabaseExtractor
 from database import DatabaseInserter
 from scraper import LoginHandler
 from scraper.ItsLearningScraper import ItsLearningScraper
+from scraper.BlackboardScraper import BlackboardScraper
 
 # Flask app should start in global layout
 app = Flask(__name__)
@@ -142,13 +143,17 @@ def thread_function(username: str, password: str):
 
 
     # Scrapes for additional data that is user specific
-    myScraper = ItsLearningScraper(username, password)
+    itslearning_scraper = ItsLearningScraper(username, password)
+    blackboad_scraper = BlackboardScraper(username, password)
 
-    # returns a list of courses that the user has, and adds user-course relation to database
-    course_list = myScraper.get_course_list()
+    # adds user-course relation to database
+    itslearning_scraper.get_course_list()
+    blackboad_scraper.get_course_list()
+
 
     # adds user's associated assignment data
-    myScraper.get_all_assignments()
+    itslearning_scraper.get_all_assignments()
+    blackboad_scraper.get_all_assignments()
 
 
 def valid_login(username: str, password: str):
