@@ -1,9 +1,13 @@
 from database import DatabaseConnector
+from datetime import datetime, date
 #todo: make possible for nontype fields
 
+"""
+Functions that returs strings that the user will see is listed under here
+"""
+
+
 def get_exam_date(course_code):
-    print("Getting exam date ...")
-    print(course_code)
     ans = DatabaseConnector.get_values("Select exam_date, course_name from course where "
                                                "course.course_code = \"" + course_code + "\";")
 
@@ -18,6 +22,46 @@ def get_exam_date(course_code):
     else:
         return "Exam date in " + course_code + " " + name + " is " + date
     #todo: add reason if field is empty
+
+def get_exam_dates(username):
+    ans = DatabaseConnector.get_values("Select course_code from user_has_course where "
+                                       "user_has_course.username = \"" + username + "\";")
+
+    string = ""
+    for course_code in ans:
+        string += course_code[0] + ": " + get_exam_date(course_code[0]) + "\n\n"
+
+    return string
+
+def get_course_codes(username):
+    ans = DatabaseConnector.get_values("Select course_code from user_has_course")
+
+    string = ""
+    for course_code in ans:
+        string += course_code[0] + "\n"
+
+    return string
+
+def get_course_names(username):
+
+    list = get_course_codes_list(username)
+
+    string = ""
+    for course_code in list:
+        ans = DatabaseConnector.get_values("Select course_name from course where course_code = \"" + course_code[0] + "\";")
+
+        course_name = ans[0][0]
+        string += course_name + "\n"
+
+    return string
+
+def get_number_of_courses(username):
+
+    list = get_course_codes_list(username)
+
+
+    return "You have " + str(len(list)) + " courses."
+
 
 def get_assessment_form(course_code):
     ans = DatabaseConnector.get_values('Select assessment_form, course_name from course where '
@@ -52,6 +96,7 @@ def get_contact_office(course_code):
         return "The office address of the contact person in " + course_code + " " + name + " is " + contact_office
 
 def get_contact_phone(course_code):
+    print(course_code)
     ans = DatabaseConnector.get_values("Select contact_phone, course_name from course where course.course_code = \""
                                                        + course_code + "\";")
     contact_phone=ans[0][0]
@@ -62,7 +107,7 @@ def get_contact_phone(course_code):
     else:
         return "The phone number of the contact person in " + course_code + " " + name + " is " + contact_phone
 
-def get_contact_website(course_code):
+def get_contact_(course_code):
     ans = DatabaseConnector.get_values("Select contact_website, course_name from course where "
                                                          'course.course_code = "' + course_code + '";')
     contact_website=ans[0][0]
@@ -137,7 +182,6 @@ def get_exercise_status(course_code, username):
                                         "S.username ;")
 
 
-
     try:
         score = str(ans[0][1])
         course_name= ans[0][3]
@@ -154,7 +198,6 @@ def get_exercises_left(course_code, username):
                                        "status_exercise as S, course as C where S.course_code = \"" +course_code+"\" "
                                        "and S.course_code = C.course_code and S.username = \"" + username +"\" group by "
                                         "S.username ;")
-
 
 
     try:
@@ -213,20 +256,91 @@ def get_next_event(username):
     except:
         return "null"
 
+
+# todo: fix this method, this method will return the latest assignment, not the next
 def get_next_assignment(username):
     ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
                                        "from user_assignment as A, course as C "
-                                       "where A.username = \"" + username + "\" and A.course_code = C.course_code order by deadline LIMIT 1")
+                                       "where A.username = \"" + username + "\" and A.course_code = C.course_code order by deadline DESC LIMIT 1")
     try:
         title = ans[0][0]
         date = ans[0][1]
         course_name = ans[0][2]
-        return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name
+        return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name + "."
     except:
         return "null"
+
+def get_days_until_first_exam(username):
+
+    course_list = get_course_codes_list(username)
+
+    dates = []
+
+    for course_code in course_list:
+        ans = DatabaseConnector.get_values("Select exam_date, course_name from course where "
+                                       "course.course_code = \"" + course_code[0] + "\";")
+
+
+        date = ans[0][0]
+        if date == "null":
+            continue
+        else:
+            #dato = datetime.date(datetime.strptime("Jun 02, 2017", "%b %d, %Y"))
+            dato = datetime.date(datetime.strptime(str(date).split(" ")[0][0:3] + " " + str(date).split(" ")[1] + " " + str(date).split(" ")[2], "%b %d, %Y"))
+            dates.append(dato)
+
+    closestDate = min(dates)
+
+    days_to_exam = (closestDate - datetime.now().date())
+
+    return "There is " + str(days_to_exam.days) + " days to your first exam."
+
+def get_this_weeks_schedule(username):
+    # Lists all the assignments that should be done this week
+
+
+    ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
+                                        "from user_assignment as A, course as C "
+                                        "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now') AND DATE('now', 'weekday 0')) order by deadline DESC")
+
+
+
+
+
+
+
+
+def get_next_weeks_schedule(username):
+    # Lists all the assignments that should be done by next week
+
+    pass
+
+def get_all_remaining_assignments(username):
+    # Lists all the remaining assignments
+
+    pass
+
+
+
+"""
+Functions that returns other types and is used as helper methods is listed here
+"""
+
+
+def get_course_codes_list(username):
+    ans = DatabaseConnector.get_values("Select course_code from user_has_course")
+
+    course_codes = []
+    for course_code in ans:
+        course_codes.append(course_code)
+
+    return course_codes
+
 
 
 def get_users() -> list:
     ans = DatabaseConnector.get_values("Select * from user")
 
     return ans
+
+get_this_weeks_schedule("mariukoh")

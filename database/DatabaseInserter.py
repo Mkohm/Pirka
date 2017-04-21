@@ -193,18 +193,22 @@ def get_contact_name(data):
 
 def get_assessment_form(data):
     assessment_form = "null"
-    number = len(data["course"]["assessment"])
-    liste = [" "] * number
-    for i in range(0, number):
-        try:
-            liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
-        except:
-            liste[i] = "null"
 
-        assessment_form = ' and '.join(liste)
+    try:
+        number = len(data["course"]["assessment"])
+        liste = [" "] * number
+        for i in range(0, number):
+            try:
+                liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
+            except:
+                liste[i] = "null"
 
-    return assessment_form
+            assessment_form = ' and '.join(liste)
 
+        return assessment_form
+    except:
+        assessment_form = "null"
+        return assessment_form
 
 def get_exam_date(data):
     try:
@@ -238,7 +242,7 @@ def add_user(username: str, password: str, facebook_id: int):
 def get_term(data):
     try:
         term = data["course"]["assessment"][0]["realExecutionTerm"]
-    except KeyError:
+    except:
         term = "Term not available"
     return term
 
