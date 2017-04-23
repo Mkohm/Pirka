@@ -6,7 +6,6 @@ import platform
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
 
-# TODO: move these varibles and make them member varibales in the class below if needed @Kohm?
 driver_directory = os.path.dirname(__file__)
 if platform.system() == "Windows":
     relative_path = "chromedriver.exe"

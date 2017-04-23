@@ -4,11 +4,8 @@ import platform
 from database import DatabaseInserter
 import timestring
 
-
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
-
-# TODO: move these variables and make them member variables in the class below if needed?
 
 driver_directory = os.path.dirname(__file__)
 if platform.system() == "Windows":
@@ -20,6 +17,7 @@ absolute_file_path = os.path.join(driver_directory, relative_path)
 chrome_profile = webdriver.ChromeOptions()
 driver = webdriver.Chrome(executable_path=absolute_file_path)
 driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
+
 
 class ItsLearningScraper:
     def __init__(self, username, password):
@@ -55,16 +53,17 @@ class ItsLearningScraper:
         cal.click()
 
         # extracts the calendar feed url and returns it as a string
+        webcal_url = driver.find_element_by_id("ctl00_ContentPlaceHolder_ICalFeedModalDialog_ICalFeedLink").text
 
-        # TODO: This URL structure can be used to subscribe to a calendar by URL, implement feature
+        # creates a ical-version of the feed to make it compatible with the icalendar library.
+        ical_url = webcal_url.replace("webcal", "https")
+
+        # TODO: This URL structure can be used to subscribe to a calendar by URL, implement feature if necessary
         # https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
 
-        return driver.find_element_by_id("ctl00_ContentPlaceHolder_ICalFeedModalDialog_ICalFeedLink").text
+        return ical_url
 
     # returns the user course list as a list of strings
-
-    # TODO: Write the result to database.user_has_subject
-
     def get_course_list(self):
 
         # gets the course overview page
@@ -78,16 +77,12 @@ class ItsLearningScraper:
 
         for course in courses:
             # '.text' extracts the text contained in the WebElement (which is what Selenium extracts)
-
-            course_list.append(course.text)
-
             course_list.append(course.text.split()[0])
-
             DatabaseInserter.add_user_has_course(self.username, str(course.text.split()[0]))
 
         return course_list
 
-    # Should be splitted into several methods, but have not found a solution that Selenium supports yet.
+    # Should be splitted into several methods, but have not found a robust solution that Selenium supports yet.
     def get_assignments(self, course_index):
 
         # gets the course overview page
@@ -102,15 +97,13 @@ class ItsLearningScraper:
         print("Extracting info from: " + course_code)
         courses[course_index].click()
 
-        # Try to find a folder containing assignments
-        # TODO: cleanup the nested try-except
+        # Trying to find a folder containing assignments
         try:
             link = driver.find_element_by_link_text("Assignments")
         except:
             try:
                 link = driver.find_element_by_link_text("Øvinger")
             except:
-                print("Unable to find assignments for " + course_code)
                 return "Unable to find assignments for " + course_code
 
         link.click()
@@ -118,7 +111,6 @@ class ItsLearningScraper:
         link = driver.find_elements_by_class_name("GridTitle")
 
         # loops through every element in the assignment folder, tries to extract info
-        # TODO: store the values in the database
         for i in range(0, len(link)):
             link[i].click()
 
@@ -142,26 +134,19 @@ class ItsLearningScraper:
 
                 group = attribute[4].text[14:]
 
-                # print("Title: " + title)
-                # print("Published: " + published)
-                # print("Deadline: " + deadline)
-                # print("Obligatory: " + str(obligatory))
-                # print("Anonym: " + str(anonymous))
-                # print("Group: " + group)
-
-
+                print("Title: " + title)
+                print("Published: " + published)
+                print("Deadline: " + deadline)
+                print("Obligatory: " + str(obligatory))
+                print("Anonym: " + str(anonymous))
+                print("Group: " + group)
 
                 try:
                     assessment = driver.find_element_by_class_name("colorbox_green").text
-
                 except:
                     assessment = "not available"
                     print("Assessmnet: " + assessment)
-
-                    if "Godkjent/Vurdert" == assessment:
-                        score = 1
-                    else:
-                        score = 0
+                    score = 0
 
                 DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
                                                      "its", "exercise", " ingen ")
@@ -253,3 +238,16 @@ def translate(month):
         return "december"
     else:
         return month
+
+
+username = "evenkal"
+password = input("Password: ")
+
+scraper = ItsLearningScraper(username, password)
+
+try:
+    scraper.get_all_assignments()
+except:
+    print("Fail")
+
+scraper.close_driver()

@@ -1,12 +1,13 @@
 from icalendar import Calendar, Event
+import certifi
 
 import urllib3
 
 
-def cal_test():
+def blackboard_parser():
 
     http = urllib3.PoolManager()
-    r = http.request('GET', 'https://ntnu.blackboard.com/webapps/calendar/calendarFeed/d93aee49380f4c3ca9268f8a16dd92ae/learn.ics')
+    r = http.request('GET', 'https://ntnu.blackboard.com/webapps/calendar/calendarFeed/7f902b41e0304ccd97426c82ce6df585/learn.ics')
 
     cal = Calendar.from_ical(r.data)
 
@@ -14,9 +15,8 @@ def cal_test():
 
         uid = str(event.get('uid'))
 
-
-        summery = event.get('summary')
-        print(str(summery))
+        summary = event.get('summary')
+        print(str(summary))
 
         start = event.get('dtstart')
         print(start.dt)
@@ -35,4 +35,4 @@ def cal_test():
     return
 
 
-cal_test()
+blackboard_parser()
