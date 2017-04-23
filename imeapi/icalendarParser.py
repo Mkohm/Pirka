@@ -4,10 +4,11 @@ import certifi
 import urllib3
 
 
-def blackboard_parser():
+def icalendar_parser():
 
-    http = urllib3.PoolManager()
-    r = http.request('GET', 'https://ntnu.blackboard.com/webapps/calendar/calendarFeed/7f902b41e0304ccd97426c82ce6df585/learn.ics')
+    # opens a secure connection to the feed source
+    http = urllib3.PoolManager(cert_reqs='CERT_REQUIRED', ca_certs=certifi.where())
+    r = http.request('GET', 'https://ntnu.itslearning.com/Calendar/CalendarFeed.ashx?LocationType=3&LocationID=0&PersonId=122979&CustomerId=105&ChildId=0&Guid=5c602cad73b1dfce22dcb64372f18e17&Culture=nb-NO&FavoriteOnly=True')
 
     cal = Calendar.from_ical(r.data)
 
@@ -29,10 +30,4 @@ def blackboard_parser():
 
         print("\n")
 
-
-
-
-    return
-
-
-blackboard_parser()
+icalendar_parser()

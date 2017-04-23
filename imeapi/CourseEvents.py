@@ -98,7 +98,7 @@ class Event:
         self.recurrences = self.get_recurrences()  # number of recurrences
         self.week_dict = self.get_week_dict()  # dict with every lecture/guidance week as key and event info as value
         self.next_event = self.get_next_event()  # TODO: move functionality to databaseExtractor after the remainding functionalty is change to take regard to database system
-        # TODO: self.study_programmes = self.get_study_programmes()
+        self.study_programmes = self.get_study_programmes()
 
     def get_data(self):
         data_dict = requests.get(base_url).json()
@@ -184,11 +184,11 @@ class Event:
         if week_index < 10:
             return "Week:  " + str(week_index) + " " + str(
                 self.get_day()) + " " + self.start_time + "-" + self.end_time + " - " + self.get_event_type() + \
-                   " in " + self.get_event_room() + "\n"
+                   " in " + self.get_event_room() + " for " + self.get_study_programmes() + "\n"
         else:
             return "Week: " + str(week_index) + " " + str(
                 self.get_day()) + " " + self.start_time + "-" + self.end_time + " - " + self.get_event_type() + \
-                   " in " + self.get_event_room() + "\n"
+                   " in " + self.get_event_room() + " for " + self.get_study_programmes() + "\n"
 
 
 
@@ -228,7 +228,15 @@ class Event:
 
         return line
 
+    def get_study_programmes(self):
+        program_list = self.data["studyProgramKeys"]
 
+        programmes = program_list[0]
+
+        for i in range(1, len(program_list)):
+            programmes += ", " + program_list[i]
+
+        return programmes
 
 for index in range(0, 3):
     my_event = Event(index)

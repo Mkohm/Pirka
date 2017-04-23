@@ -58,7 +58,7 @@ class ItsLearningScraper:
         # creates a ical-version of the feed to make it compatible with the icalendar library.
         ical_url = webcal_url.replace("webcal", "https")
 
-        # TODO: This URL structure can be used to subscribe to a calendar by URL, implement feature if necessary
+        # This URL structure can be used to subscribe to a calendar by URL, implement feature if necessary
         # https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
 
         return ical_url
@@ -145,7 +145,7 @@ class ItsLearningScraper:
                     assessment = driver.find_element_by_class_name("colorbox_green").text
                 except:
                     assessment = "not available"
-                    print("Assessmnet: " + assessment)
+                    print("Assessment: " + assessment)
                     score = 0
 
                 DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
