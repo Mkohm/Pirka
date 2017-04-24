@@ -6,10 +6,33 @@ A chatbot developed using API.AI and a python web server. Release date of Pirka 
 ## Usage
 The first time you want to use Pirka you have to visit: https://www.facebook.com/pirkabot/ and then click to send a message to Pirka.
 
-## Features
+## Non personal features
 
 - [x] Can ask when an exam in a course is
-- [ ] Can get a list of exercises to do
+- [x] Can login to get personal Itslearning and Blackboard data
+- [x] Can get the name, phonenumber, office, email to the contact person in a course
+- [x] Can get a courses website, teaching form, credit, url, prerequisite knowledge, course content, course material, assessment form
+
+## Personal features
+- [x] Can get exercise status
+- [x] Can get next event
+- [x] Can get next assignment
+- [x] Can get this weeks schedule (assignments + events)
+- [x] Can get next weeks schedule (assignments + events)
+- [x] Can get this weeks events
+- [x] Can get this weeks assignments
+- [x] Can get next weeks events
+- [x] Can get next weeks assignments
+- [x] Can get number of days until your first exam
+- [x] Can get a list of all your exam dates
+- [x] Can get a list of all your course codes
+- [x] Can get a list of all your course names
+- [x] Can get the number of courses your are participating in
+
+## Future 
+- [ ] Get links to the assignments
+- [ ] Push notifications for 
+
 
 ## Setup for contributing to Pirka
 
