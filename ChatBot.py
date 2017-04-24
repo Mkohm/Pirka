@@ -78,7 +78,13 @@ def process_actions(parameter: str, action_name: str) -> str:
     elif action_name == "get_next_assignment":
         return create_data_response(DatabaseExtractor.get_next_assignment(username=parameter[0]))
     elif action_name == "get_this_weeks_schedule":
-        return create_data_response(DatabaseExtractor.get_this_weeks_schedule(username=parameter[0]))
+        return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
+    elif action_name == "get_next_weeks_schedule":
+        return create_data_response(DatabaseExtractor.get_next_week_schedule(username=parameter[0]))
+    elif action_name == "get_this_weeks_assignments":
+        return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
+    elif action_name == "get_this_weeks_events":
+        return create_data_response(DatabaseExtractor.get_this_weeks_events(username=parameter[0]))
     elif action_name == "get_exam_dates":
         return create_data_response(DatabaseExtractor.get_exam_dates(username=parameter[0]))
     elif action_name == "get_days_until_first_exam":

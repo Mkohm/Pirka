@@ -303,7 +303,7 @@ def get_days_until_first_exam(username):
 
     return "There is " + str(days_to_exam.days) + " days to your first exam."
 
-def get_this_weeks_schedule(username):
+def get_this_weeks_assignments(username):
     # Lists all the assignments that should be done this week
 
 
@@ -311,9 +311,8 @@ def get_this_weeks_schedule(username):
                                         "from user_assignment as A, course as C "
                                         "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now') AND DATE('now', 'weekday 0')) order by deadline ASC")
 
-    print(ans)
     try:
-        string_builder = "This weeks schedule:\n"
+        string_builder = "This weeks assignments:\n"
         for i in range(0, len(ans)):
 
             title = ans[i][0]
@@ -327,13 +326,80 @@ def get_this_weeks_schedule(username):
         return "null"
 
 
+def get_this_weeks_events(username):
+
+    ans = DatabaseConnector.get_values("Select user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
+                                       "from user_event "
+                                       "JOIN course on user_event.course_code = course.course_code "
+                                       "where(user_event.username = \"" + username + "\") and (date_time BETWEEN Date('now', 'weekday 1') AND date('now', '+7 day')) order by date_time ASC ")
 
 
+    try:
+        string_builder = "This weeks events:\n"
+        for i in range(0, len(ans)):
 
-def get_next_weeks_schedule(username):
+            date = ans[i][1]
+            course_name = ans[i][2]
+            room = ans[i][3]
+            category = ans[i][4]
+
+            string_builder += category + " in " + room + " in " + course_name + " " + date + "\n"
+
+        return string_builder
+    except:
+        return "null"
+
+
+def get_next_weeks_events(username):
+    ans = DatabaseConnector.get_values(
+        "Select user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
+        "from user_event "
+        "JOIN course on user_event.course_code = course.course_code "
+        "where(user_event.username = \"" + username + "\") and (date_time BETWEEN Date('now', 'weekday 1', '+7 day') AND date('now', 'weekday 1', '+14 day')) order by date_time ASC ")
+
+
+    try:
+        string_builder = "Next weeks events:\n"
+        for i in range(0, len(ans)):
+
+            date = ans[i][1]
+            course_name = ans[i][2]
+            room = ans[i][3]
+            category = ans[i][4]
+
+            string_builder += category + " in " + room + " in " + course_name + " " + date + "\n"
+
+        return string_builder
+    except:
+        return "null"
+
+def get_next_weeks_assignments(username):
     # Lists all the assignments that should be done by next week
 
-    pass
+    ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
+                                       "from user_assignment as A, course as C "
+                                       "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now','weekday 1', '+7 day') AND date('now', 'weekday 1', '+14 day')) order by deadline ASC")
+
+
+    try:
+        string_builder = "Next weeks assignments:\n"
+        for i in range(0, len(ans)):
+            title = ans[i][0]
+            date = ans[i][1]
+            course_name = ans[i][2]
+
+            string_builder += title + " which is due " + date + ", in the course " + course_name + ".\n"
+
+        return string_builder
+    except:
+        return "null"
+
+
+def get_next_week_schedule(username):
+    return get_next_weeks_assignments(username) + "\n" + get_next_weeks_events(username)
+
+def get_this_week_schedule(username):
+    return get_this_weeks_assignments(username) + "\n" +  get_this_weeks_events(username)
 
 def get_all_remaining_assignments(username):
     # Lists all the remaining assignments
@@ -363,4 +429,4 @@ def get_users() -> list:
     return ans
 
 
-print(get_this_weeks_schedule("mariukoh"))
+print(get_this_week_schedule("mariukoh"))
