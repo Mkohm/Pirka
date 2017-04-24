@@ -312,6 +312,11 @@ def get_this_weeks_assignments(username):
                                         "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now') AND DATE('now', 'weekday 0')) order by deadline ASC")
 
     try:
+
+        if len(ans) == 0:
+            return "You dont have any assignments this week."
+
+
         string_builder = "This weeks assignments:\n"
         for i in range(0, len(ans)):
 
@@ -335,6 +340,11 @@ def get_this_weeks_events(username):
 
 
     try:
+
+        if len(ans) == 0:
+            return "You dont have any events this week."
+
+
         string_builder = "This weeks events:\n"
         for i in range(0, len(ans)):
 
@@ -359,6 +369,11 @@ def get_next_weeks_events(username):
 
 
     try:
+
+        if len(ans) == 0:
+            return "You dont have any events next week."
+
+
         string_builder = "Next weeks events:\n"
         for i in range(0, len(ans)):
 
@@ -382,6 +397,11 @@ def get_next_weeks_assignments(username):
 
 
     try:
+
+        if len(ans) == 0:
+            return "You dont have any assignments next week."
+
+
         string_builder = "Next weeks assignments:\n"
         for i in range(0, len(ans)):
             title = ans[i][0]
@@ -427,6 +447,3 @@ def get_users() -> list:
     ans = DatabaseConnector.get_values("Select * from user")
 
     return ans
-
-
-print(get_this_week_schedule("mariukoh"))
