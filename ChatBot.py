@@ -189,15 +189,12 @@ def valid_login(username: str, password: str):
     :param password: password
     :return: Nothing
     """
-    print("starter valid login")
 
     try:
         LoginHandler.login(username, password)
-        print("setter til true")
         global validLogin
         validLogin = True
     except:
-        print("setter til false")
         validLogin = False
 
 
@@ -285,15 +282,12 @@ def login(current_sender_id):
     We load a template so the user can login and send us the email and password.
     :return:
     """
-    print("login")
 
     error = None
     if request.method == 'POST':
 
         username = request.form["username"]
         password = request.form["password"]
-
-        print(username, password)
 
         thread = Thread(target=valid_login(username, password))
         thread.start()
