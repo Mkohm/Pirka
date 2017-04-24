@@ -18,7 +18,6 @@ app = Flask(__name__)
 
 network_interfaces.ifaddresses('en0')
 ip = network_interfaces.ifaddresses('en0')[2][0]['addr']
-print("my ip address is: ", ip)
 
 # Holds the current state of the login
 validLogin = False
@@ -29,11 +28,12 @@ port = int(os.environ.get('PORT', 8080))
 
 def process_actions(parameter: str, action_name: str) -> str:
     """
-    Explanation of parameters
-    :param parameter:
-    :param action_name:
-    :return:
+    This method creates a response to API.AI according to which parameters that was passed by API.AI
+    :param parameter: parameter[0] is username, parameter[1] is course_code
+    :param action_name: the action being called in API.AI
+    :return: Json - data containing the string that should be returned to the user
     """
+
     if action_name == "login":
         return create_followup_event_data(parameter)
     elif action_name == "get_exam_date":
@@ -66,7 +66,6 @@ def process_actions(parameter: str, action_name: str) -> str:
         return create_data_response(DatabaseExtractor.get_course_material(parameter[1]))
     elif action_name == "get_teaching_form":
         return create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
-    # personal:
     elif action_name == "get_exercise_status":
         return create_data_response(DatabaseExtractor.get_exercise_status(parameter[1], parameter[0]))
     elif action_name == "get_project_status":
@@ -77,20 +76,14 @@ def process_actions(parameter: str, action_name: str) -> str:
         return create_data_response(DatabaseExtractor.get_next_event(username=parameter[0]))
     elif action_name == "get_next_assignment":
         return create_data_response(DatabaseExtractor.get_next_assignment(username=parameter[0]))
-
-
     elif action_name == "get_this_weeks_schedule":
         return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
     elif action_name == "get_next_weeks_schedule":
         return create_data_response(DatabaseExtractor.get_next_week_schedule(username=parameter[0]))
-
-
-
     elif action_name == "get_next_weeks_events":
         return create_data_response(DatabaseExtractor.get_next_weeks_events(username=parameter[0]))
     elif action_name == "get_next_weeks_assignments":
         return create_data_response(DatabaseExtractor.get_next_weeks_assignments(username=parameter[0]))
-
     elif action_name == "get_this_weeks_assignments":
         return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
     elif action_name == "get_this_weeks_events":
@@ -112,17 +105,28 @@ def process_actions(parameter: str, action_name: str) -> str:
 
 
 def create_data_response(speech: str) -> str:
+    """
+    Creates Json that contains the data that should be sent to API.AI
+    :param speech: a string that should be put inside the json (this is the string that should be sent back to the user)
+    :return: json data
+    """
+
     data = {
         "speech": speech,
         "displayText": speech,
-        # "data": data,
-        # "contextOut": [],
         "source": "pirka-chatbot-webserver"
     }
     return data
 
 
 def create_followup_event_data(parameter_value: str):
+    """
+    This function is used when logging in with itslearning details, 
+    to provide a unique login for each user 
+    (link that contains the ip and port, along with the unique facebook-id) 
+    :param parameter_value: facebook-id
+    :return: json data
+    """
     data = {
         "followupEvent": {
             "name": "custom_event",
@@ -133,12 +137,14 @@ def create_followup_event_data(parameter_value: str):
         }
     }
 
-    print(json.dumps(data, indent=4))
-
     return data
 
 
 def add_ime_api_data():
+    """
+    This function adds all the 4000+ courses and corresponding data to the database.
+    :return: Nothing
+    """
     file = open("/Users/mariuskohmann/PycharmProjects/pirka/imeapi/course_codes.txt")
     for line in file:
         course = line.split(",")
@@ -155,12 +161,10 @@ def add_ime_api_data():
 def thread_function(username: str, password: str):
     """
     This function runs when the user has logged in. It adds the data that is relevant for this user in its own thread.
-
-    It first add all the user specific data to the database, and then it adds all the IME-API data.
-
+    :param username: Users username
+    :param password: Users password
+    :return: Nothing
     """
-
-
 
     # Scrapes for additional data that is user specific
     itslearning_scraper = ItsLearningScraper(username, password)
@@ -179,6 +183,12 @@ def thread_function(username: str, password: str):
     DatabaseInserter.add_user_has_course(username=username, course_code="DUMMYCOURSE")
 
 def valid_login(username: str, password: str):
+    """
+    Uses scraper to test if it was entered correct username and password. Uses a global variable to keep track of valid login or not.
+    :param username: username
+    :param password: password
+    :return: Nothing
+    """
     print("starter valid login")
 
     try:
@@ -198,6 +208,11 @@ All web endpoint functions is listed below
 
 @app.route('/', methods=['POST'])
 def webhook():
+    """
+    Receives json data from API.AI through NGROK
+    :return: The response to API.AI containing the string that should be returned to the user.
+    """
+
     json_request = request.get_json(silent=True, force=True)
 
 
@@ -207,13 +222,13 @@ def webhook():
     # Then get the parameters and action_name of the result
     parameters = result.get("parameters")
 
+    # Get the action name
     action_name = result.get("action")
 
     # Handles different parameters to the process-actions method
-    # todo: This method should be fixed better
     if action_name == "login":
 
-        # Depending on if the event "WELCOME_FACEBOOK" or if the user typed "login, get started ect" the
+        # Depending on if the event "WELCOME_FACEBOOK" or if the user typed "login, get started ect." the
         # resulting json request is different, hence we get the parameter in different ways
         if len(result.get("contexts")) > 1:
             parameter = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
@@ -228,14 +243,17 @@ def webhook():
         else:
             facebook_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
 
+        # Retreives the username by looking up with the unique facebook id
         username = DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id + "\"")[0][0]
 
+        # Retrieve the course code
         course_code = parameters.get("course_code")
         parameter = [username, course_code]
 
-    print("process actions, parameter:" + str(parameter[1]) + " actioname: " + action_name)
+    # Creates the string that should be sent back to the user
     speech = process_actions(parameter, action_name)
 
+    # Create a response to API.AI and return it
     response = json.dumps(speech, indent=4)
     created_response = make_response(response)
     created_response.headers['Content-Type'] = 'application/json'
@@ -245,6 +263,11 @@ def webhook():
 
 @app.route('/favicon.ico', methods=['GET'])
 def scrape_data_from_last_user():
+    """
+    Scrape data after the user has successfully logged in.
+    :return: The template that should be rendered when the user has sucessfully logged in.
+    """
+
     users = DatabaseExtractor.get_users()
     lastUsername = users[len(users) - 1][0]
     lastPassword = users[len(users) - 1][1]
@@ -278,26 +301,28 @@ def login(current_sender_id):
 
         global validLogin
 
+
         if validLogin:
+            # If valid login, we add the user to the database and we render the success template
             DatabaseInserter.add_user(username, password, current_sender_id)
             validLogin = False
             return render_template("login_success.html")
         else:
+
+            # If the login was not valid, we render the login screen again
             return render_template('login.html')
 
-    return render_template('login.html')
 
-    # the code below is executed if the request method
-    # was GET or the credentials were invalid
+    return render_template('login.html')
 
 
 """
 Start app
 """
-
 if __name__ == '__main__':
-    # Add all the IME-API data to the database
 
+    # Add all the IME-API data to the database
     #add_ime_api_data()
 
+    # Start our webserver
     app.run(debug=True, host='', port=port, threaded=True)  # Receives action-name, gets the data and returns a string ready to send back to API.AI
