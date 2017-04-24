@@ -22,8 +22,6 @@ driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
 class ItsLearningScraper:
     def __init__(self, username, password):
 
-        # TODO: add functionality for user credentials as parameters
-
         self.username = username
         self.password = password
 
@@ -48,7 +46,7 @@ class ItsLearningScraper:
         cal = driver.find_element_by_id("ctl00_PageFunctionsPlaceHolder_PageFunctions")
         cal.click()
 
-        # clicks the "abonner" butting
+        # clicks the "abonner" button
         cal = driver.find_element_by_id("ctl00_PageFunctionsPlaceHolder_ctl03_SubscribeLink")
         cal.click()
 
@@ -132,50 +130,44 @@ class ItsLearningScraper:
                 else:
                     anonymous = False
 
-                group = attribute[4].text[14:]
-
                 print("Title: " + title)
                 print("Published: " + published)
                 print("Deadline: " + deadline)
                 print("Obligatory: " + str(obligatory))
                 print("Anonym: " + str(anonymous))
-                print("Group: " + group)
 
                 try:
                     assessment = driver.find_element_by_class_name("colorbox_green").text
                 except:
-                    assessment = "not available"
-                    print("Assessment: " + assessment)
-                    score = 0
-
-                DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
-                                                     "its", "exercise", " ingen ")
-                DatabaseInserter.add_user_completed_assignment(self.username, course_code, i + 1, "exercise", score)
+                    assessment = None
+                print("Assessment: " + assessment)
 
                 if "Godkjent/Vurdert" in assessment:
                     score = 1
                 else:
                     score = 0
-                print(score)
+                print("Score: " + score)
 
-                DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
+                try:
+                    DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
                                                      "its", "exercise", " ingen ")
-
-                DatabaseInserter.add_user_completed_assignment(self.username, course_code, i + 1, "exercise", score)
+                    DatabaseInserter.add_user_completed_assignment(self.username, course_code, i + 1, "exercise", score)
+                except:
+                    print("Daabase Error")
 
                 driver.back()
+
                 driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+
                 link = driver.find_elements_by_class_name("GridTitle")
+
             except:
                 print("\nNot an supported assignment\n")
                 driver.back()
                 driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
                 link = driver.find_elements_by_class_name("GridTitle")
 
-
-    # TODO: This code works for Programvareutvikling, needs further testing.
     def get_all_assignments(self):
-
         for i in range(0, len(self.get_course_list())):
             self.get_assignments(i)
 
@@ -188,8 +180,6 @@ class ItsLearningScraper:
         # finds all the hyperlinks in the frame. They are all named "ccl-iconlink" in HTML
         courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
 
-
-        # TODO: This code works for Programvareutvikling, needs further testing.
         # Navigates to the first course
         print("Getting messages from: " + courses[index].text.split()[0]+"\n")
         courses[index].click()
@@ -207,6 +197,7 @@ class ItsLearningScraper:
 
     def close_driver(self):
         driver.quit()
+
 
 def datetime_converter(datestring):
     print(datestring)
@@ -252,5 +243,6 @@ except:
     print("Fail")
 
 scraper.close_driver()
-"""
 
+
+"""
