@@ -191,7 +191,7 @@ def get_exercise_status(course_code, username):
         else:
             return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name+"."
     except:
-        return "null"
+        return "Sorry, I could not get the exersice status."
 
 def get_exercises_left(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
@@ -227,7 +227,7 @@ def get_project_status(course_code, username):
         course_name= ans[0][3]
         return "You have done " + score + " out of " + required + " projects in " + course_code + " " + course_name+"."
     except:
-        return "null"
+        return "Sorry, i could not get the project status."
 
 def get_lab_status(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
@@ -241,7 +241,7 @@ def get_lab_status(course_code, username):
         course_name= ans[0][3]
         return "You have done " + score + " out of " + required + " lab in " + course_code + " " + course_name+"."
     except:
-        return "null"
+        return "Sorry, i could not get the lab status."
 
 def get_next_event(username):
     ans = DatabaseConnector.get_values("Select U.category, U.date_time, U.room, U.course_code, C.course_name "
@@ -254,7 +254,7 @@ def get_next_event(username):
         course_name = ans[0][4]
         return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + date
     except:
-        return "null"
+        return "I could not find any events."
 
 
 # todo: fix this method, this method will return the latest assignment, not the next
@@ -276,7 +276,7 @@ def get_next_assignment(username):
         course_name = ans[0][2]
         return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name + "."
     except:
-        return "null"
+        return "I could not find any assignments."
 
 def get_days_until_first_exam(username):
 
@@ -328,7 +328,7 @@ def get_this_weeks_assignments(username):
 
         return string_builder
     except:
-        return "null"
+        return "You dont have any assignments this week."
 
 
 def get_this_weeks_events(username):
@@ -357,7 +357,7 @@ def get_this_weeks_events(username):
 
         return string_builder
     except:
-        return "null"
+        return "You dont have any events this week."
 
 
 def get_next_weeks_events(username):
@@ -386,7 +386,7 @@ def get_next_weeks_events(username):
 
         return string_builder
     except:
-        return "null"
+        return "You dont have any events next week."
 
 def get_next_weeks_assignments(username):
     # Lists all the assignments that should be done by next week
@@ -412,7 +412,7 @@ def get_next_weeks_assignments(username):
 
         return string_builder
     except:
-        return "null"
+        return "You dont have any assignments next week."
 
 
 def get_next_week_schedule(username):
