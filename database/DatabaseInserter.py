@@ -1,5 +1,5 @@
 from datetime import datetime
-
+import time
 import requests
 
 import database.DatabaseConnector
@@ -20,6 +20,11 @@ def add_subject_data(course_code: str):
 
     course_name = get_course_name(data)
     exam_date = get_exam_date(data)
+
+    if exam_date != "null":
+        time1 = time.strptime(exam_date, '%B %d, %Y')
+        exam_date = time.strftime('%Y-%m-%d', time1)
+
     assessment_form = get_assessment_form(data)
     contact_name = get_contact_name(data)
     contact_mail = get_contact_mail(data)
@@ -323,6 +328,7 @@ def get_course_name(data) -> str:
 
 
 def format_date(date: str) -> str:
+    print(date)
     year = int(float(date[0:4]))
     month = int(float(date[5:7]))
     day = int(float(date[8:]))
