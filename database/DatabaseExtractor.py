@@ -205,8 +205,24 @@ def get_exercise_status(course_code, username):
         else:
             return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name + "."
     except:
-        return "Sorry, I could not get the exersice status."
+        return "Sorry, I could not get the exercise status."
 
+
+def get_passed_assignments(course_code, username):
+
+    ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
+                                       "status_exercise as S, course as C where S.course_code = \"" + course_code + "\" "
+                                        "and S.course_code = C.course_code and S.username = \"" + username + "\" group by ""S.username ;")
+    try:
+        score = str(ans[0][1])
+        required = str(ans[0][2])
+        if required == "None":
+            return "Sorry, i don't know how many exercises is required."
+
+        if score == required:
+            return "Yes, you have completed all the required assignments!"
+    except:
+        return "Sorry, i don't know how many exercises is required."
 
 def get_exercises_left(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
@@ -466,6 +482,3 @@ def get_users() -> list:
     ans = DatabaseConnector.get_values("Select * from user")
 
     return ans
-
-
-print(get_days_until_first_exam("mariukoh"))

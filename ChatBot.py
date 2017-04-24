@@ -94,10 +94,9 @@ def process_actions(parameter: str, action_name: str) -> str:
     elif action_name == "get_this_weeks_assignments":
         return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
     elif action_name == "get_this_weeks_events":
-
-
-
         return create_data_response(DatabaseExtractor.get_this_weeks_events(username=parameter[0]))
+    elif action_name == "get_passed_assignments":
+        return create_data_response(DatabaseExtractor.get_passed_assignments(course_code=parameter[1], username=parameter[0]))
     elif action_name == "get_exam_dates":
         return create_data_response(DatabaseExtractor.get_exam_dates(username=parameter[0]))
     elif action_name == "get_days_until_first_exam":
@@ -118,7 +117,7 @@ def create_data_response(speech: str) -> str:
         "displayText": speech,
         # "data": data,
         # "contextOut": [],
-        "source": "Pirka-chatbot-webserver"
+        "source": "pirka-chatbot-webserver"
     }
     return data
 
@@ -140,7 +139,7 @@ def create_followup_event_data(parameter_value: str):
 
 
 def add_ime_api_data():
-    file = open("/Users/mariuskohmann/PycharmProjects/Pirka/imeapi/course_codes.txt")
+    file = open("/Users/mariuskohmann/PycharmProjects/pirka/imeapi/course_codes.txt")
     for line in file:
         course = line.split(",")
 
@@ -176,7 +175,7 @@ def thread_function(username: str, password: str):
     itslearning_scraper.get_all_assignments()
     blackboad_scraper.get_all_assignments()
 
-    #Adding a dummy-course so it is possible to test Pirka with data
+    #Adding a dummy-course so it is possible to test pirka with data
     DatabaseInserter.add_user_has_course(username=username, course_code="DUMMYCOURSE")
 
 def valid_login(username: str, password: str):
