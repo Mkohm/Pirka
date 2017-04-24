@@ -85,53 +85,51 @@ class BlackboardScraper:
 
         assignments = driver.find_elements_by_partial_link_text("Øving")
 
-        assignment_log = []
+        # this is the number of html links which may lead to an assignment.
+        number_of_links = len(assignments)
 
-        for i in range(0, len(assignments)):
+        # Iterates through all the the relevant links, and looks for pages containing assignments.
+        # For some assignments the assignment instruction may be attached as a PDF with the same link text.
+        # This causes problems for the scraper as it will open the PDF in a new window, and then try the go back to
+        # the previous page, which clearly is not possible, ending with a stop in the scraping.
+        for i in range(0, number_of_links):
 
             try:
                 assignments = driver.find_element_by_partial_link_text("Øving " + str(i+1))
+                title = assignments.text
+                print("Title: " + title + " (" + current_course + ")")
             except:
                 pass
-            title = assignments.text
 
             try:
-                print("Title: " + title + " (" + current_course + ")")
                 assignments.click()
             except:
-                print("hsad")
+                print("Bug")
             try:
                 score = driver.find_element_by_id("aggregateGrade")
                 print(score.get_attribute("value"))
             except:
+                print("Score not available")
                 score = None
             try:
                 max_score = driver.find_element_by_id("aggregateGrade_pointsPossible")
                 print(max_score.text)
             except:
-                print("Score not available")
+                print("Max score not available")
 
             try:
-                info = driver.find_element_by_class_name("assignmentInfo").text
-                print("\n\nInfo: " + info + "\n\n")
-
-                try:
-                    details = driver.find_element_by_class_name("detailsHeader")
-                    details.click()
-                    info = driver.find_element_by_class_name("assignmentInfo").text
-                    print("\n\nInfo: " + info + "\n\n")
-                except:
-                    print("fu")
+                driver.back()
+                print("going back")
             except:
-                print("No deadline found")
-                deadline = None
+                print("could not go back")
 
-            driver.back()
-            assignments = driver.find_elements_by_partial_link_text("Øving")
-
+            try:
+                assignments = driver.find_elements_by_partial_link_text("Øving")
+                print("found link")
+            except:
+                print("could not find link")
 
     def get_all_assignments(self):
-
         for i in range(0, len(self.course_list)):
             self.get_assignments(i)
 
@@ -145,13 +143,12 @@ myScrape = BlackboardScraper(user, password)
 
 
 try:
-    myScrape.get_assignments(0)
-
-    # myScrape.get_completed_assignments()
+    myScrape.get_assignments(1)
 except:
-    print("failed")
+    print("failed2")
 
 myScrape.close_driver()
 
 # myScrape.get_calendar_feed()
+
 """
