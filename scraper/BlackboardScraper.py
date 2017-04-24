@@ -2,11 +2,11 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 import os
 import platform
+from database import DatabaseInserter
 
 # DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
 # When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
 
-# TODO: move these varibles and make them member varibales in the class below if needed @Kohm?
 driver_directory = os.path.dirname(__file__)
 if platform.system() == "Windows":
     relative_path = "chromedriver.exe"
@@ -43,7 +43,6 @@ class BlackboardScraper:
         self.course_list = self.get_course_list()
 
     # this function returns a users calendar feed in iCalendar-format
-    # TODO: add functionality to extract the content from the feed
     def get_calendar_feed(self):
 
         # navigates to the calendar page in BB.
@@ -54,8 +53,7 @@ class BlackboardScraper:
         # This URL structure can be used to subscribe to a calendar by URL, implement feature
         # https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
 
-
-        return ical_url
+        DatabaseInserter.add_blackboard_url(ical_url)
 
     def get_course_list(self):
 
@@ -74,9 +72,9 @@ class BlackboardScraper:
         driver.get("https://ntnu.blackboard.com/webapps/portal/execute/tabs/tabAction?tab_tab_group_id=_70_1")
         courses = driver.find_elements_by_partial_link_text(self.current_term)
 
-        current_course = courses[index].text.split()[0]
+        course_code = courses[index].text.split()[0]
 
-        print("Course: " + current_course)
+        print("Course: " + course_code)
         courses[index].click()
 
         driver.find_element_by_id("menuPuller").click()
@@ -98,7 +96,7 @@ class BlackboardScraper:
             try:
                 assignments = driver.find_element_by_partial_link_text("Øving " + str(i+1))
                 title = assignments.text
-                print("Title: " + title + " (" + current_course + ")")
+                print("Title: " + title + " (" + course_code + ")")
             except:
                 pass
 
@@ -124,11 +122,15 @@ class BlackboardScraper:
             except:
                 print("could not go back")
 
-            try:
-                assignments = driver.find_elements_by_partial_link_text("Øving")
-                print("found link")
-            except:
-                print("could not find link")
+
+            # The only items which is uniquely identified as real assignments is, for now,
+            # items where a max score exists. This is done to avoid bad data in the database.
+            if max_score > 0:
+                DatabaseInserter.add_assignment_data(course_code, title, i, True, None, None,
+                                                     "its", "exercise", " ingen ")
+                DatabaseInserter.add_user_completed_assignment(self.username, course_code, i + 1, "exercise", score)
+
+            assignments = driver.find_elements_by_partial_link_text("Øving")
 
     def get_all_assignments(self):
         for i in range(0, len(self.course_list)):
@@ -137,7 +139,7 @@ class BlackboardScraper:
     def close_driver(self):
         driver.quit()
 
-"""
+
 user = "evenkal"
 password = input("Password: ")
 myScrape = BlackboardScraper(user, password)
@@ -152,4 +154,4 @@ myScrape.close_driver()
 
 # myScrape.get_calendar_feed()
 
-"""
+
