@@ -380,6 +380,36 @@ def add_user_has_course(username, course_code):
 
     connection.commit()
 
+def add_itslearning_url(url: str):
+    connection = database.DatabaseConnector.connection
+    cursor = connection.cursor()
+
+    data_list = []
+    data_list.append(url)
+
+    try:
+        cursor.execute("INSERT INTO user(ical_itslearning) "
+                       "VALUES(?)", data_list)
+    except:
+        pass
+
+    connection.commit()
+
+def add_blackboard_url(url: str):
+    connection = database.DatabaseConnector.connection
+    cursor = connection.cursor()
+
+    data_list = []
+    data_list.append(url)
+
+    try:
+        cursor.execute("INSERT INTO user(ical_blackboard) "
+                       "VALUES(?)", data_list)
+    except:
+        pass
+
+    connection.commit()
+
 
 def add_user_completed_assignment(username, course_code, nr, category, score):
     data_list = []

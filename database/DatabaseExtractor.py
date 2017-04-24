@@ -457,11 +457,28 @@ def get_this_week_schedule(username):
     return get_this_weeks_assignments(username) + "\n" + get_this_weeks_events(username)
 
 
-def get_all_remaining_assignments(username):
-    # Lists all the remaining assignments
 
-    pass
+def get_ical_itslearning(username):
+    ans = DatabaseConnector.get_values("Select user.ical_itslearning from user where user.username = \"" + username + "\"")
 
+    url = ""
+    try:
+        url = ans[0][0]
+        return "https://www.google.com/calendar/render?cid=" + url
+    except:
+        return "There was no ical link for you."
+
+
+def get_ical_blackboard(username):
+    ans = DatabaseConnector.get_values(
+        "Select user.ical_blackboard from user where user.username = \"" + username + "\"")
+
+    url = ""
+    try:
+        url = ans[0][0]
+        return "https://www.google.com/calendar/render?cid=" + url
+    except:
+        return "There was no ical link for you."
 
 """
 Functions that returns other types and is used as helper methods is listed here

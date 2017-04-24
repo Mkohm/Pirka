@@ -54,6 +54,7 @@ class BlackboardScraper:
         # This URL structure can be used to subscribe to a calendar by URL, implement feature
         # https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
 
+
         return ical_url
 
     def get_course_list(self):
