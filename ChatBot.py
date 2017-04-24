@@ -77,13 +77,26 @@ def process_actions(parameter: str, action_name: str) -> str:
         return create_data_response(DatabaseExtractor.get_next_event(username=parameter[0]))
     elif action_name == "get_next_assignment":
         return create_data_response(DatabaseExtractor.get_next_assignment(username=parameter[0]))
+
+
     elif action_name == "get_this_weeks_schedule":
         return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
     elif action_name == "get_next_weeks_schedule":
         return create_data_response(DatabaseExtractor.get_next_week_schedule(username=parameter[0]))
+
+
+
+    elif action_name == "get_next_weeks_events":
+        return create_data_response(DatabaseExtractor.get_next_weeks_events(username=parameter[0]))
+    elif action_name == "get_next_weeks_assignments":
+        return create_data_response(DatabaseExtractor.get_next_weeks_assignments(username=parameter[0]))
+
     elif action_name == "get_this_weeks_assignments":
         return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
     elif action_name == "get_this_weeks_events":
+
+
+
         return create_data_response(DatabaseExtractor.get_this_weeks_events(username=parameter[0]))
     elif action_name == "get_exam_dates":
         return create_data_response(DatabaseExtractor.get_exam_dates(username=parameter[0]))
@@ -96,7 +109,7 @@ def process_actions(parameter: str, action_name: str) -> str:
     elif action_name == "get_number_of_courses":
         return create_data_response(DatabaseExtractor.get_number_of_courses(username=parameter[0]))
     else:
-        return "I didn't understand anything, you probably broke me :("
+        return create_data_response("I didn't understand anything, you probably broke me :(")
 
 
 def create_data_response(speech: str) -> str:
@@ -116,7 +129,7 @@ def create_followup_event_data(parameter_value: str):
             "name": "custom_event",
             "data": {
                 "user_id": parameter_value,
-                "ip_address": ip
+                "ip_address": ip + ":" + str(port)
             }
         }
     }
@@ -163,7 +176,7 @@ def thread_function(username: str, password: str):
     itslearning_scraper.get_all_assignments()
     blackboad_scraper.get_all_assignments()
 
-    #Adding a dummy-object
+    #Adding a dummy-course so it is possible to test Pirka with data
     DatabaseInserter.add_user_has_course(username=username, course_code="DUMMYCOURSE")
 
 def valid_login(username: str, password: str):
