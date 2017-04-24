@@ -246,7 +246,7 @@ def get_lab_status(course_code, username):
 def get_next_event(username):
     ans = DatabaseConnector.get_values("Select U.category, U.date_time, U.room, U.course_code, C.course_name "
                                        "from user_event as U, course as C "
-                                       "where U.username = \"mariukoh\" and U.course_code = C.course_code order by date_time LIMIT 1")
+                                       "where U.username = \"" + username + "\" and U.course_code = C.course_code order by date_time LIMIT 1")
     try:
         description = ans[0][0]
         date = ans[0][1]
@@ -259,9 +259,17 @@ def get_next_event(username):
 
 # todo: fix this method, this method will return the latest assignment, not the next
 def get_next_assignment(username):
-    ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
-                                       "from user_assignment as A, course as C "
-                                       "where A.username = \"" + username + "\" and A.course_code = C.course_code order by deadline DESC LIMIT 1")
+
+
+
+    ans = DatabaseConnector.get_values("Select A.title, A.deadline, course.course_name "
+                                        " from user_assignment as A "
+                                        "JOIN course on A.course_code = course.course_code "
+                                        " where (A.username = \"" + username + "\") and (deadline BETWEEN Date('now') AND DATE('now', 'weekday 0')) "
+                                        " order by deadline ASC "
+                                        " LIMIT 1;")
+
+
     try:
         title = ans[0][0]
         date = ans[0][1]
@@ -301,10 +309,22 @@ def get_this_weeks_schedule(username):
 
     ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
                                         "from user_assignment as A, course as C "
-                                        "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now') AND DATE('now', 'weekday 0')) order by deadline DESC")
+                                        "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now') AND DATE('now', 'weekday 0')) order by deadline ASC")
 
+    print(ans)
+    try:
+        string_builder = "This weeks schedule:\n"
+        for i in range(0, len(ans)):
 
+            title = ans[i][0]
+            date = ans[i][1]
+            course_name = ans[i][2]
 
+            string_builder += title + " which is due " + date + ", in the course " + course_name + ".\n"
+
+        return string_builder
+    except:
+        return "null"
 
 
 
@@ -326,7 +346,6 @@ def get_all_remaining_assignments(username):
 Functions that returns other types and is used as helper methods is listed here
 """
 
-
 def get_course_codes_list(username):
     ans = DatabaseConnector.get_values("Select course_code from user_has_course")
 
@@ -343,4 +362,5 @@ def get_users() -> list:
 
     return ans
 
-get_this_weeks_schedule("mariukoh")
+
+print(get_this_weeks_schedule("mariukoh"))

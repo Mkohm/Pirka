@@ -239,6 +239,7 @@ def translate(month):
     else:
         return month
 
+"""
 
 username = "evenkal"
 password = input("Password: ")
@@ -251,3 +252,5 @@ except:
     print("Fail")
 
 scraper.close_driver()
+"""
+
