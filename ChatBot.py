@@ -199,7 +199,7 @@ def thread_function(username: str, password: str):
     itslearning_scraper.close_driver()
 
     # add ical links
-    itslearning_scraper.get_calendar_feed()
+    #itslearning_scraper.get_calendar_feed()
 
 
 def valid_login(username: str, password: str):

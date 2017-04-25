@@ -261,17 +261,6 @@ def translate(month):
 
 
 
-username = "evenkal"
-password = input("Password: ")
-
-scraper = ItsLearningScraper(username, password)
-
-try:
-    print(scraper.get_all_assignments())
-except:
-    print("Fail")
-
-scraper.close_driver()
 
 
 

@@ -354,8 +354,8 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
     connection = database.DatabaseConnector.connection
     cursor = connection.cursor()
     try:
-        cursor.execute("INSERT INTO assignment(course_code, nr, category, title, description, published, deadline, "
-                       "delivery_location, mandatory) VALUES (?,?,?,?,?,?,?,?,?)", assignment)
+        cursor.execute("INSERT INTO `assignment`(`course_code`, `nr`, `category`, `title`, `description`, `published`, `deadline`, "
+                       "`delivery_location`, `mandatory`) VALUES (?,?,?,?,?,?,?,?,?)", assignment)
     except:
         cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, "
                        "published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \""
@@ -409,7 +409,7 @@ def add_user_completed_assignment(username, course_code, nr, category, score):
     connection = database.DatabaseConnector.connection
     cursor = connection.cursor()
     try:
-        cursor.execute("INSERT INTO user_completed_assignment(username, course_code, nr, category, score)"
+        cursor.execute("INSERT INTO `user_completed_assignment`(`username`, `course_code`, `nr`, `category`, `score`)"
                        "values(?,?,?,?,?)", data_list)
     except:
         cursor.execute("UPDATE user_completed_assignment "

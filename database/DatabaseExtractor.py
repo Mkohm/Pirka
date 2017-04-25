@@ -21,7 +21,7 @@ def get_exam_date(course_code):
         else:
             return "No exam data available."
     else:
-        return "Exam date in " + course_code + " " + name + " is " + date
+        return "Exam date in " + course_code + " " + name + " is " + format_date_date(date)
         # todo: add reason if field is empty
 
 
@@ -291,7 +291,7 @@ def get_next_event(username):
         date = ans[0][1]
         room = ans[0][2]
         course_name = ans[0][4]
-        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + date
+        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + format_date(date)
     except:
         return "I could not find any events."
 
@@ -309,7 +309,7 @@ def get_next_assignment(username):
         title = ans[0][0]
         date = ans[0][1]
         course_name = ans[0][2]
-        return "Your next assignment delivery is " + title + " which is due " + date + ", in the course " + course_name + "."
+        return "Your next assignment delivery is " + title + " which is due " + format_date(date) + ", in the course " + course_name + "."
     except:
         return "I could not find any assignments."
 
@@ -363,7 +363,7 @@ def get_today_assignments(username):
         title = ans[0][0]
         date = ans[0][1]
         course_name = ans[0][2]
-        return "You have an assignment " + title + " in course " + course_name + ", that should be delivered today at " + date.split(" ")[1]
+        return "You have an assignment " + title + " in course " + course_name + ", that should be delivered today at " + format_date(date)
     except:
         return "I could not find any assignments that should be delivered today."
 
@@ -379,7 +379,7 @@ def get_tomorrow_assignments(username):
             date = ans[0][1]
             course_name = ans[0][2]
             return "You have an assignment " + title + " in course " + course_name + ", that should be delivered tomorrow at " + \
-                   date.split(" ")[1]
+                   format_date_datetime(date)
         except:
             return "I could not find any assignments that should be delivered tomorrow."
 
@@ -395,7 +395,7 @@ def get_today_events(username):
         date = ans[0][1]
         course_name = ans[0][2]
         return "You have an event " + title + " in course " + course_name + ", today at " + \
-               date.split(" ")[1]
+               format_date_datetime(date)
     except:
         return "I could not find any events today."
 
@@ -411,7 +411,7 @@ def get_tomorrow_events(username):
         date = ans[0][1]
         course_name = ans[0][2]
         return "You have an event " + title + " in course " + course_name + ", " + \
-               date.split(" ")[1]
+               format_date_datetime(date)
     except:
         return "I could not find any events for tomorrow."
 
@@ -435,7 +435,7 @@ def get_this_weeks_assignments(username):
             date = ans[i][1]
             course_name = ans[i][2]
 
-            string_builder += title + " which is due " + date + ", in the course " + course_name + ".\n"
+            string_builder += title + " which is due " + format_date_datetime(date) + ", in the course " + course_name + ".\n"
 
         return string_builder
     except:
@@ -461,7 +461,7 @@ def get_this_weeks_events(username):
             room = ans[i][3]
             category = ans[i][4]
 
-            string_builder += category + " in " + room + " in " + course_name + " " + date + "\n"
+            string_builder += category + " in " + room + " in " + course_name + " " + format_date(date) + "\n"
 
         return string_builder
     except:
@@ -487,7 +487,7 @@ def get_next_weeks_events(username):
             room = ans[i][3]
             category = ans[i][4]
 
-            string_builder += category + " in " + room + " in " + course_name + " " + date + "\n"
+            string_builder += category + " in " + room + " in " + course_name + " " + format_date(date) + "\n"
 
         return string_builder
     except:
@@ -512,7 +512,7 @@ def get_next_weeks_assignments(username):
             date = ans[i][1]
             course_name = ans[i][2]
 
-            string_builder += title + " which is due " + date + ", in the course " + course_name + ".\n"
+            string_builder += title + " which is due " + format_date_datetime(date) + ", in the course " + course_name + ".\n"
 
         return string_builder
     except:
@@ -553,6 +553,20 @@ def get_course_codes_list(username):
         course_codes.append(course_code)
 
     return course_codes
+
+
+def format_date_datetime(datetime: str):
+    time1 = time.strptime(datetime, '%Y-%m-%d %H:%M:%S')
+    datestring = time.strftime('%A %d %B %H:%M:%S', time1)
+
+    return datestring
+
+
+def format_date_date(date: str):
+    time1 = time.strptime(date, '%Y-%m-%d')
+    datestring = time.strftime('%A %d %B', time1)
+
+    return datestring
 
 
 def get_users() -> list:
