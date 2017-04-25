@@ -105,10 +105,15 @@ class BlackboardScraper:
         print("Course: " + course_code)
         courses[index].click()
 
-        driver.find_element_by_id("menuPuller").click()
+        try:
+            assignment_folder = driver.find_element_by_partial_link_text("Øvinger")
+            assignment_folder.click()
+        except:
+            driver.find_element_by_id("menuPuller").click()
+            assignment_folder = driver.find_element_by_partial_link_text("Øvinger")
+            assignment_folder.click()
 
-        assignment_folder = driver.find_element_by_partial_link_text("Øvinger")
-        assignment_folder.click()
+
 
         assignments = driver.find_elements_by_partial_link_text("Øving")
 
@@ -138,11 +143,12 @@ class BlackboardScraper:
             except:
                 print("Score not available")
                 score = None
+
             try:
-                max_score = driver.find_element_by_id("aggregateGrade_pointsPossible")
-                print(max_score.text)
+                max_score = int(driver.find_element_by_id("aggregateGrade_pointsPossible").text)
             except:
                 print("Max score not available")
+                max_score = 0
 
             try:
                 driver.back()

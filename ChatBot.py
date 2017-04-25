@@ -166,6 +166,11 @@ def thread_function(username: str, password: str):
     :return: Nothing
     """
 
+    print("scrapes the user", username)
+
+    # Adding a dummy-course so it is possible to test pirka with data
+    DatabaseInserter.add_user_has_course(username=username, course_code="DUMMYCOURSE")
+
     # Scrapes for additional data that is user specific
     itslearning_scraper = ItsLearningScraper(username, password)
     blackboard_scraper = BlackboardScraper(username, password)
@@ -174,13 +179,17 @@ def thread_function(username: str, password: str):
     itslearning_scraper.get_course_list()
     blackboard_scraper.get_course_list()
 
+    print("deleted user")
+    DatabaseExtractor.delete_user()
 
     # adds user's associated assignment data
     itslearning_scraper.get_all_assignments()
     blackboard_scraper.get_all_assignments()
 
-    #Adding a dummy-course so it is possible to test pirka with data
-    DatabaseInserter.add_user_has_course(username=username, course_code="DUMMYCOURSE")
+    # add ical links
+    itslearning_scraper.get_calendar_feed()
+    blackboard_scraper.get_calendar_feed()
+
 
 def valid_login(username: str, password: str):
     """
@@ -222,34 +231,15 @@ def webhook():
     # Get the action name
     action_name = result.get("action")
 
-
     facebook_id = json_request.get("originalRequest").get("data").get("sender").get("id")
 
-    """
-    
-        # Handles different parameters to the process-actions method
-        if action_name == "login":
-    
-            # Depending on if the event "WELCOME_FACEBOOK" or if the user typed "login, get started ect." the
-            # resulting json request is different, hence we get the parameter in different ways
-            if len(result.get("contexts")) > 1:
-                parameter = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
-            else:
-                parameter = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
-        else:
-            facebook_id = ""
-            if len(result.get("contexts")) > 1:
-                facebook_id = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
-            elif len(result.get("contexts")) == 0:
-                facebook_id = json_request.get("originalRequest").get("data").get("sender").get("id")
-            else:
-                facebook_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
-    
-    """
-
-
     # Retreives the username by looking up with the unique facebook id
-    username = DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id + "\"")[0][0]
+    username = None
+    try:
+        username = DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id + "\"")[0][0]
+    except:
+        username = None
+
 
     # Retrieve the course code
     course_code = parameters.get("course_code")
@@ -269,14 +259,22 @@ def webhook():
 
 @app.route('/favicon.ico', methods=['GET'])
 def scrape_data_from_last_user():
+    print("scraping data from last user")
     """
     Scrape data after the user has successfully logged in.
     :return: The template that should be rendered when the user has sucessfully logged in.
     """
 
+    # todo: This should be fixed, this is only getting the last user, so if a user is logging in twice, the last user will be scraped
     users = DatabaseExtractor.get_users()
-    lastUsername = users[len(users) - 1][0]
-    lastPassword = users[len(users) - 1][1]
+
+
+    try:
+        lastUsername = users[0][0]
+        lastPassword = users[0][1]
+    except:
+        print("there was no users")
+        return render_template("login_success.html")
 
     thread = Thread(target=thread_function(lastUsername, lastPassword))
     thread.start()
@@ -308,6 +306,7 @@ def login(current_sender_id):
         if validLogin:
             # If valid login, we add the user to the database and we render the success template
             DatabaseInserter.add_user(username, password, current_sender_id)
+            print("user added")
             validLogin = False
             return render_template("login_success.html")
         else:

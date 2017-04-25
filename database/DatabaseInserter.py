@@ -230,12 +230,13 @@ def add_user(username: str, password: str, facebook_id: int):
     data.append(username)
     data.append(password)
     data.append(facebook_id)
+    data.append(datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S'))
 
     # Adds the data to the table
     conn = database.DatabaseConnector.connection
     cur = conn.cursor()
     try:
-        cur.execute("INSERT INTO `user`(`username`,`password`,`facebook_id`) VALUES (?,?,?)", data)
+        cur.execute("INSERT INTO `user`(`username`,`password`,`facebook_id`,`registry_date`) VALUES (?,?,?,?)", data)
     except:
         cur.execute("UPDATE `user` SET password = ?, facebook_id = ? where username = \"" + username + "\"", data[1:3])
     conn.commit()
@@ -426,6 +427,7 @@ def add_course_event(course_code, name, date, start_time, end_time, room, study_
     connection.commit()
 
 def add_user_completed_assignment(username, course_code, nr, category, score):
+    #create variable for all fields to be added to database
     data_list = []
     data_list.append(username)
     data_list.append(course_code)
@@ -433,6 +435,7 @@ def add_user_completed_assignment(username, course_code, nr, category, score):
     data_list.append(category)
     data_list.append(score)
 
+    #establish connection to database
     connection = database.DatabaseConnector.connection
     cursor = connection.cursor()
     try:
@@ -447,3 +450,26 @@ def add_user_completed_assignment(username, course_code, nr, category, score):
                        "and category =\"" + category + "\"", str(score))
 
     connection.commit()
+
+def add_course_event(date_time, course_code, room, category):
+    #create variable for all fields to be added to database
+    data_list=[]
+    data_list.append(date_time)
+    data_list.append(course_code)
+    data_list.append(room)
+    data_list.append(category)
+
+    #establish connection to database
+    connection = database.DatabaseConnector.connection
+    cursor = connection.cursor()
+    try:
+        cursor.execute("INSERT INTO course_event(date_time, course_code, room, category)"
+                       "values(?,?,?,?)", data_list)
+    except:
+        cursor.execute("UPDATE course_event SET room  = ?  " +
+                       "WHERE date_time =\"" +  date_time + "\"" +
+                       "and course_code = \"" + course_code + "\"" +
+                       "and category = \"" + category + "\"", room )
+
+    connection.commit()
+
