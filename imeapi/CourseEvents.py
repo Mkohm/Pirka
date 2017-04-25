@@ -229,6 +229,8 @@ class Event:
             for week_number in range(week[0], week[1]):
                 print("Event: " + str(i))
                 print(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
+                date = Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5])
+                
 
             if week[0] == week[1]:
                 print("Event: " + str(i))
@@ -260,7 +262,7 @@ for index in range(0, 3):
 
 
 my_course = CourseEvents()
-my_event = Event(0)
+my_event = Event(2)
 
 my_event.get_all_events()
 
