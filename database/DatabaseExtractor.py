@@ -289,12 +289,12 @@ def get_next_event(username):
         return "I could not find any events."
 
 
-# todo: fix this method, this method will return the latest assignment, not the next
+# todo: test this method
 def get_next_assignment(username):
     ans = DatabaseConnector.get_values("Select A.title, A.deadline, course.course_name "
                                        " from user_assignment as A "
                                        "JOIN course on A.course_code = course.course_code "
-                                       " where (A.username = \"" + username + "\") and (deadline BETWEEN Date('now') AND DATE('now', 'weekday 0')) "
+                                       " where (A.username = \"" + username + "\") and (deadline BETWEEN Date('now') AND DATE('now', '+365 days')) "
                                                                               " order by deadline ASC "
                                                                               " LIMIT 1;")
 
@@ -343,6 +343,70 @@ def get_days_until_first_exam(username):
     days_to_exam = (dt - datetime.now())
 
     return "There is " + str(days_to_exam.days) + " days to your first exam in " + closestDate[0][1]
+
+
+def get_today_assignments(username):
+    ans = DatabaseConnector.get_values("Select A.title, A.deadline, course.course_name "
+                                       " from user_assignment as A "
+                                       "JOIN course on A.course_code = course.course_code "
+                                       " where (A.username = \"" + username + "\") and (deadline BETWEEN Date('now') AND DATE('now', '+1 days')) "
+                                                                              " order by deadline ASC ")
+
+    try:
+        title = ans[0][0]
+        date = ans[0][1]
+        course_name = ans[0][2]
+        return "You have an assignment " + title + " in course " + course_name + ", that should be delivered today at " + date.split(" ")[1]
+    except:
+        return "I could not find any assignments that should be delivered today."
+
+def get_tomorrow_assignments(username):
+        ans = DatabaseConnector.get_values("Select A.title, A.deadline, course.course_name "
+                                           " from user_assignment as A "
+                                           "JOIN course on A.course_code = course.course_code "
+                                           " where (A.username = \"" + username + "\") and (deadline BETWEEN Date('now', '+1 days') AND DATE('now', '+2 days')) "
+                                                                                  " order by deadline ASC ")
+
+        try:
+            title = ans[0][0]
+            date = ans[0][1]
+            course_name = ans[0][2]
+            return "You have an assignment " + title + " in course " + course_name + ", that should be delivered tomorrow at " + \
+                   date.split(" ")[1]
+        except:
+            return "I could not find any assignments that should be delivered tomorrow."
+
+def get_today_events(username):
+    ans = DatabaseConnector.get_values("Select A.category, A.date_time, course.course_name "
+                                       " from user_event as A "
+                                       "JOIN course on A.course_code = course.course_code "
+                                       " where (A.username = \"" + username + "\") and (date_time BETWEEN Date('now') AND DATE('now', '+1 days')) "
+                                                                              " order by date_time ASC ")
+
+    try:
+        title = ans[0][0]
+        date = ans[0][1]
+        course_name = ans[0][2]
+        return "You have an event " + title + " in course " + course_name + ", today at " + \
+               date.split(" ")[1]
+    except:
+        return "I could not find any events today."
+
+def get_tomorrow_events(username):
+    ans = DatabaseConnector.get_values("Select A.category, A.date_time, course.course_name "
+                                       " from user_event as A "
+                                       "JOIN course on A.course_code = course.course_code "
+                                       " where (A.username = \"" + username + "\") and (date_time BETWEEN Date('now', '+1 days') AND DATE('now', '+2 days')) "
+                                                                              " order by date_time ASC ")
+
+    try:
+        title = ans[0][0]
+        date = ans[0][1]
+        course_name = ans[0][2]
+        return "You have an event " + title + " in course " + course_name + ", " + \
+               date.split(" ")[1]
+    except:
+        return "I could not find any events for tomorrow."
 
 
 def get_this_weeks_assignments(username):
@@ -468,16 +532,6 @@ def get_ical_itslearning(username):
         return "There was no ical link for you."
 
 
-def get_ical_blackboard(username):
-    ans = DatabaseConnector.get_values(
-        "Select user.ical_blackboard from user where user.username = \"" + username + "\"")
-
-    url = ""
-    try:
-        url = ans[0][0]
-        return "https://www.google.com/calendar/render?cid=" + url
-    except:
-        return "There was no ical link for you."
 
 """
 Functions that returns other types and is used as helper methods is listed here
