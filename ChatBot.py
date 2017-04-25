@@ -179,9 +179,6 @@ def thread_function(username: str, password: str):
     itslearning_scraper.get_course_list()
     blackboard_scraper.get_course_list()
 
-    print("deleted user")
-    #DatabaseExtractor.delete_user()
-
     # adds user's associated assignment data
     itslearning_scraper.get_all_assignments()
     blackboard_scraper.get_all_assignments()
@@ -190,8 +187,7 @@ def thread_function(username: str, password: str):
     itslearning_scraper.close_driver()
 
     # add ical links
-    ##itslearning_scraper.get_calendar_feed()
-    ##blackboard_scraper.get_calendar_feed()
+    itslearning_scraper.get_calendar_feed()
 
 
 def valid_login(username: str, password: str):

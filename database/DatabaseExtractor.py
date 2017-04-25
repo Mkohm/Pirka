@@ -402,7 +402,7 @@ def get_next_weeks_events(username):
         "Select user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
         "from user_event "
         "JOIN course on user_event.course_code = course.course_code "
-        "where(user_event.username = \"" + username + "\") and (date_time BETWEEN Date('now', 'localtime', 'weekday 0') AND date('now', 'localtime', 'weekday 0', '+8 days')) order by date_time ASC ")
+        "where(user_event.username = \"" + username + "\") and (date_time BETWEEN Date('now', 'localtime', 'weekday 1') AND date('now', 'localtime', 'weekday 0', '+8 days')) order by date_time ASC ")
 
     try:
 

@@ -304,12 +304,3 @@ class Event:
 
         return programmes
 
-for index in range(0, 3):
-    my_event = Event(index, "TFY4170")
-    for key in my_event.get_week_dict():
-        print(my_event.get_event(key))
-
-my_course = CourseEvents("TFY4170")
-my_event = Event(2, "TFY4170")
-
-my_event.get_all_events()
