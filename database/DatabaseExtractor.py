@@ -440,13 +440,13 @@ def get_next_event(username):
     ans = DatabaseConnector.get_values("SELECT U.category, U.date_time, U.room, U.course_code, C.course_name "
                                        "from user_event AS U, course AS C "
                                        "where U.username = \"" + username + "\" AND U.course_code = C.course_code ORDER BY date_time LIMIT 1")
+    print(ans)
     try:
         description = ans[0][0]
         date = ans[0][1]
         room = ans[0][2]
         course_name = ans[0][4]
-        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + format_date(
-            date)
+        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + format_date_datetime(date)
     except:
         return "I could not find any events."
 
@@ -469,7 +469,7 @@ def get_next_assignment(username):
         title = ans[0][0]
         date = ans[0][1]
         course_name = ans[0][2]
-        return "Your next assignment delivery is " + title + " which is due " + format_date(
+        return "Your next assignment delivery is " + title + " which is due " + format_date_datetime(
             date) + ", in the course " + course_name + "."
     except:
         return "I could not find any assignments."
@@ -536,7 +536,7 @@ def get_today_assignments(username):
         title = ans[0][0]
         date = ans[0][1]
         course_name = ans[0][2]
-        return "You have an assignment " + title + " in course " + course_name + ", that should be delivered today at " + format_date(
+        return "You have an assignment " + title + " in course " + course_name + ", that should be delivered today at " + format_date_datetime(
             date)
     except:
         return "I could not find any assignments that should be delivered today."
