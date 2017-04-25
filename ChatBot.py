@@ -168,16 +168,16 @@ def thread_function(username: str, password: str):
 
     # Scrapes for additional data that is user specific
     itslearning_scraper = ItsLearningScraper(username, password)
-    blackboad_scraper = BlackboardScraper(username, password)
+    blackboard_scraper = BlackboardScraper(username, password)
 
     # adds user-course relation to database
     itslearning_scraper.get_course_list()
-    blackboad_scraper.get_course_list()
+    blackboard_scraper.get_course_list()
 
 
     # adds user's associated assignment data
     itslearning_scraper.get_all_assignments()
-    blackboad_scraper.get_all_assignments()
+    blackboard_scraper.get_all_assignments()
 
     #Adding a dummy-course so it is possible to test pirka with data
     DatabaseInserter.add_user_has_course(username=username, course_code="DUMMYCOURSE")
