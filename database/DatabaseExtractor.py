@@ -218,15 +218,17 @@ def get_exercise_scheme_approval(course_code, username):
         required = str(ans[0][2])
         course_name=ans[0][3]
         if required == "None":
-            if score >= 8:
+            if int(score) >= 8:
                 return "Yes, you have completed the exercise scheme in " + course_code + " " + course_name + "."
             else:
-                return "No, you have done " + score + " out of " + required + " required exercises in " + course_code + " " + course_name + "."
+                return "No, you have done " + score + " out of " + str(8) + " required exercises in " + course_code + " " + course_name + "."
 
-        if score == required:
+        if int(score) >= required:
             return "Yes, you have completed all the required assignments!"
+        else:
+            return "No, you have done " + score + " out of " + required + " required exercises in " + course_code + " " + course_name + "."
     except:
-        return "Sorry, i don't know how many exercises is required."
+        return "Sorry, I don't know how many exercises is required."
 
 def get_exercises_left(course_code, username):
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
@@ -240,9 +242,9 @@ def get_exercises_left(course_code, username):
         required = ans[0][2]
 
         if required == "None":
-            left = str(8-score)
+            left = str(8-int(score))
         else:
-            left = str(required - score)
+            left = str(required - int(score))
         return "You have " + left + " exercises left in " + course_code + " " + course_name + "."
 
     except:
@@ -560,3 +562,6 @@ def get_users() -> list:
 
 def delete_user():
     ans = DatabaseConnector.get_values("delete from user")
+
+
+print(get_exercise_scheme_approval("TTK4105", "marihl"))
