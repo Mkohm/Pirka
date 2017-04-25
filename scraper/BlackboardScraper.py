@@ -139,6 +139,7 @@ class BlackboardScraper:
     def close_driver(self):
         driver.quit()
 
+"""
 
 user = "evenkal"
 password = input("Password: ")
@@ -153,5 +154,8 @@ except:
 myScrape.close_driver()
 
 # myScrape.get_calendar_feed()
+
+"""
+
 
 

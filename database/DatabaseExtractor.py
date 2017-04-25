@@ -323,27 +323,26 @@ def get_days_until_first_exam(username):
 
         try:
             date = ans[0][0]
+            course_name = ans[0][1]
         except:
             continue
 
-        if date == "null":
+        if date == "null" or course_name == "null":
             continue
         else:
-            # dato = datetime.date(datetime.strptime("Jun 02, 2017", "%b %d, %Y"))
-
             time1 = time.strptime(date, "%Y-%m-%d")
-            dates.append(time1)
+            dates.append((time1, course_name))
 
-    closestDate = min(dates)
+    closestDate = sorted(dates, key=lambda tup: tup[0])
 
     from time import mktime
     from datetime import datetime
 
-    dt = datetime.fromtimestamp(mktime(closestDate))
+    dt = datetime.fromtimestamp(mktime(closestDate[0][0]))
 
     days_to_exam = (dt - datetime.now())
 
-    return "There is " + str(days_to_exam.days) + " days to your first exam."
+    return "There is " + str(days_to_exam.days) + " days to your first exam in " + closestDate[0][1]
 
 
 def get_this_weeks_assignments(username):
@@ -352,7 +351,7 @@ def get_this_weeks_assignments(username):
 
     ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
                                        "from user_assignment as A, course as C "
-                                       "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now') AND DATE('now', 'weekday 0')) order by deadline ASC")
+                                       "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now', 'localtime', 'weekday 0', '-7 days') AND date('now', 'localtime', 'weekday 0')) order by deadline ASC")
 
     try:
 
@@ -377,7 +376,7 @@ def get_this_weeks_events(username):
         "Select user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
         "from user_event "
         "JOIN course on user_event.course_code = course.course_code "
-        "where(user_event.username = \"" + username + "\") and (date_time BETWEEN Date('now', 'weekday 1') AND date('now', '+7 day')) order by date_time ASC ")
+        "where(user_event.username = \"" + username + "\") and (date_time BETWEEN Date('now', 'localtime', 'weekday 0', '-7 days') AND date('now', 'localtime', 'weekday 0')) order by date_time ASC ")
 
     try:
 
@@ -403,7 +402,7 @@ def get_next_weeks_events(username):
         "Select user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
         "from user_event "
         "JOIN course on user_event.course_code = course.course_code "
-        "where(user_event.username = \"" + username + "\") and (date_time BETWEEN Date('now', 'weekday 1', '+7 day') AND date('now', 'weekday 1', '+14 day')) order by date_time ASC ")
+        "where(user_event.username = \"" + username + "\") and (date_time BETWEEN Date('now', 'localtime', 'weekday 0') AND date('now', 'localtime', 'weekday 0', '+8 days')) order by date_time ASC ")
 
     try:
 
@@ -429,7 +428,7 @@ def get_next_weeks_assignments(username):
 
     ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
                                        "from user_assignment as A, course as C "
-                                       "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now','weekday 1', '+7 day') AND date('now', 'weekday 1', '+14 day')) order by deadline ASC")
+                                       "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now', 'localtime', 'weekday 0') AND date('now', 'localtime', 'weekday 0', '+8 days')) order by deadline ASC")
 
     try:
 
@@ -499,3 +498,6 @@ def get_users() -> list:
     ans = DatabaseConnector.get_values("Select * from user")
 
     return ans
+
+
+print(get_days_until_first_exam("mariukoh"))

@@ -29,13 +29,13 @@ port = int(os.environ.get('PORT', 8080))
 def process_actions(parameter: str, action_name: str) -> str:
     """
     This method creates a response to API.AI according to which parameters that was passed by API.AI
-    :param parameter: parameter[0] is username, parameter[1] is course_code
+    :param parameter: parameter[0] is username, parameter[1] is course_code, parameter[2] is facebook-id
     :param action_name: the action being called in API.AI
     :return: Json - data containing the string that should be returned to the user
     """
 
     if action_name == "login":
-        return create_followup_event_data(parameter)
+        return create_followup_event_data(parameter[2])
     elif action_name == "get_exam_date":
         return create_data_response(DatabaseExtractor.get_exam_date(parameter[1]))
     elif action_name == "get_assessment_form":
@@ -119,19 +119,19 @@ def create_data_response(speech: str) -> str:
     return data
 
 
-def create_followup_event_data(parameter_value: str):
+def create_followup_event_data(facebook_id: str):
     """
     This function is used when logging in with itslearning details, 
     to provide a unique login for each user 
     (link that contains the ip and port, along with the unique facebook-id) 
-    :param parameter_value: facebook-id
+    :param facebook_id: facebook-id
     :return: json data
     """
     data = {
         "followupEvent": {
             "name": "custom_event",
             "data": {
-                "user_id": parameter_value,
+                "user_id": facebook_id,
                 "ip_address": ip + ":" + str(port)
             }
         }
@@ -216,38 +216,47 @@ def webhook():
     # Extract the data from the json-request (first get the result section of the json)
     result = json_request.get("result")
 
-    # Then get the parameters and action_name of the result
+    # Then get the parameters and action_name from the result
     parameters = result.get("parameters")
 
     # Get the action name
     action_name = result.get("action")
 
-    # Handles different parameters to the process-actions method
-    if action_name == "login":
 
-        # Depending on if the event "WELCOME_FACEBOOK" or if the user typed "login, get started ect." the
-        # resulting json request is different, hence we get the parameter in different ways
-        if len(result.get("contexts")) > 1:
-            parameter = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
+    facebook_id = json_request.get("originalRequest").get("data").get("sender").get("id")
+
+    """
+    
+        # Handles different parameters to the process-actions method
+        if action_name == "login":
+    
+            # Depending on if the event "WELCOME_FACEBOOK" or if the user typed "login, get started ect." the
+            # resulting json request is different, hence we get the parameter in different ways
+            if len(result.get("contexts")) > 1:
+                parameter = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
+            else:
+                parameter = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
         else:
-            parameter = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
-    else:
-        facebook_id = ""
-        if len(result.get("contexts")) > 1:
-            facebook_id = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
-        elif len(result.get("contexts")) == 0:
-            facebook_id = json_request.get("originalRequest").get("data").get("sender").get("id")
-        else:
-            facebook_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
+            facebook_id = ""
+            if len(result.get("contexts")) > 1:
+                facebook_id = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
+            elif len(result.get("contexts")) == 0:
+                facebook_id = json_request.get("originalRequest").get("data").get("sender").get("id")
+            else:
+                facebook_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
+    
+    """
 
-        # Retreives the username by looking up with the unique facebook id
-        username = DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id + "\"")[0][0]
 
-        # Retrieve the course code
-        course_code = parameters.get("course_code")
-        parameter = [username, course_code]
+    # Retreives the username by looking up with the unique facebook id
+    username = DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id + "\"")[0][0]
+
+    # Retrieve the course code
+    course_code = parameters.get("course_code")
+    parameter = [username, course_code, facebook_id]
 
     # Creates the string that should be sent back to the user
+    print(action_name, parameter[0], parameter[1], course_code, facebook_id)
     speech = process_actions(parameter, action_name)
 
     # Create a response to API.AI and return it
@@ -305,7 +314,6 @@ def login(current_sender_id):
 
             # If the login was not valid, we render the login screen again
             return render_template('login.html')
-
 
     return render_template('login.html')
 
