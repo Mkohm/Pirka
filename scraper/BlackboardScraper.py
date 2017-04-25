@@ -58,7 +58,7 @@ class BlackboardScraper:
             self.driver.find_element_by_class_name("fc-button-content.fc-button-main.fc-button-img").click()
             self.driver.find_element_by_class_name("fc-button-content.fc-button-main.fc-button-img").click()
         except:
-            print("FAAAAAIL")
+            pass
         try:
             button = self.driver.find_element_by_id("ical")
         except:

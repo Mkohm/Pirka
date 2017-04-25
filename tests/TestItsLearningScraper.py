@@ -8,6 +8,12 @@ class TestItsLearningScraper(TestCase):
         self.password = "Fyrstikk94"
         self.scraper = ItsLearningScraper(self.username, self.password)
 
+    def test_get_calendar_feed(self):
+        try:
+            self.scraper.get_calendar_feed()
+        except Exception:
+            self.fail("get_calendar_feed() raised an Exception")
+
     def test_get_course_list(self):
         try:
             self.scraper.get_course_list()
@@ -16,7 +22,7 @@ class TestItsLearningScraper(TestCase):
 
     def test_get_assignments(self):
         try:
-            self.scraper.get_assignments()
+            self.scraper.get_assignments(0)
         except Exception:
             self.fail("get_assignments() raised an Exception")
 
@@ -28,7 +34,7 @@ class TestItsLearningScraper(TestCase):
 
     def test_get_announcements(self):
         try:
-            self.scraper.get_announcements()
+            self.scraper.get_announcements(0)
         except Exception:
             self.fail("get_announcements() raised an Exception")
 
