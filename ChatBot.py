@@ -186,9 +186,12 @@ def thread_function(username: str, password: str):
     itslearning_scraper.get_all_assignments()
     blackboard_scraper.get_all_assignments()
 
+    blackboard_scraper.close_driver()
+    itslearning_scraper.close_driver()
+
     # add ical links
-    itslearning_scraper.get_calendar_feed()
-    blackboard_scraper.get_calendar_feed()
+    ##itslearning_scraper.get_calendar_feed()
+    ##blackboard_scraper.get_calendar_feed()
 
 
 def valid_login(username: str, password: str):
@@ -257,7 +260,6 @@ def webhook():
     return created_response
 
 
-@app.route('/favicon.ico', methods=['GET'])
 def scrape_data_from_last_user():
     print("scraping data from last user")
     """
@@ -274,7 +276,7 @@ def scrape_data_from_last_user():
         lastPassword = users[0][1]
     except:
         print("there was no users")
-        return render_template("login_success.html")
+
 
     thread = Thread(target=thread_function(lastUsername, lastPassword))
     thread.start()
@@ -308,6 +310,7 @@ def login(current_sender_id):
             DatabaseInserter.add_user(username, password, current_sender_id)
             print("user added")
             validLogin = False
+            scrape_data_from_last_user()
             return render_template("login_success.html")
         else:
 

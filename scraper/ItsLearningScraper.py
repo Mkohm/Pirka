@@ -4,31 +4,37 @@ import platform
 from database import DatabaseInserter
 import timestring
 
-# DOCUMENTATION: http://selenium-python.readthedocs.io/locating-elements.html
-# When running Selenium it is necessary to close the driver. A call to self.close_driver is needed when done.
-
-driver_directory = os.path.dirname(__file__)
-if platform.system() == "Windows":
-    relative_path = "chromedriver.exe"
-else:
-    relative_path = "chromedriver"
-absolute_file_path = os.path.join(driver_directory, relative_path)
-
-chrome_profile = webdriver.ChromeOptions()
-driver = webdriver.Chrome(executable_path=absolute_file_path)
-driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
-
 
 class ItsLearningScraper:
+
+
+
+
     def __init__(self, username, password):
+
+        driver_directory = os.path.dirname(__file__)
+        if platform.system() == "Windows":
+            relative_path = "chromedriver.exe"
+        else:
+            relative_path = "chromedriver"
+        absolute_file_path = os.path.join(driver_directory, relative_path)
+
+        chrome_profile = webdriver.ChromeOptions()
+        self.driver = webdriver.Chrome(executable_path=absolute_file_path)
+
+        print("does shit")
+
+
+
+        self.driver.get("http://www.ilearn.sexy")  # Shortcut to itslearning
 
         self.username = username
         self.password = password
 
         # logs into Its Learning. After this the "driver" contains the main page in Its Learning
-        username_field = driver.find_element_by_name("feidename")
+        username_field = self.driver.find_element_by_name("feidename")
         username_field.send_keys(username)
-        password_field = driver.find_element_by_name("password")
+        password_field = self.driver.find_element_by_name("password")
         password_field.send_keys(password)
         password_field.submit()
 
@@ -37,21 +43,21 @@ class ItsLearningScraper:
     def get_calendar_feed(self):
 
         # navigates to the calendar page in Its Learning.
-        driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Calendar%2fSchedule.aspx&Item=l-menu-calendar")
+        self.driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Calendar%2fSchedule.aspx&Item=l-menu-calendar")
 
         # navigates to the body frame to be able to navigate further
-        driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+        self.driver.switch_to.frame(self.driver.find_element_by_name("mainmenu"))
 
         # expand the menu button (with three dots) above the calender, on the right side of the page
-        cal = driver.find_element_by_id("ctl00_PageFunctionsPlaceHolder_PageFunctions")
+        cal = self.driver.find_element_by_id("ctl00_PageFunctionsPlaceHolder_PageFunctions")
         cal.click()
 
         # clicks the "abonner" button
-        cal = driver.find_element_by_id("ctl00_PageFunctionsPlaceHolder_ctl03_SubscribeLink")
+        cal = self.driver.find_element_by_id("ctl00_PageFunctionsPlaceHolder_ctl03_SubscribeLink")
         cal.click()
 
         # extracts the calendar feed url and returns it as a string
-        webcal_url = driver.find_element_by_id("ctl00_ContentPlaceHolder_ICalFeedModalDialog_ICalFeedLink").text
+        webcal_url = self.driver.find_element_by_id("ctl00_ContentPlaceHolder_ICalFeedModalDialog_ICalFeedLink").text
 
         # creates a ical-version of the feed to make it compatible with the icalendar library.
         ical_url = webcal_url.replace("webcal", "https")
@@ -65,11 +71,11 @@ class ItsLearningScraper:
     def get_course_list(self):
 
         # gets the course overview page
-        driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
-        driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+        self.driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
+        self.driver.switch_to.frame(self.driver.find_element_by_name("mainmenu"))
 
         # finds all the hyperlinks in the frame. They are all named "ccl-iconlink" in HTML
-        courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
+        courses = self.driver.find_elements_by_css_selector("td > .ccl-iconlink")
 
         course_list = []
 
@@ -84,11 +90,11 @@ class ItsLearningScraper:
     def get_assignments(self, course_index):
 
         # gets the course overview page
-        driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
-        driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+        self.driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
+        self.driver.switch_to.frame(self.driver.find_element_by_name("mainmenu"))
 
         # finds all the hyperlinks in the frame. They are all named "ccl-iconlink" in HTML
-        courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
+        courses = self.driver.find_elements_by_css_selector("td > .ccl-iconlink")
 
         # Navigates to the relevant course based in course index
         course_code = courses[course_index].text.split()[0]
@@ -97,24 +103,24 @@ class ItsLearningScraper:
 
         # Trying to find a folder containing assignments
         try:
-            link = driver.find_element_by_link_text("Assignments")
+            link = self.driver.find_element_by_link_text("Assignments")
         except:
             try:
-                link = driver.find_element_by_link_text("Øvinger")
+                link = self.driver.find_element_by_link_text("Øvinger")
             except:
                 return "Unable to find assignments for " + course_code
 
         link.click()
-        driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-        link = driver.find_elements_by_class_name("GridTitle")
+        self.driver.switch_to.frame(self.driver.find_element_by_name("mainmenu"))
+        link = self.driver.find_elements_by_class_name("GridTitle")
 
         # loops through every element in the assignment folder, tries to extract info
         for i in range(0, len(link)):
             link[i].click()
 
             try:
-                title = driver.find_elements_by_class_name("ccl-pageheader-title")[0].text
-                attribute = driver.find_elements_by_class_name("h-mrb5")
+                title = self.driver.find_elements_by_class_name("ccl-pageheader-title")[0].text
+                attribute = self.driver.find_elements_by_class_name("h-mrb5")
 
                 published = attribute[0].text[11:]
                 deadline = attribute[1].text.replace("Deadline: ", "")
@@ -137,7 +143,7 @@ class ItsLearningScraper:
                 print("Anonym: " + str(anonymous))
 
                 try:
-                    assessment = driver.find_element_by_class_name("colorbox_green").text
+                    assessment = self.driver.find_element_by_class_name("colorbox_green").text
                 except:
                     assessment = None
                 print("Assessment: " + assessment)
@@ -155,17 +161,17 @@ class ItsLearningScraper:
                 except:
                     print("Daabase Error")
 
-                driver.back()
+                self.driver.back()
 
-                driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+                self.driver.switch_to.frame(self.driver.find_element_by_name("mainmenu"))
 
-                link = driver.find_elements_by_class_name("GridTitle")
+                link = self.driver.find_elements_by_class_name("GridTitle")
 
             except:
                 print("\nNot an supported assignment\n")
-                driver.back()
-                driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-                link = driver.find_elements_by_class_name("GridTitle")
+                self.driver.back()
+                self.driver.switch_to.frame(self.driver.find_element_by_name("mainmenu"))
+                link = self.driver.find_elements_by_class_name("GridTitle")
 
     def get_all_assignments(self):
         for i in range(0, len(self.get_course_list())):
@@ -174,18 +180,18 @@ class ItsLearningScraper:
 
     def get_announcements(self, index):
         # gets the course overview page
-        driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
-        driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
+        self.driver.get("https://ntnu.itslearning.com/main.aspx?TextURL=Course%2fAllCourses.aspx")
+        self.driver.switch_to.frame(self.driver.find_element_by_name("mainmenu"))
 
         # finds all the hyperlinks in the frame. They are all named "ccl-iconlink" in HTML
-        courses = driver.find_elements_by_css_selector("td > .ccl-iconlink")
+        courses = self.driver.find_elements_by_css_selector("td > .ccl-iconlink")
 
         # Navigates to the first course
         print("Getting messages from: " + courses[index].text.split()[0]+"\n")
         courses[index].click()
-        driver.switch_to.frame(driver.find_element_by_name("mainmenu"))
-        announcements = driver.find_elements_by_class_name("h-ov-hidden")
-        announcer = driver.find_elements_by_class_name("h-va-bottom")
+        self.driver.switch_to.frame(self.driver.find_element_by_name("mainmenu"))
+        announcements = self.driver.find_elements_by_class_name("h-ov-hidden")
+        announcer = self.driver.find_elements_by_class_name("h-va-bottom")
 
         # print(len(announcements))
         # print(announcements[0].text)
@@ -196,7 +202,7 @@ class ItsLearningScraper:
             print("")
 
     def close_driver(self):
-        driver.quit()
+        self.driver.quit()
 
 
 def datetime_converter(datestring):
