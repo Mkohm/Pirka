@@ -188,7 +188,7 @@ def thread_function(username: str, password: str):
 
     # add ical links
     itslearning_scraper.get_calendar_feed()
-    blackboad_scraper.get_calendar_feed()
+    blackboard_scraper.get_calendar_feed()
 
 
 def valid_login(username: str, password: str):
