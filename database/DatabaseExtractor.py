@@ -1,7 +1,5 @@
 from database import DatabaseConnector
-from datetime import datetime, date
 import time
-# todo: make possible for nontype fields
 
 """
 Functions that returs strings that the user will see is listed under here
@@ -9,7 +7,12 @@ Functions that returs strings that the user will see is listed under here
 
 
 def get_exam_date(course_code):
-    ans = DatabaseConnector.get_values("Select exam_date, course_name from course where "
+    """
+    Returns the exam date for a subject
+    :param course_code: the subjects course code
+    :return: String with exam date that is presented to the user
+    """
+    ans = DatabaseConnector.get_values("SELECT exam_date, course_name FROM course WHERE "
                                        "course.course_code = \"" + course_code + "\";")
 
     date = ans[0][0]
@@ -22,11 +25,16 @@ def get_exam_date(course_code):
             return "No exam data available."
     else:
         return "Exam date in " + course_code + " " + name + " is " + format_date_date(date)
-        # todo: add reason if field is empty
 
 
 def get_exam_dates(username):
-    ans = DatabaseConnector.get_values("Select course_code from user_has_course where "
+    """
+    Returns a list of exam dates for a subject
+    :param username: the users username
+    :return: String that is presented to the user
+    """
+
+    ans = DatabaseConnector.get_values("SELECT course_code FROM user_has_course WHERE "
                                        "user_has_course.username = \"" + username + "\";")
 
     string = ""
@@ -37,7 +45,14 @@ def get_exam_dates(username):
 
 
 def get_course_codes(username):
-    ans = DatabaseConnector.get_values("Select course_code from user_has_course where user_has_course.username = \"" + username + "\"")
+    """
+    Returns a list of course codes that a user has
+    :param username: the users username
+    :return: String that is presented to the user
+    """
+
+    ans = DatabaseConnector.get_values(
+        "SELECT course_code FROM user_has_course WHERE user_has_course.username = \"" + username + "\"")
 
     string = ""
     for course_code in ans:
@@ -47,12 +62,18 @@ def get_course_codes(username):
 
 
 def get_course_names(username):
+    """
+    Returns a list of course names that a user has
+    :param username: the users username
+    :return: String that is presented to the user
+    """
+
     list = get_course_codes_list(username)
 
     string = ""
     for course_code in list:
         ans = DatabaseConnector.get_values(
-            "Select course_name from course where course_code = \"" + course_code[0] + "\";")
+            "SELECT course_name FROM course WHERE course_code = \"" + course_code[0] + "\";")
 
         course_name = ans[0][0]
         string += course_name + "\n"
@@ -61,13 +82,23 @@ def get_course_names(username):
 
 
 def get_number_of_courses(username):
+    """
+    Returns the number of courses that a user has
+    :param username: the users username
+    :return: String that is presented to the user
+    """
     list = get_course_codes_list(username)
 
     return "You have " + str(len(list)) + " courses."
 
 
 def get_assessment_form(course_code):
-    ans = DatabaseConnector.get_values('Select assessment_form, course_name from course where '
+    """
+    Returns the assessment form for a course
+    :param course_code: the courses course code
+    :return: String that is presented to the user
+    """
+    ans = DatabaseConnector.get_values('SELECT assessment_form, course_name FROM course WHERE '
                                        'course.course_code = "' + course_code + '";')
     assessment_form = ans[0][0]
     name = ans[0][1]
@@ -75,7 +106,13 @@ def get_assessment_form(course_code):
 
 
 def get_contact_name(course_code):
-    ans = DatabaseConnector.get_values("Select contact_name, course_name  from course where "
+    """
+    Returns the contact name to the contact person in a course
+    :param course_code: the courses course code
+    :return: String that is presented to the user
+    """
+
+    ans = DatabaseConnector.get_values("SELECT contact_name, course_name  FROM course WHERE "
                                        "course.course_code = \"" + course_code + "\";")
     contact_name = ans[0][0]
     name = ans[0][1]
@@ -83,7 +120,7 @@ def get_contact_name(course_code):
 
 
 def get_contact_mail(course_code):
-    ans = DatabaseConnector.get_values("Select contact_mail, course_name from course where course.course_code = \""
+    ans = DatabaseConnector.get_values("SELECT contact_mail, course_name FROM course WHERE course.course_code = \""
                                        + course_code + "\";")
     contact_mail = ans[0][0]
     name = ans[0][1]
@@ -91,7 +128,7 @@ def get_contact_mail(course_code):
 
 
 def get_contact_office(course_code):
-    ans = DatabaseConnector.get_values("Select contact_office, course_name from course where course.course_code = \""
+    ans = DatabaseConnector.get_values("SELECT contact_office, course_name FROM course WHERE course.course_code = \""
                                        + course_code + "\";")
     contact_office = ans[0][0]
     name = ans[0][1]
@@ -103,8 +140,7 @@ def get_contact_office(course_code):
 
 
 def get_contact_phone(course_code):
-    print(course_code)
-    ans = DatabaseConnector.get_values("Select contact_phone, course_name from course where course.course_code = \""
+    ans = DatabaseConnector.get_values("SELECT contact_phone, course_name FROM course WHERE course.course_code = \""
                                        + course_code + "\";")
     contact_phone = ans[0][0]
     name = ans[0][1]
@@ -116,7 +152,7 @@ def get_contact_phone(course_code):
 
 
 def get_contact_(course_code):
-    ans = DatabaseConnector.get_values("Select contact_website, course_name from course where "
+    ans = DatabaseConnector.get_values("SELECT contact_website, course_name FROM course WHERE "
                                        'course.course_code = "' + course_code + '";')
     contact_website = ans[0][0]
     name = ans[0][1]
@@ -124,14 +160,14 @@ def get_contact_(course_code):
 
 
 def get_course_name(course_code):
-    ans = DatabaseConnector.get_values('Select course_name from course where course.course_code = "' + course_code
+    ans = DatabaseConnector.get_values('SELECT course_name FROM course WHERE course.course_code = "' + course_code
                                        + '";')
     course_name = ans[0][0]
     return "The course name is " + course_code + " " + course_name
 
 
 def get_credit(course_code):
-    ans = DatabaseConnector.get_values("Select credit, course_name from course where course.course_code = \"" +
+    ans = DatabaseConnector.get_values("SELECT credit, course_name FROM course WHERE course.course_code = \"" +
                                        course_code + "\" ;")
     credit = ans[0][0]
     name = ans[0][1]
@@ -139,7 +175,7 @@ def get_credit(course_code):
 
 
 def get_url(course_code):
-    ans = DatabaseConnector.get_values("Select url, course_name from course where course.course_code = \"" +
+    ans = DatabaseConnector.get_values("SELECT url, course_name FROM course WHERE course.course_code = \"" +
                                        course_code + "\" ;")
     url = ans[0][0]
 
@@ -150,7 +186,7 @@ def get_url(course_code):
 
 
 def get_term(course_code):
-    ans = DatabaseConnector.get_values("Select term from course where course.course_code = \"" + course_code + "\"")
+    ans = DatabaseConnector.get_values("SELECT term FROM course WHERE course.course_code = \"" + course_code + "\"")
 
     term = ans[0][0]
 
@@ -161,7 +197,7 @@ def get_term(course_code):
 
 
 def get_prereq_knowledge(course_code):
-    ans = DatabaseConnector.get_values("Select prereq_knowledge, course_name from course where course.course_code" +
+    ans = DatabaseConnector.get_values("SELECT prereq_knowledge, course_name FROM course WHERE course.course_code" +
                                        " = \"" + course_code + "\" ;")
     prereq = ans[0][0]
 
@@ -172,28 +208,28 @@ def get_prereq_knowledge(course_code):
 
 
 def get_course_content(course_code):
-    ans = DatabaseConnector.get_values("Select course_content, course_name from course where" +
+    ans = DatabaseConnector.get_values("SELECT course_content, course_name FROM course WHERE" +
                                        " course.course_code = \"" + course_code + "\" ;")
     course_content = ans[0][0]
     return course_content
 
 
 def get_course_material(course_code):
-    course_material = DatabaseConnector.get_values("Select course_material, course_name from course where " +
+    course_material = DatabaseConnector.get_values("SELECT course_material, course_name FROM course WHERE " +
                                                    "course_code = \"" + course_code + "\";")
     return course_material[0][0]
 
 
 def get_teaching_form(course_code):
-    teaching_form = DatabaseConnector.get_values("Select teaching_form, course_name from course where course_code =\""
+    teaching_form = DatabaseConnector.get_values("SELECT teaching_form, course_name FROM course WHERE course_code =\""
                                                  + course_code + "\";")
     return teaching_form[0][0]
 
 
 def get_exercise_status(course_code, username):
-    ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
-                                       "status_exercise as S, course as C where S.course_code = \"" + course_code + "\" "
-                                                                                                                    "and S.course_code = C.course_code and S.username = \"" + username + "\" group by "
+    ans = DatabaseConnector.get_values("SELECT S.username, S.total_score, S.req_score, C.course_name FROM "
+                                       "status_exercise AS S, course AS C WHERE S.course_code = \"" + course_code + "\" "
+                                                                                                                    "and S.course_code = C.course_code AND S.username = \"" + username + "\" GROUP BY "
                                                                                                                                                                                          "S.username ;")
     try:
         score = str(ans[0][1])
@@ -208,20 +244,20 @@ def get_exercise_status(course_code, username):
 
 
 def get_exercise_scheme_approval(course_code, username):
-
-    ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
-                                       "status_exercise as S, course as C where S.course_code = \"" + course_code + "\" "
-                                        "and S.course_code = C.course_code and S.username = \"" + username + "\" group by ""S.username ;")
+    ans = DatabaseConnector.get_values("SELECT S.username, S.total_score, S.req_score, C.course_name FROM "
+                                       "status_exercise AS S, course AS C WHERE S.course_code = \"" + course_code + "\" "
+                                                                                                                    "and S.course_code = C.course_code AND S.username = \"" + username + "\" GROUP BY ""S.username ;")
 
     try:
         score = str(ans[0][1])
         required = str(ans[0][2])
-        course_name=ans[0][3]
+        course_name = ans[0][3]
         if required == "None":
             if int(score) >= 8:
                 return "Yes, you have completed the exercise scheme in " + course_code + " " + course_name + "."
             else:
-                return "No, you have done " + score + " out of " + str(8) + " required exercises in " + course_code + " " + course_name + "."
+                return "No, you have done " + score + " out of " + str(
+                    8) + " required exercises in " + course_code + " " + course_name + "."
 
         if int(score) >= required:
             return "Yes, you have completed all the required assignments!"
@@ -230,10 +266,11 @@ def get_exercise_scheme_approval(course_code, username):
     except:
         return "Sorry, I don't know how many exercises is required."
 
+
 def get_exercises_left(course_code, username):
-    ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
-                                       "status_exercise as S, course as C where S.course_code = \"" + course_code + "\" "
-                                                                                                                    "and S.course_code = C.course_code and S.username = \"" + username + "\" group by "
+    ans = DatabaseConnector.get_values("SELECT S.username, S.total_score, S.req_score, C.course_name FROM "
+                                       "status_exercise AS S, course AS C WHERE S.course_code = \"" + course_code + "\" "
+                                                                                                                    "and S.course_code = C.course_code AND S.username = \"" + username + "\" GROUP BY "
                                                                                                                                                                                          "S.username ;")
 
     try:
@@ -242,7 +279,7 @@ def get_exercises_left(course_code, username):
         required = ans[0][2]
 
         if required == "None":
-            left = str(8-int(score))
+            left = str(8 - int(score))
         else:
             left = str(required - int(score))
         return "You have " + left + " exercises left in " + course_code + " " + course_name + "."
@@ -251,11 +288,10 @@ def get_exercises_left(course_code, username):
         return "You haven't done any exercises in this course yet."
 
 
-
 def get_project_status(course_code, username):
-    ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
-                                       "status_project as S, course as C where S.course_code = \"" + course_code + "\" "
-                                                                                                                   "and S.course_code = C.course_code and S.username = \"" + username + "\" group by "
+    ans = DatabaseConnector.get_values("SELECT S.username, S.total_score, S.req_score, C.course_name FROM "
+                                       "status_project AS S, course AS C WHERE S.course_code = \"" + course_code + "\" "
+                                                                                                                   "and S.course_code = C.course_code AND S.username = \"" + username + "\" GROUP BY "
                                                                                                                                                                                         "S.username ;")
 
     try:
@@ -268,9 +304,9 @@ def get_project_status(course_code, username):
 
 
 def get_lab_status(course_code, username):
-    ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
-                                       "status_lab as S, course as C where S.course_code = \"" + course_code + "\" "
-                                                                                                               "and S.course_code = C.course_code and S.username = \"" + username + "\" group by "
+    ans = DatabaseConnector.get_values("SELECT S.username, S.total_score, S.req_score, C.course_name FROM "
+                                       "status_lab AS S, course AS C WHERE S.course_code = \"" + course_code + "\" "
+                                                                                                               "and S.course_code = C.course_code AND S.username = \"" + username + "\" GROUP BY "
                                                                                                                                                                                     "S.username ;")
 
     try:
@@ -283,33 +319,35 @@ def get_lab_status(course_code, username):
 
 
 def get_next_event(username):
-    ans = DatabaseConnector.get_values("Select U.category, U.date_time, U.room, U.course_code, C.course_name "
-                                       "from user_event as U, course as C "
-                                       "where U.username = \"" + username + "\" and U.course_code = C.course_code order by date_time LIMIT 1")
+    ans = DatabaseConnector.get_values("SELECT U.category, U.date_time, U.room, U.course_code, C.course_name "
+                                       "from user_event AS U, course AS C "
+                                       "where U.username = \"" + username + "\" AND U.course_code = C.course_code ORDER BY date_time LIMIT 1")
     try:
         description = ans[0][0]
         date = ans[0][1]
         room = ans[0][2]
         course_name = ans[0][4]
-        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + format_date(date)
+        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + format_date(
+            date)
     except:
         return "I could not find any events."
 
 
 # todo: test this method
 def get_next_assignment(username):
-    ans = DatabaseConnector.get_values("Select A.title, A.deadline, course.course_name "
-                                       " from user_assignment as A "
-                                       "JOIN course on A.course_code = course.course_code "
-                                       " where (A.username = \"" + username + "\") and (deadline BETWEEN Date('now') AND DATE('now', '+365 days')) "
-                                                                              " order by deadline ASC "
+    ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, course.course_name "
+                                       " FROM user_assignment AS A "
+                                       "JOIN course ON A.course_code = course.course_code "
+                                       " WHERE (A.username = \"" + username + "\") AND (deadline BETWEEN Date('now') AND DATE('now', '+365 days')) "
+                                                                              " ORDER BY deadline ASC "
                                                                               " LIMIT 1;")
 
     try:
         title = ans[0][0]
         date = ans[0][1]
         course_name = ans[0][2]
-        return "Your next assignment delivery is " + title + " which is due " + format_date(date) + ", in the course " + course_name + "."
+        return "Your next assignment delivery is " + title + " which is due " + format_date(
+            date) + ", in the course " + course_name + "."
     except:
         return "I could not find any assignments."
 
@@ -317,16 +355,15 @@ def get_next_assignment(username):
 def get_days_until_first_exam(username):
     course_list = get_course_codes_list(username)
 
-
-
     if len(course_list) == 0:
         return "Sorry, i cannot find the number of days until your exam."
 
     dates = []
 
     for course_code in course_list:
-        ans = DatabaseConnector.get_values("Select exam_date, course_name from course where "
-                                           "course.course_code = \"" + course_code[0] + "\" and exam_date > Date('now');")
+        ans = DatabaseConnector.get_values("SELECT exam_date, course_name FROM course WHERE "
+                                           "course.course_code = \"" + course_code[
+                                               0] + "\" AND exam_date > Date('now');")
 
         try:
             date = ans[0][0]
@@ -353,42 +390,45 @@ def get_days_until_first_exam(username):
 
 
 def get_today_assignments(username):
-    ans = DatabaseConnector.get_values("Select A.title, A.deadline, course.course_name "
-                                       " from user_assignment as A "
-                                       "JOIN course on A.course_code = course.course_code "
-                                       " where (A.username = \"" + username + "\") and (deadline BETWEEN Date('now') AND DATE('now', '+1 days')) "
-                                                                              " order by deadline ASC ")
+    ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, course.course_name "
+                                       " FROM user_assignment AS A "
+                                       "JOIN course ON A.course_code = course.course_code "
+                                       " WHERE (A.username = \"" + username + "\") AND (deadline BETWEEN Date('now') AND DATE('now', '+1 days')) "
+                                                                              " ORDER BY deadline ASC ")
 
     try:
         title = ans[0][0]
         date = ans[0][1]
         course_name = ans[0][2]
-        return "You have an assignment " + title + " in course " + course_name + ", that should be delivered today at " + format_date(date)
+        return "You have an assignment " + title + " in course " + course_name + ", that should be delivered today at " + format_date(
+            date)
     except:
         return "I could not find any assignments that should be delivered today."
 
-def get_tomorrow_assignments(username):
-        ans = DatabaseConnector.get_values("Select A.title, A.deadline, course.course_name "
-                                           " from user_assignment as A "
-                                           "JOIN course on A.course_code = course.course_code "
-                                           " where (A.username = \"" + username + "\") and (deadline BETWEEN Date('now', '+1 days') AND DATE('now', '+2 days')) "
-                                                                                  " order by deadline ASC ")
 
-        try:
-            title = ans[0][0]
-            date = ans[0][1]
-            course_name = ans[0][2]
-            return "You have an assignment " + title + " in course " + course_name + ", that should be delivered tomorrow at " + \
-                   format_date_datetime(date)
-        except:
-            return "I could not find any assignments that should be delivered tomorrow."
+def get_tomorrow_assignments(username):
+    ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, course.course_name "
+                                       " FROM user_assignment AS A "
+                                       "JOIN course ON A.course_code = course.course_code "
+                                       " WHERE (A.username = \"" + username + "\") AND (deadline BETWEEN Date('now', '+1 days') AND DATE('now', '+2 days')) "
+                                                                              " ORDER BY deadline ASC ")
+
+    try:
+        title = ans[0][0]
+        date = ans[0][1]
+        course_name = ans[0][2]
+        return "You have an assignment " + title + " in course " + course_name + ", that should be delivered tomorrow at " + \
+               format_date_datetime(date)
+    except:
+        return "I could not find any assignments that should be delivered tomorrow."
+
 
 def get_today_events(username):
-    ans = DatabaseConnector.get_values("Select A.category, A.date_time, course.course_name "
-                                       " from user_event as A "
-                                       "JOIN course on A.course_code = course.course_code "
-                                       " where (A.username = \"" + username + "\") and (date_time BETWEEN Date('now') AND DATE('now', '+1 days')) "
-                                                                              " order by date_time ASC ")
+    ans = DatabaseConnector.get_values("SELECT A.category, A.date_time, course.course_name "
+                                       " FROM user_event AS A "
+                                       "JOIN course ON A.course_code = course.course_code "
+                                       " WHERE (A.username = \"" + username + "\") AND (date_time BETWEEN Date('now') AND DATE('now', '+1 days')) "
+                                                                              " ORDER BY date_time ASC ")
 
     try:
         title = ans[0][0]
@@ -399,12 +439,13 @@ def get_today_events(username):
     except:
         return "I could not find any events today."
 
+
 def get_tomorrow_events(username):
-    ans = DatabaseConnector.get_values("Select A.category, A.date_time, course.course_name "
-                                       " from user_event as A "
-                                       "JOIN course on A.course_code = course.course_code "
-                                       " where (A.username = \"" + username + "\") and (date_time BETWEEN Date('now', '+1 days') AND DATE('now', '+2 days')) "
-                                                                              " order by date_time ASC ")
+    ans = DatabaseConnector.get_values("SELECT A.category, A.date_time, course.course_name "
+                                       " FROM user_event AS A "
+                                       "JOIN course ON A.course_code = course.course_code "
+                                       " WHERE (A.username = \"" + username + "\") AND (date_time BETWEEN Date('now', '+1 days') AND DATE('now', '+2 days')) "
+                                                                              " ORDER BY date_time ASC ")
 
     try:
         title = ans[0][0]
@@ -420,9 +461,9 @@ def get_this_weeks_assignments(username):
     # Lists all the assignments that should be done this week
 
 
-    ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
-                                       "from user_assignment as A, course as C "
-                                       "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now', 'localtime', 'weekday 0', '-7 days') AND date('now', 'localtime', 'weekday 0')) order by deadline ASC")
+    ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, C.course_name "
+                                       "from user_assignment AS A, course AS C "
+                                       "where (A.username = \"" + username + "\") AND (A.course_code = C.course_code) AND (deadline BETWEEN Date('now', 'localtime', 'weekday 0', '-7 days') AND date('now', 'localtime', 'weekday 0')) ORDER BY deadline ASC")
 
     try:
 
@@ -435,7 +476,8 @@ def get_this_weeks_assignments(username):
             date = ans[i][1]
             course_name = ans[i][2]
 
-            string_builder += title + " which is due " + format_date_datetime(date) + ", in the course " + course_name + ".\n"
+            string_builder += title + " which is due " + format_date_datetime(
+                date) + ", in the course " + course_name + ".\n"
 
         return string_builder
     except:
@@ -444,10 +486,10 @@ def get_this_weeks_assignments(username):
 
 def get_this_weeks_events(username):
     ans = DatabaseConnector.get_values(
-        "Select user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
+        "SELECT user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
         "from user_event "
-        "JOIN course on user_event.course_code = course.course_code "
-        "where(user_event.username = \"" + username + "\") and (date_time BETWEEN Date('now', 'localtime', 'weekday 0', '-7 days') AND date('now', 'localtime', 'weekday 0')) order by date_time ASC ")
+        "JOIN course ON user_event.course_code = course.course_code "
+        "where(user_event.username = \"" + username + "\") AND (date_time BETWEEN Date('now', 'localtime', 'weekday 0', '-7 days') AND date('now', 'localtime', 'weekday 0')) ORDER BY date_time ASC ")
 
     try:
 
@@ -470,10 +512,10 @@ def get_this_weeks_events(username):
 
 def get_next_weeks_events(username):
     ans = DatabaseConnector.get_values(
-        "Select user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
+        "SELECT user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
         "from user_event "
-        "JOIN course on user_event.course_code = course.course_code "
-        "where(user_event.username = \"" + username + "\") and (date_time BETWEEN Date('now', 'localtime', 'weekday 1') AND date('now', 'localtime', 'weekday 0', '+8 days')) order by date_time ASC ")
+        "JOIN course ON user_event.course_code = course.course_code "
+        "where(user_event.username = \"" + username + "\") AND (date_time BETWEEN Date('now', 'localtime', 'weekday 1') AND date('now', 'localtime', 'weekday 0', '+8 days')) ORDER BY date_time ASC ")
 
     try:
 
@@ -497,9 +539,9 @@ def get_next_weeks_events(username):
 def get_next_weeks_assignments(username):
     # Lists all the assignments that should be done by next week
 
-    ans = DatabaseConnector.get_values("Select A.title, A.deadline, C.course_name "
-                                       "from user_assignment as A, course as C "
-                                       "where (A.username = \"" + username + "\") and (A.course_code = C.course_code) and (deadline BETWEEN Date('now', 'localtime', 'weekday 0') AND date('now', 'localtime', 'weekday 0', '+8 days')) order by deadline ASC")
+    ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, C.course_name "
+                                       "from user_assignment AS A, course AS C "
+                                       "where (A.username = \"" + username + "\") AND (A.course_code = C.course_code) AND (deadline BETWEEN Date('now', 'localtime', 'weekday 0') AND date('now', 'localtime', 'weekday 0', '+8 days')) ORDER BY deadline ASC")
 
     try:
 
@@ -512,7 +554,8 @@ def get_next_weeks_assignments(username):
             date = ans[i][1]
             course_name = ans[i][2]
 
-            string_builder += title + " which is due " + format_date_datetime(date) + ", in the course " + course_name + ".\n"
+            string_builder += title + " which is due " + format_date_datetime(
+                date) + ", in the course " + course_name + ".\n"
 
         return string_builder
     except:
@@ -527,9 +570,9 @@ def get_this_week_schedule(username):
     return get_this_weeks_assignments(username) + "\n" + get_this_weeks_events(username)
 
 
-
 def get_ical_itslearning(username):
-    ans = DatabaseConnector.get_values("Select user.ical_itslearning from user where user.username = \"" + username + "\"")
+    ans = DatabaseConnector.get_values(
+        "SELECT user.ical_itslearning FROM user WHERE user.username = \"" + username + "\"")
 
     url = ""
     try:
@@ -539,15 +582,19 @@ def get_ical_itslearning(username):
         return "There was no ical link for you."
 
 
-
 """
-Functions that returns other types and is used as helper methods is listed here
+Functions that returns other types than strings presented to the user and is used as helper methods is listed here
 """
 
 
 def get_course_codes_list(username):
-    ans = DatabaseConnector.get_values("Select course_code from user_has_course WHERE user_has_course.username =  \"" + username + "\"")
-    print(ans)
+    """
+    Returns a list of course codes
+    :param username: users username
+    :return: a list of course codes
+    """
+    ans = DatabaseConnector.get_values(
+        "SELECT course_code FROM user_has_course WHERE user_has_course.username =  \"" + username + "\"")
     course_codes = []
     for course_code in ans:
         course_codes.append(course_code)
@@ -556,6 +603,12 @@ def get_course_codes_list(username):
 
 
 def format_date_datetime(datetime: str):
+    """
+    Formats the date to a date that is more understandable by a human
+    :param datetime: date on on the format e.g 2017-02-14 12:12:13
+    :return: date on the format: Monday 12 January 12:12:13
+    """
+
     time1 = time.strptime(datetime, '%Y-%m-%d %H:%M:%S')
     datestring = time.strftime('%A %d %B %H:%M:%S', time1)
 
@@ -563,6 +616,12 @@ def format_date_datetime(datetime: str):
 
 
 def format_date_date(date: str):
+    """
+    Formats the date to a date that is more understandable by a human
+    :param date: date on on the format e.g 2017-02-14
+    :return: date on the format: Monday 12 January
+    """
+
     time1 = time.strptime(date, '%Y-%m-%d')
     datestring = time.strftime('%A %d %B', time1)
 
@@ -570,12 +629,18 @@ def format_date_date(date: str):
 
 
 def get_users() -> list:
-    ans = DatabaseConnector.get_values("Select * from user ORDER BY registry_date DESC ")
+    """
+    Gets all the users sorted DESCENDING by register date
+    :return: a list with users and attributes
+    """
+    ans = DatabaseConnector.get_values("SELECT * FROM user ORDER BY registry_date DESC ")
 
     return ans
 
+
 def delete_user():
-    ans = DatabaseConnector.get_values("delete from user")
-
-
-print(get_exercise_scheme_approval("TTK4105", "marihl"))
+    """
+    Deletes all the users in the database
+    :return: nothing
+    """
+    ans = DatabaseConnector.get_values("DELETE FROM user")
