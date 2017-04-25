@@ -230,12 +230,13 @@ def add_user(username: str, password: str, facebook_id: int):
     data.append(username)
     data.append(password)
     data.append(facebook_id)
+    data.append(datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S'))
 
     # Adds the data to the table
     conn = database.DatabaseConnector.connection
     cur = conn.cursor()
     try:
-        cur.execute("INSERT INTO `user`(`username`,`password`,`facebook_id`) VALUES (?,?,?)", data)
+        cur.execute("INSERT INTO `user`(`username`,`password`,`facebook_id`,`registry_date`) VALUES (?,?,?,?)", data)
     except:
         cur.execute("UPDATE `user` SET password = ?, facebook_id = ? where username = \"" + username + "\"", data[1:3])
     conn.commit()

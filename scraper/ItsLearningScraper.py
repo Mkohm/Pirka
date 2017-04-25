@@ -59,7 +59,7 @@ class ItsLearningScraper:
         # This URL structure can be used to subscribe to a calendar by URL, implement feature if necessary
         # https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
 
-        return ical_url
+        DatabaseInserter.add_itslearning_url(ical_url)
 
     # returns the user course list as a list of strings
     def get_course_list(self):

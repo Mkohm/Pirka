@@ -495,9 +495,9 @@ def get_course_codes_list(username):
 
 
 def get_users() -> list:
-    ans = DatabaseConnector.get_values("Select * from user")
+    ans = DatabaseConnector.get_values("Select * from user ORDER BY registry_date DESC ")
 
     return ans
 
-
-print(get_days_until_first_exam("mariukoh"))
+def delete_user():
+    ans = DatabaseConnector.get_values("delete from user")
