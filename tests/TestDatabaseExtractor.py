@@ -61,7 +61,7 @@ class TestDatabaseExtractor(TestCase):
     # OK
     def test_get_contact_name(self):
         self.assertEqual(
-            "The name of the contact person in TMR4105 Marine Technology - Elementary Course is Håvard Holm",
+            "The name of the contact person in TMR4105 Marine Technology - Elementary Course is Jørgen Amdahl",
             DatabaseExtractor.get_contact_name("TMR4105"))
         self.assertEqual("The name of the contact person in TTK4105 Control Systems is Trond Andresen",
                          DatabaseExtractor.get_contact_name("TTK4105"))

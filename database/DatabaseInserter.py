@@ -329,7 +329,6 @@ def get_course_name(data) -> str:
 
 
 def format_date(date: str) -> str:
-    print(date)
     year = int(float(date[0:4]))
     month = int(float(date[5:7]))
     day = int(float(date[8:]))
