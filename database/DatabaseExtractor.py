@@ -120,6 +120,11 @@ def get_contact_name(course_code):
 
 
 def get_contact_mail(course_code):
+    """
+    Returns the mail to the contact person in a course
+    :param course_code: the courses course code
+    :return: String containing mail that is presented to the user
+    """
     ans = DatabaseConnector.get_values("SELECT contact_mail, course_name FROM course WHERE course.course_code = \""
                                        + course_code + "\";")
     contact_mail = ans[0][0]
@@ -128,6 +133,12 @@ def get_contact_mail(course_code):
 
 
 def get_contact_office(course_code):
+    """
+    Returns the office to the contact person in a course
+    :param course_code: the courses course code
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT contact_office, course_name FROM course WHERE course.course_code = \""
                                        + course_code + "\";")
     contact_office = ans[0][0]
@@ -140,6 +151,12 @@ def get_contact_office(course_code):
 
 
 def get_contact_phone(course_code):
+    """
+    Returns the phone number to the contact person in a course
+    :param course_code: the courses course code
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT contact_phone, course_name FROM course WHERE course.course_code = \""
                                        + course_code + "\";")
     contact_phone = ans[0][0]
@@ -151,7 +168,13 @@ def get_contact_phone(course_code):
         return "The phone number of the contact person in " + course_code + " " + name + " is " + contact_phone
 
 
-def get_contact_(course_code):
+def get_contact_website(course_code):
+    """
+    Returns the website for a contact 
+    :param course_code: courses course code
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT contact_website, course_name FROM course WHERE "
                                        'course.course_code = "' + course_code + '";')
     contact_website = ans[0][0]
@@ -160,6 +183,12 @@ def get_contact_(course_code):
 
 
 def get_course_name(course_code):
+    """
+    Returns the course name for a course 
+    :param course_code: courses course code
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values('SELECT course_name FROM course WHERE course.course_code = "' + course_code
                                        + '";')
     course_name = ans[0][0]
@@ -167,6 +196,12 @@ def get_course_name(course_code):
 
 
 def get_credit(course_code):
+    """
+    Returns the amount of credit for a given course 
+    :param course_code: courses course code
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT credit, course_name FROM course WHERE course.course_code = \"" +
                                        course_code + "\" ;")
     credit = ans[0][0]
@@ -175,6 +210,12 @@ def get_credit(course_code):
 
 
 def get_url(course_code):
+    """
+    Returns the url for a given course 
+    :param course_code: courses course code
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT url, course_name FROM course WHERE course.course_code = \"" +
                                        course_code + "\" ;")
     url = ans[0][0]
@@ -186,6 +227,12 @@ def get_url(course_code):
 
 
 def get_term(course_code):
+    """
+    Returns the term that a given course is in
+    :param course_code: courses course code
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT term FROM course WHERE course.course_code = \"" + course_code + "\"")
 
     term = ans[0][0]
@@ -197,6 +244,12 @@ def get_term(course_code):
 
 
 def get_prereq_knowledge(course_code):
+    """
+    Returns the prerequisite knowledge for a given course 
+    :param course_code: courses course code
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT prereq_knowledge, course_name FROM course WHERE course.course_code" +
                                        " = \"" + course_code + "\" ;")
     prereq = ans[0][0]
@@ -208,6 +261,12 @@ def get_prereq_knowledge(course_code):
 
 
 def get_course_content(course_code):
+    """
+    Returns the amount of credit for a given course 
+    :param course_code: courses course code
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT course_content, course_name FROM course WHERE" +
                                        " course.course_code = \"" + course_code + "\" ;")
     course_content = ans[0][0]
@@ -215,18 +274,39 @@ def get_course_content(course_code):
 
 
 def get_course_material(course_code):
+    """
+    Returns the course material for a given course 
+    :param course_code: courses course code
+    :return: String that is presented to the user
+    """
+
     course_material = DatabaseConnector.get_values("SELECT course_material, course_name FROM course WHERE " +
                                                    "course_code = \"" + course_code + "\";")
     return course_material[0][0]
 
 
 def get_teaching_form(course_code):
+    """
+    Returns the teaching form for a given course 
+    :param course_code: courses course code
+    :return: String that is presented to the user
+    """
+
+
     teaching_form = DatabaseConnector.get_values("SELECT teaching_form, course_name FROM course WHERE course_code =\""
                                                  + course_code + "\";")
     return teaching_form[0][0]
 
 
 def get_exercise_status(course_code, username):
+    """
+    Returns the exercise status containing how many done out of required for a given course 
+    :param course_code: courses course code
+    :param username: users username
+    :return: String that is presented to the user
+    """
+
+
     ans = DatabaseConnector.get_values("SELECT S.username, S.total_score, S.req_score, C.course_name FROM "
                                        "status_exercise AS S, course AS C WHERE S.course_code = \"" + course_code + "\" "
                                                                                                                     "and S.course_code = C.course_code AND S.username = \"" + username + "\" GROUP BY "
@@ -244,6 +324,13 @@ def get_exercise_status(course_code, username):
 
 
 def get_exercise_scheme_approval(course_code, username):
+    """
+    Returns if the user has done all out all req
+    :param course_code: courses course code
+    :param username: users username
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT S.username, S.total_score, S.req_score, C.course_name FROM "
                                        "status_exercise AS S, course AS C WHERE S.course_code = \"" + course_code + "\" "
                                                                                                                     "and S.course_code = C.course_code AND S.username = \"" + username + "\" GROUP BY ""S.username ;")
@@ -268,6 +355,13 @@ def get_exercise_scheme_approval(course_code, username):
 
 
 def get_exercises_left(course_code, username):
+    """
+    Returns the amount of exercises left for a given course 
+    :param course_code: courses course code
+    :param username: users username
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT S.username, S.total_score, S.req_score, C.course_name FROM "
                                        "status_exercise AS S, course AS C WHERE S.course_code = \"" + course_code + "\" "
                                                                                                                     "and S.course_code = C.course_code AND S.username = \"" + username + "\" GROUP BY "
@@ -293,6 +387,13 @@ def get_exercises_left(course_code, username):
 
 
 def get_project_status(course_code, username):
+    """
+    Returns the project status for a given course 
+    :param course_code: courses course code
+    :param username: users username
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT S.username, S.total_score, S.req_score, C.course_name FROM "
                                        "status_project AS S, course AS C WHERE S.course_code = \"" + course_code + "\" "
                                                                                                                    "and S.course_code = C.course_code AND S.username = \"" + username + "\" GROUP BY "
@@ -308,6 +409,13 @@ def get_project_status(course_code, username):
 
 
 def get_lab_status(course_code, username):
+    """
+    Returns the lab status for a given course 
+    :param course_code: courses course code
+    :param username: users username
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT S.username, S.total_score, S.req_score, C.course_name FROM "
                                        "status_lab AS S, course AS C WHERE S.course_code = \"" + course_code + "\" "
                                                                                                                "and S.course_code = C.course_code AND S.username = \"" + username + "\" GROUP BY "
@@ -323,6 +431,12 @@ def get_lab_status(course_code, username):
 
 
 def get_next_event(username):
+    """
+    Returns the next event that a user has 
+    :param username: users username
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT U.category, U.date_time, U.room, U.course_code, C.course_name "
                                        "from user_event AS U, course AS C "
                                        "where U.username = \"" + username + "\" AND U.course_code = C.course_code ORDER BY date_time LIMIT 1")
@@ -337,8 +451,13 @@ def get_next_event(username):
         return "I could not find any events."
 
 
-# todo: test this method
 def get_next_assignment(username):
+    """
+    Returns the next assignment that a user has 
+    :param username: users username
+    :return: String that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, course.course_name "
                                        " FROM user_assignment AS A "
                                        "JOIN course ON A.course_code = course.course_code "
@@ -357,6 +476,12 @@ def get_next_assignment(username):
 
 
 def get_days_until_first_exam(username):
+    """
+    Returns the number of days until a users next exam
+    :param username: users username
+    :return: String that is presented to the user
+    """
+
     course_list = get_course_codes_list(username)
 
     if len(course_list) == 0:
@@ -394,6 +519,13 @@ def get_days_until_first_exam(username):
 
 
 def get_today_assignments(username):
+    """
+    Returns assignments that have to be delivered today
+    :param username: users username
+    :return: A string containing assignments that has to be delivered today that is presented to the user
+    """
+
+
     ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, course.course_name "
                                        " FROM user_assignment AS A "
                                        "JOIN course ON A.course_code = course.course_code "
@@ -411,6 +543,12 @@ def get_today_assignments(username):
 
 
 def get_tomorrow_assignments(username):
+    """
+    Returns assignments that has to be delivered tomorrow
+    :param username: users username
+    :return: A string containing assignments that has to be delivered tomorrow
+    """
+
     ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, course.course_name "
                                        " FROM user_assignment AS A "
                                        "JOIN course ON A.course_code = course.course_code "
@@ -428,6 +566,12 @@ def get_tomorrow_assignments(username):
 
 
 def get_today_events(username):
+    """
+    Returns events that is happening today
+    :param username: users username
+    :return: A string containing events today that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT A.category, A.date_time, course.course_name "
                                        " FROM user_event AS A "
                                        "JOIN course ON A.course_code = course.course_code "
@@ -445,6 +589,12 @@ def get_today_events(username):
 
 
 def get_tomorrow_events(username):
+    """
+    Returns events that is happening tomorrow
+    :param username: users username
+    :return: A string containing events tomorrow that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values("SELECT A.category, A.date_time, course.course_name "
                                        " FROM user_event AS A "
                                        "JOIN course ON A.course_code = course.course_code "
@@ -462,7 +612,11 @@ def get_tomorrow_events(username):
 
 
 def get_this_weeks_assignments(username):
-    # Lists all the assignments that should be done this week
+    """
+    Returns a list of this weeks assignments 
+    :param username: users username
+    :return: String containing schedule that is presented to the user
+    """
 
 
     ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, C.course_name "
@@ -489,6 +643,13 @@ def get_this_weeks_assignments(username):
 
 
 def get_this_weeks_events(username):
+    """
+    Returns a list of this weeks event
+    :param username: users username
+    :return: String containing list of events that is presented to the user
+    """
+
+
     ans = DatabaseConnector.get_values(
         "SELECT user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
         "from user_event "
@@ -515,6 +676,12 @@ def get_this_weeks_events(username):
 
 
 def get_next_weeks_events(username):
+    """
+    Gets next weeks events
+    :param username: users username
+    :return: String containing next weeks events that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values(
         "SELECT user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
         "from user_event "
@@ -541,7 +708,11 @@ def get_next_weeks_events(username):
 
 
 def get_next_weeks_assignments(username):
-    # Lists all the assignments that should be done by next week
+    """
+    Gets next weeks assignments
+    :param username: users username
+    :return: String containing next weeks assignments to the user
+    """
 
     ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, C.course_name "
                                        "from user_assignment AS A, course AS C "
@@ -567,14 +738,30 @@ def get_next_weeks_assignments(username):
 
 
 def get_next_week_schedule(username):
+    """
+    Next weeks schedule contains both events and assignments for next week
+    :param username: users username
+    :return: String containing schedule that is presented to the user
+    """
     return get_next_weeks_assignments(username) + "\n" + get_next_weeks_events(username)
 
 
 def get_this_week_schedule(username):
+    """
+    This weeks schedule contains both events and assignments for this week
+    :param username: users username
+    :return: String containing schedule that is presented to the user
+    """
     return get_this_weeks_assignments(username) + "\n" + get_this_weeks_events(username)
 
 
 def get_ical_itslearning(username):
+    """
+    Returns a link that users can subscribe to
+    :param username: users username
+    :return: a link that is presented to the user
+    """
+
     ans = DatabaseConnector.get_values(
         "SELECT user.ical_itslearning FROM user WHERE user.username = \"" + username + "\"")
 
@@ -597,6 +784,7 @@ def get_course_codes_list(username):
     :param username: users username
     :return: a list of course codes
     """
+
     ans = DatabaseConnector.get_values(
         "SELECT course_code FROM user_has_course WHERE user_has_course.username =  \"" + username + "\"")
     course_codes = []
