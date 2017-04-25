@@ -33,3 +33,4 @@ urllib3==1.20
 watchdog==0.8.3
 Werkzeug==0.11.15
 wget==3.2
+apiclient

@@ -10,11 +10,6 @@ from oauth2client.file import Storage
 import datetime
 import argparse
 
-#TODO: make a class out of this.
-#TODO: change time zone
-
-# https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
-
 try:
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
 except ImportError:
