@@ -6,11 +6,11 @@ from database import DatabaseExtractor
 class TestDatabaseExtractor(TestCase):
     # OK
     def test_get_exam_date_ok_input(self):
-        self.assertEqual("Exam date in TDT4100 Object-Oriented Programming is May 16, 2017",
+        self.assertEqual("Exam date in TDT4100 Object-Oriented Programming is Tuesday 16 May",
                          DatabaseExtractor.get_exam_date("TDT4100"))
-        self.assertEqual("Exam date in TFE4120 Electromagnetics is May 29, 2017",
+        self.assertEqual("Exam date in TFE4120 Electromagnetics is Monday 29 May",
                          DatabaseExtractor.get_exam_date("TFE4120"))
-        self.assertEqual("Exam date in TTK4135 Optimization and Control is May 20, 2017",
+        self.assertEqual("Exam date in TTK4135 Optimization and Control is Saturday 20 May",
                          DatabaseExtractor.get_exam_date("TTK4135"))
 
     def test_get_exam_date_no_exam(self):
@@ -20,9 +20,9 @@ class TestDatabaseExtractor(TestCase):
                          DatabaseExtractor.get_exam_date("TMR4160"))
 
     def test_get_exam_date_course_not_active(self):
-        self.assertEqual("No exam date available because the course is not active.",
+        self.assertEqual("No exam data available.",
                          DatabaseExtractor.get_exam_date("TMA4100"))
-        self.assertEqual("No exam date available because the course is not active.",
+        self.assertEqual("Exam date in TMA4140 Discrete Mathematics is Thursday 15 December",
                          DatabaseExtractor.get_exam_date("TMA4140"))
 
     # OK

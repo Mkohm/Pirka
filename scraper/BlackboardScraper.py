@@ -63,6 +63,35 @@ class BlackboardScraper:
         self.driver.find_element_by_id("ical").click()
         ical_url = self.driver.find_element_by_id("icalurlid").text
 
+<<<<<<< HEAD
+        try:
+            self.driver.find_element_by_class_name("fc-button-content.fc-button-main.fc-button-img").click()
+            self.driver.find_element_by_class_name("fc-button-content.fc-button-main.fc-button-img").click()
+        except:
+            pass
+        try:
+            button = self.driver.find_element_by_id("ical")
+        except:
+            print("fail1")
+            try:
+                button = self.driver.find_element_by_xpath('//*[@id="ical"]')
+            except:
+                print("fail1.1")
+                try:
+                    button = self.driver.find_element_by_class_name("ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only")
+                except:
+                    print("fail1.2")
+        try:
+            button.click()
+        except:
+            print("fail2")
+        try:
+            ical_url = self.driver.find_element_by_id("icalurlid")
+        except:
+            print("fail3")
+        print("test3")
+=======
+>>>>>>> origin/dev
         # This URL structure can be used to subscribe to a calendar by URL, implement feature
         # https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
 
