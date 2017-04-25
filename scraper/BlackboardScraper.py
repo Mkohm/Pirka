@@ -97,6 +97,7 @@ class BlackboardScraper:
 
         for course in courses:
             course_list.append(course.text.split()[0])
+            DatabaseInserter.add_user_has_course(self.username, str(course.text.split()[0]))
 
         return course_list
 

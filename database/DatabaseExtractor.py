@@ -37,7 +37,7 @@ def get_exam_dates(username):
 
 
 def get_course_codes(username):
-    ans = DatabaseConnector.get_values("Select course_code from user_has_course")
+    ans = DatabaseConnector.get_values("Select course_code from user_has_course where user_has_course.username = \"" + username + "\"")
 
     string = ""
     for course_code in ans:
@@ -486,7 +486,7 @@ Functions that returns other types and is used as helper methods is listed here
 
 def get_course_codes_list(username):
     ans = DatabaseConnector.get_values("Select course_code from user_has_course WHERE user_has_course.username =  \"" + username + "\"")
-
+    print(ans)
     course_codes = []
     for course_code in ans:
         course_codes.append(course_code)

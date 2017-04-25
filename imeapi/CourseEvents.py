@@ -1,95 +1,88 @@
 import requests
-# import json
 from datetime import datetime
 import calendar
 from database import DatabaseInserter
 
-
-base_url = "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_lifecycle=" \
-           "2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=cacheLevelPage&p_p_col_id=" \
-           "column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode=TFY4170&_" \
-           "coursedetailsportlet_WAR_courselistportlet_version=1&_coursedetailsportlet_WAR_courselistportlet_" \
-           "year=2016&year=2016&version=1"
-
-
-# TODO: Change implementation to use json_url in favor of base_url
-start_of_url = "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_" \
-            "lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=" \
-            "cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode="
-end_of_url = "&year=2016&version=1"
-
-# course_code = input("Fagkode: ").upper()
-# json_url = start_of_url + course_code + end_of_url
-
-# todo: implement error checking
-# todo: implement code to handle different courses, and not only FYSIKK 2
+"https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode=TFY4170&_coursedetailsportlet_WAR_courselistportlet_version=1&_coursedetailsportlet_WAR_courselistportlet_year=2016&year=2016&version=1"
 
 # this class aggregates all event info from all event based on the course's ntnu.no timetable.
-class CourseEvents:
-    # todo: implement at least the listed functions
+# class CourseEvents:
+#
+#     def __init__(self, course_code):
+#         self.data = self.get_data()  # stores the whole timetable for a given course
+#         self.course_code = course_code.upper()
+#         self.number_of_weekly_events = self.get_number_of_weekly_events()  # the number of unique recurring events
+#         self.event_list = self.get_list_of_events()
+#         self.event_days = self.get_list_of_event_days()
+#
+#     def get_data(self):
+#         start_of_url = "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_" \
+#             "lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=" \
+#             "cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode="
+#
+#         end_of_url = "&year=2016&version=1"
+#
+#         url = start_of_url + self.course_code + end_of_url
+#
+#         try:
+#             data_dict = requests.get(url).json()
+#             return data_dict["course"]["summarized"]
+#         except:
+#             return None
+#
+#     def get_number_of_weekly_events(self):
+#     # no support for courses where mutiple instances for the same event is stored in JSON, i.e. courses which have
+#     # multiple exercise lecture at the same time, but for different groups at different places.
+#         return len(self.data)
+#
+#     def get_list_of_events(self):
+#         event_list = []
+#
+#         for index in range(0, self.number_of_weekly_events):
+#             event_list.append(Event(index))
+#
+#         return event_list
+#
+#     def get_list_of_event_days(self):
+#
+#         list_of_days = []
+#
+#         for event in self.event_list:
+#             list_of_days.append(event.get_day_index())
+#             print(event.get_day_index())
+#
+#         return list_of_days
+#
+#     def get_next_event(self):
+#
+#         next_event = self.event_list[0].get_next_event()
+#         event_info = self.event_list[0]
+#
+#         for event in self.event_list:
+#             # event_date is a datetime object
+#             event_date = event.get_next_event()
+#             if event_date < next_event:
+#                 next_event = event_date
+#                 event_info = event
+#
+#         week = datetime.date(next_event).isocalendar()[1]
+#         return event_info.get_event(week)
+#
+#     def get_weekly_overview(self, week_index):
+#
+#         res = ""
+#         for event in self.event_list:
+#             res += event.event_to_string(week_index)
+#
+#         return res
 
-    def __init__(self):
-        self.data = self.get_data()  # stores the whole timetable for a given course
-        self.number_of_weekly_events = self.get_number_of_weekly_events()  # the number of unique recurring events
-        self.event_list = self.get_list_of_events()
-        self.event_days = self.get_list_of_event_days()
-
-    def get_data(self):
-        data_dict = requests.get(base_url).json()
-        return data_dict["course"]["summarized"]
-
-    def get_number_of_weekly_events(self):
-    # no support for courses where mutiple instances for the same event is stored in JSON, i.e. courses which have
-    # multiple exercise lecture at the same time, but for different groups at different places.
-        return len(self.data)
-
-    def get_list_of_events(self):
-        event_list = []
-
-        for index in range(0, self.number_of_weekly_events):
-            event_list.append(Event(index))
-
-        return event_list
-
-    def get_list_of_event_days(self):
-
-        list_of_days = []
-
-        for event in self.event_list:
-            list_of_days.append(event.get_day_index())
-            print(event.get_day_index())
-
-        return list_of_days
-
-    def get_next_event(self):
-
-        next_event = self.event_list[0].get_next_event()
-        event_info = self.event_list[0]
-
-        for event in self.event_list:
-            # event_date is a datetime object
-            event_date = event.get_next_event()
-            if event_date < next_event:
-                next_event = event_date
-                event_info = event
-
-        week = datetime.date(next_event).isocalendar()[1]
-        return event_info.get_event(week)
-
-    def get_weekly_overview(self, week_index):
-
-        res = ""
-        # todo: remove redundant info from string, lik "Week :" on every line
-        for event in self.event_list:
-            res += event.event_to_string(week_index)
-
-        return res
-
-# this class stores all info for one, 1, event based on the official course timetable on ntnu.no.
+    # this class stores all info for one, 1, event based on the official course timetable on ntnu.no.
 class Event:
     # todo: implement function to differentiate different course parallels and study programmes.
-    def __init__(self, event_index):
+
+    def __init__(self, event_index, course_code):
         self.event_index = event_index  # first event in a course time table -> index = 1 etc
+        self.course_code = course_code.upper()
         self.data = self.get_data()  # converts the JSON source to a python dict
         self.day = self.get_day_index()  # stores the event day as a int from 1 to 7
         self.room = self.get_event_room()  # stores the location of the event.
@@ -102,37 +95,69 @@ class Event:
         self.study_programmes = self.get_study_programmes()
 
     def get_data(self):
-        data_dict = requests.get(base_url).json()
-        return data_dict["course"]["summarized"][self.event_index]
+
+        start_of_url = "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_" \
+            "lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=" \
+            "cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode="
+
+        end_of_url = "&year=2016&version=1"
+
+        url = start_of_url + self.course_code + end_of_url
+        try:
+            data_dict = requests.get(url).json()
+            return data_dict["course"]["summarized"][self.event_index]
+        except:
+            return None
 
     def get_day_index(self):
-        return self.data["dayNum"]
+        try:
+            return self.data["dayNum"]
+        except:
+            pass
 
     def get_day(self):
-        day = self.data["dayNum"]
-        return calendar.day_name[day-1]
+        try:
+            day = self.data["dayNum"]
+            return calendar.day_name[day-1]
+        except:
+            pass
 
     def get_start_time(self):
-        return self.data["from"]
+        try:
+            return self.data["from"]
+        except:
+            pass
 
     def get_end_time(self):
-        return self.data["to"]
+        try:
+            return self.data["to"]
+        except:
+            pass
 
     def get_recurrences(self):
-        return len(self.data["weeks"])
+        try:
+            return len(self.data["weeks"])
+        except:
+            pass
 
     def get_event_type(self):
-        typ = self.data["acronym"]
-        if typ == "FOR":
-            return "Lecture"
-        elif typ == "ØV":
-            return "Guidance"
-        else:
-            return typ
+        try:
+            typ = self.data["acronym"]
+            if typ == "FOR":
+                return "Lecture"
+            elif typ == "ØV":
+                return "Guidance"
+            else:
+                return typ
+        except:
+            pass
 
     def get_event_room(self):
         # When multiple rooms exsists, only the first room is taking into consideration.
-        return self.data["rooms"][0]["romNavn"]
+        try:
+            return self.data["rooms"][0]["romNavn"]
+        except:
+            pass
 
     # the week entities (the week numbers) an event occurs in is stored as a list. The elements of the list is either
     # a week interval, with a start and end week, or a single week number. The index-varible is used to loop through
@@ -140,7 +165,10 @@ class Event:
     def get_week_entities(self, index):
         # returns the starting and ending week for an event as a list.
         # for a non-recurring event a list with two identical entities is return (the week number the event occurs in).
-        week_list = self.data["weeks"][index]
+        try:
+            week_list = self.data["weeks"][index]
+        except:
+            pass
 
         # changes week intervals from string to list for easier manipulation later. This is done by storing the
         # start and end week as a list of strings, and the convert it to a list of ints.
@@ -228,13 +256,15 @@ class Event:
             week = self.get_week_entities(index)
             i += 1
             for week_number in range(week[0], week[1]):
-                print("Event: " + str(i))
+                print(week_number)
+                print("Event from A: " + str(i))
                 print(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
                 date = Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5])
                 DatabaseInserter.add_course_event(date, "TDT4100TEST", self.room, self.type)
 
             if week[0] == week[1]:
-                print("Event: " + str(i))
+                print(week_number)
+                print("Event from B: " + str(i))
                 print(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
                 date = Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2],
                                                  self.start_time[3:5])
@@ -260,13 +290,11 @@ class Event:
         return programmes
 
 for index in range(0, 3):
-    my_event = Event(index)
+    my_event = Event(index, "TFY4170")
     for key in my_event.get_week_dict():
         print(my_event.get_event(key))
 
-
-my_course = CourseEvents()
-my_event = Event(2)
+# my_course = CourseEvents("TFY4170")
+my_event = Event(2, "TFY4170")
 
 my_event.get_all_events()
-

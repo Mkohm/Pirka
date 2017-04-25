@@ -180,7 +180,7 @@ def thread_function(username: str, password: str):
     blackboard_scraper.get_course_list()
 
     print("deleted user")
-    DatabaseExtractor.delete_user()
+    #DatabaseExtractor.delete_user()
 
     # adds user's associated assignment data
     itslearning_scraper.get_all_assignments()
