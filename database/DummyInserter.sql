@@ -104,11 +104,6 @@ VALUES ("DUMMY3333",37,"exercise","Exercise 9", "ingen", "1. januar 2017 av Leon
 INSERT INTO assignment('course_code', 'nr', 'category', 'title', 'description', 'published', 'deadline', 'delivery_location', 'mandatory')
 VALUES ("DUMMY3333",38,"exercise","Exercise 10", "ingen", "1. januar 2017 av Leonhardsen, Mari", "2017-05-26 00:00:00","ingen",0);
 
-
-
-
-
-
 INSERT INTO course_event('date_time', 'course_code', 'room', 'category')
 VALUES ("2017-05-01 20:15:00", "DUMMY2222", "F1", "Lecture");
 

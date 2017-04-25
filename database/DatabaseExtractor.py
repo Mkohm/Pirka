@@ -439,7 +439,9 @@ def get_next_event(username):
 
     ans = DatabaseConnector.get_values("SELECT U.category, U.date_time, U.room, U.course_code, C.course_name "
                                        "from user_event AS U, course AS C "
-                                       "where U.username = \"" + username + "\" AND U.course_code = C.course_code ORDER BY date_time LIMIT 1")
+                                       "WHERE (U.username = \"" + username + "\") AND (U.date_time BETWEEN Date('now') AND DATE('now', '+365 days')) "
+                                                                              " ORDER BY U.date_time ASC "
+                                                                              " LIMIT 1;")
     print(ans)
     try:
         description = ans[0][0]
@@ -668,7 +670,7 @@ def get_this_weeks_events(username):
             room = ans[i][3]
             category = ans[i][4]
 
-            string_builder += category + " in " + room + " in " + course_name + " " + format_date(date) + "\n"
+            string_builder += category + " in " + room + " in " + course_name + " " + format_date_datetime(date) + "\n"
 
         return string_builder
     except:
@@ -700,7 +702,7 @@ def get_next_weeks_events(username):
             room = ans[i][3]
             category = ans[i][4]
 
-            string_builder += category + " in " + room + " in " + course_name + " " + format_date(date) + "\n"
+            string_builder += category + " in " + room + " in " + course_name + " " + format_date_datetime(date) + "\n"
 
         return string_builder
     except:
