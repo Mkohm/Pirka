@@ -410,6 +410,20 @@ def add_blackboard_url(url: str):
 
     connection.commit()
 
+def add_course_event(course_code, name, date, start_time, end_time, room, study_programmes):
+    connection = database.DatabaseConnector.connection
+    cursor = connection.cursor()
+
+    # data_list = []
+    # data_list.append(url)
+    #
+    # try:
+    #     cursor.execute("INSERT INTO user(ical_blackboard) "
+    #                    "VALUES(?)", data_list)
+    # except:
+    #     pass
+
+    connection.commit()
 
 def add_user_completed_assignment(username, course_code, nr, category, score):
     data_list = []

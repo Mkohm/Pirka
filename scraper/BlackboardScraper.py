@@ -47,13 +47,41 @@ class BlackboardScraper:
 
         # navigates to the calendar page in BB.
         driver.get("https://ntnu.blackboard.com/webapps/bb-social-learning-BBLEARN/execute/mybb?cmd=display&toolId=calendar-mybb_____calendar-tool")
-        driver.implicitly_wait(2)
-        ical_url = driver.find_element_by_id("ical")
+        driver.implicitly_wait(5)
+        print("test")
 
+        try:
+            driver.find_element_by_class_name("fc-button-content.fc-button-main.fc-button-img").click()
+            driver.find_element_by_class_name("fc-button-content.fc-button-main.fc-button-img").click()
+        except:
+            print("FAAAAAIL")
+        try:
+            button = driver.find_element_by_id("ical")
+        except:
+            print("fail1")
+            try:
+                button = driver.find_element_by_xpath('//*[@id="ical"]')
+            except:
+                print("fail1.1")
+                try:
+                    button = driver.find_element_by_class_name("ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only")
+                except:
+                    print("fail1.2")
+        try:
+            button.click()
+        except:
+            print("fail2")
+        try:
+            ical_url = driver.find_element_by_id("icalurlid")
+        except:
+            print("fail3")
+        print("test3")
         # This URL structure can be used to subscribe to a calendar by URL, implement feature
         # https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
 
         DatabaseInserter.add_blackboard_url(ical_url)
+        return ical_url
+
 
     def get_course_list(self):
 
@@ -139,7 +167,7 @@ class BlackboardScraper:
     def close_driver(self):
         driver.quit()
 
-"""
+
 
 user = "evenkal"
 password = input("Password: ")
@@ -147,15 +175,13 @@ myScrape = BlackboardScraper(user, password)
 
 
 try:
-    myScrape.get_assignments(1)
+    myScrape.get_calendar_feed()
 except:
     print("failed2")
 
 myScrape.close_driver()
 
-# myScrape.get_calendar_feed()
 
-"""
 
 
 

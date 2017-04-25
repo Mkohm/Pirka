@@ -153,7 +153,7 @@ class ItsLearningScraper:
                                                      "its", "exercise", " ingen ")
                     DatabaseInserter.add_user_completed_assignment(self.username, course_code, i + 1, "exercise", score)
                 except:
-                    print("Daabase Error")
+                    print("Database Error")
 
                 driver.back()
 
@@ -230,19 +230,19 @@ def translate(month):
     else:
         return month
 
-"""
-
-username = "evenkal"
-password = input("Password: ")
-
-scraper = ItsLearningScraper(username, password)
-
-try:
-    scraper.get_all_assignments()
-except:
-    print("Fail")
-
-scraper.close_driver()
 
 
-"""
+# username = "evenkal"
+# password = input("Password: ")
+#
+# scraper = ItsLearningScraper(username, password)
+#
+# try:
+#     print(scraper.get_calendar_feed())
+# except:
+#     print("Fail")
+#
+# scraper.close_driver()
+
+
+
