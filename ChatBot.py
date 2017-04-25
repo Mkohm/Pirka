@@ -178,7 +178,6 @@ def thread_function(username: str, password: str):
     :return: Nothing
     """
 
-    print("scrapes the user", username)
 
     # Adding a dummy-course so it is possible to test pirka with data
     DatabaseInserter.add_user_has_course(username=username, course_code="DUMMYCOURSE")
@@ -261,7 +260,7 @@ def webhook():
     parameter = [username, course_code, facebook_id]
 
     # Creates the string that should be sent back to the user
-    print(action_name, parameter[0], parameter[1], course_code, facebook_id)
+    print(action_name, facebook_id, course_code, parameter[0], parameter[1])
     speech = process_actions(parameter, action_name)
 
     # Create a response to API.AI and return it
@@ -273,7 +272,6 @@ def webhook():
 
 
 def scrape_data_from_last_user():
-    print("scraping data from last user")
     """
     Scrape data after the user has successfully logged in.
     :return: The template that should be rendered when the user has sucessfully logged in.
@@ -320,7 +318,6 @@ def login(current_sender_id):
         if validLogin:
             # If valid login, we add the user to the database and we render the success template
             DatabaseInserter.add_user(username, password, current_sender_id)
-            print("user added")
             validLogin = False
             scrape_data_from_last_user()
             return render_template("login_success.html")

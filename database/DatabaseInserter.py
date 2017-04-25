@@ -1,11 +1,180 @@
 from datetime import datetime
 import time
-import requests
 
 import database.DatabaseConnector
 
-base_url = "http://www.ime.ntnu.no/api/course/en/"
 
+
+def add_user(username: str, password: str, facebook_id: int):
+    """
+    Inserts a user to the database
+    :param username: users username
+    :param password: users password
+    :param facebook_id: users unique facebook id
+    :return: nothing
+    """
+
+    data = []
+    data.append(username)
+    data.append(password)
+    data.append(facebook_id)
+    data.append(datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S'))
+
+    # Adds the data to the table
+    conn = database.DatabaseConnector.connection
+    cur = conn.cursor()
+    try:
+        cur.execute("INSERT INTO `user`(`username`,`password`,`facebook_id`,`registry_date`) VALUES (?,?,?,?)", data)
+    except:
+        cur.execute("UPDATE `user` SET password = ?, facebook_id = ? where username = \"" + username + "\"", data[1:3])
+    conn.commit()
+
+def add_assignment_data(course_code, title, index, mandatory, published, deadline, location, category, description):
+    """
+    Adds a new assignment to the database
+    :param course_code: the courses course code
+    :param title: the assignment title
+    :param index: the number of the assignment
+    :param mandatory: if the assignment is mandatory
+    :param published: when the assignment was published
+    :param deadline: when the assignment should be delivered
+    :param location: where the assignment should be delivered
+    :param category: what type of assignment it is
+    :param description: description of the assignment
+    :return: nothing
+    """
+
+    # Adds data to a list for insertion into table
+    assignment = []
+    assignment.append(course_code)
+    assignment.append(index)
+    assignment.append(category)
+    assignment.append(title)
+    assignment.append(description)
+    assignment.append(published)
+    assignment.append(deadline)
+    assignment.append(location)
+    assignment.append(mandatory)
+
+    # Adds the data to the table
+    connection = database.DatabaseConnector.connection
+    cursor = connection.cursor()
+    try:
+        cursor.execute("INSERT INTO `assignment`(`course_code`, `nr`, `category`, `title`, `description`, `published`, `deadline`, "
+                       "`delivery_location`, `mandatory`) VALUES (?,?,?,?,?,?,?,?,?)", assignment)
+    except:
+        cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, "
+                       "published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \""
+                       + course_code + "\" and category = \"" + category + "\" and nr = " + str(index), assignment)
+
+    connection.commit()
+
+def add_user_has_course(username, course_code):
+    """
+    Adds to the database that a user has a course
+    :param username: users username
+    :param course_code: courses course code
+    :return: 
+    """
+
+
+    connection = database.DatabaseConnector.connection
+    cursor = connection.cursor()
+
+    data_list = []
+    data_list.append(username)
+    data_list.append(course_code)
+
+    try:
+        cursor.execute("INSERT INTO user_has_course(username, course_code) "
+                       "VALUES(?,?)", data_list)
+    except:
+        pass
+
+    connection.commit()
+
+def add_itslearning_url(url: str):
+    """
+    Adds a itslearning ical url to the database
+    :param url: the ical url
+    :return: nothing
+    """
+
+    connection = database.DatabaseConnector.connection
+    cursor = connection.cursor()
+
+    data_list = []
+    data_list.append(url)
+
+    try:
+        cursor.execute("INSERT INTO `user`(`ical_itslearning`) "
+                       "VALUES(?)", data_list)
+    except:
+        pass
+
+    connection.commit()
+
+def add_user_completed_assignment(username, course_code, nr, category, score):
+    """
+    Adds to the database that a user have completed an assignment
+    :param username: users username
+    :param course_code: course course code
+    :param nr: the number of the assignment
+    :param category: the assignment category 
+    :param score: score is 1 if it was completed, 0 else
+    :return: nothing
+    """
+
+    #create variable for all fields to be added to database
+    data_list = []
+    data_list.append(username)
+    data_list.append(course_code)
+    data_list.append(nr)
+    data_list.append(category)
+    data_list.append(score)
+
+    #establish connection to database
+    connection = database.DatabaseConnector.connection
+    cursor = connection.cursor()
+    try:
+        cursor.execute("INSERT INTO `user_completed_assignment`(`username`, `course_code`, `nr`, `category`, `score`)"
+                       "values(?,?,?,?,?)", data_list)
+    except:
+        cursor.execute("UPDATE user_completed_assignment "
+                       "SET score = ? " +
+                       "WHERE username = \"" + username + "\" " +
+                       "and  course_code = \"" + course_code + "\" " +
+                       "and  nr = \"" + str(nr) + "\" " +
+                       "and category =\"" + category + "\"", str(score))
+
+    connection.commit()
+
+def add_course_event(date_time, course_code, room, category):
+    """
+    Adds an event to a course in the database
+    :param date_time: when the event is
+    :param course_code: the course code
+    :param room: where the event is
+    :param category: what kind of event this is
+    :return: nothing
+    """
+
+    #create variable for all fields to be added to database
+    data_list=[]
+    data_list.append(date_time)
+    data_list.append(course_code)
+    data_list.append(room)
+    data_list.append(category)
+
+    #establish connection to database
+    connection = database.DatabaseConnector.connection
+    cursor = connection.cursor()
+    try:
+        cursor.execute("INSERT INTO `course_event`(`date_time`, `course_code`, `room`, `category`) VALUES(?,?,?,?)", data_list)
+    except:
+        pass
+
+    connection.commit()
 
 def add_subject_data(course_code: str):
     """
@@ -71,297 +240,6 @@ def add_subject_data(course_code: str):
     connection.commit()
 
 
-def get_prereq_knowledge(data):
-    """
-    Extracts prerequisite knowldegde from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing prerequisite knowldege
-    """
-
-    value = ""
-    for i in range(0, 6):
-        try:
-            value = data["course"]["infoType"][i]["code"]
-            if (value == "ANBFORK"):
-                index = i
-        except:
-            prereq_knowledge = "null"
-    try:
-        prereq_knowledge = data["course"]["infoType"][index]["text"]
-    except:
-        prereq_knowledge = "null"
-
-    return prereq_knowledge
-
-
-def get_course_content(data):
-    """
-    Extracts course content from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing course content
-    """
-
-    value = ""
-    for i in range(0, 6):
-        try:
-            value = data["course"]["infoType"][i]["code"]
-            if (value == "INNHOLD"):
-                index = i
-        except:
-            course_content = "null"
-    try:
-        course_content = data["course"]["infoType"][index]["text"]
-    except:
-        course_content = "null"
-
-    return course_content
-
-
-def get_teaching_form(data):
-    """
-    Extracts teaching form from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing teaching form
-    """
-
-    value = ""
-    for i in range(0, 6):
-        try:
-            value = data["course"]["infoType"][i]["code"]
-            if (value == "LÆRFORM"):
-                index = i
-        except:
-            teaching_form = "null"
-    try:
-        teaching_form = data["course"]["infoType"][index]["text"]
-    except:
-        teaching_form = "null"
-
-    return teaching_form
-
-
-def get_course_material(data):
-    """
-    Extracts course material from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing prerequisite knowldege
-    """
-
-    value = ""
-    for i in range(0, 6):
-        try:
-            value = data["course"]["infoType"][i]["code"]
-            if (value == "KURSMAT"):
-                index = i
-        except:
-            course_material = "null"
-    try:
-        course_material = data["course"]["infoType"][index]["text"]
-    except:
-        course_material = "null"
-
-    return course_material
-
-
-def get_url(data):
-    """
-    Extracts course url from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing course url
-    """
-
-    value = ""
-    for i in range(0, 6):
-        try:
-            value = data["course"]["infoType"][i]["code"]
-            if (value == "E-URL"):
-                index = i
-        except:
-            url = "null"
-    try:
-        url = data["course"]["infoType"][index]["text"]
-    except:
-        url = "null"
-
-    return url
-
-
-def get_credit(data):
-    """
-    Extracts course credit from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing course credit
-    """
-    try:
-        credit = data["course"]["credit"]
-    except:
-        credit = "null"
-    return credit
-
-
-def get_contact_phone(data):
-    """
-    Extracts contact phone number from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing contact phone number
-    """
-
-    try:
-        contact_phone = data["course"]["educationalRole"][0]["person"]["phone"]
-    except:
-        contact_phone = "null"
-    return contact_phone
-
-
-def get_contact_office(data):
-    """
-    Extracts contact office from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing contact office
-    """
-
-    try:
-        contact_office = data["course"]["educationalRole"][0]["person"]["officeAddress"]
-    except:
-        contact_office = "null"
-    return contact_office
-
-
-def get_contact_mail(data):
-    """
-    Extracts contact mail from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing contact mail
-    """
-
-    try:
-        contact_mail = data["course"]["educationalRole"][0]["person"]["email"]
-    except:
-        contact_mail = "null"
-    return contact_mail
-
-
-def get_contact_name(data):
-    """
-    Extracts contact name from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing contact name
-    """
-
-    try:
-        contact_name = data["course"]["educationalRole"][0]["person"]["displayName"]
-    except:
-        contact_name = "null"
-    return contact_name
-
-
-def get_assessment_form(data):
-    """
-    Extracts assessment form from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing assessment form
-    """
-
-    assessment_form = "null"
-
-    try:
-        number = len(data["course"]["assessment"])
-        liste = [" "] * number
-        for i in range(0, number):
-            try:
-                liste[i] = data["course"]["assessment"][i]["assessmentFormDescription"]
-            except:
-                liste[i] = "null"
-
-            assessment_form = ' and '.join(liste)
-
-        return assessment_form
-    except:
-        assessment_form = "null"
-        return assessment_form
-
-def get_exam_date(data):
-    """
-    Extracts exam date from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing exam date
-    """
-
-    try:
-        exam_date = data["course"]["assessment"][0]["date"]
-        exam_date = format_date(exam_date)
-    except:
-        exam_date = "null"
-
-    return exam_date
-
-
-def add_user(username: str, password: str, facebook_id: int):
-    """
-    Inserts a user to the database
-    :param username: users username
-    :param password: users password
-    :param facebook_id: users unique facebook id
-    :return: nothing
-    """
-
-    data = []
-    data.append(username)
-    data.append(password)
-    data.append(facebook_id)
-    data.append(datetime.strftime(datetime.now(), '%Y-%m-%d %H:%M:%S'))
-
-    # Adds the data to the table
-    conn = database.DatabaseConnector.connection
-    cur = conn.cursor()
-    try:
-        cur.execute("INSERT INTO `user`(`username`,`password`,`facebook_id`,`registry_date`) VALUES (?,?,?,?)", data)
-    except:
-        cur.execute("UPDATE `user` SET password = ?, facebook_id = ? where username = \"" + username + "\"", data[1:3])
-    conn.commit()
-
-
-
-
-
-def get_term(data):
-    """
-    Extracts course term from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing course term
-    """
-
-    try:
-        term = data["course"]["assessment"][0]["realExecutionTerm"]
-    except:
-        term = "Term not available"
-    return term
-
-def get_data(course_code):
-    """
-    Gets the data that we obtain all the data from using the API-url
-    :param course_code: the course we want to get data from
-    :return: json data that contains all the data from a course
-    """
-
-    data = requests.get(base_url + course_code).json()
-    return data
-
-
-def get_course_name(data) -> str:
-    """
-    Extracts course name from the data
-    :param data: the json received from IME-API that the data should be extracted from
-    :return: String containing course name
-     """
-    try:
-        course_name = data["course"]["englishName"]
-    except:
-        course_name = "null"
-
-    return course_name
-
-
 def format_date(date: str) -> str:
     """
     Formats the date to a more user friendly format
@@ -375,153 +253,3 @@ def format_date(date: str) -> str:
     date_time = datetime(year, month, day)
     date_string = "{:%B %d, %Y}".format(date_time)
     return date_string
-
-
-def add_assignment_data(course_code, title, index, mandatory, published, deadline, location, category, description):
-    """
-    Adds a new assignment to the database
-    :param course_code: the courses course code
-    :param title: the assignment title
-    :param index: the number of the assignment
-    :param mandatory: if the assignment is mandatory
-    :param published: when the assignment was published
-    :param deadline: when the assignment should be delivered
-    :param location: where the assignment should be delivered
-    :param category: what type of assignment it is
-    :param description: description of the assignment
-    :return: nothing
-    """
-
-    # Adds data to a list for insertion into table
-    assignment = []
-    assignment.append(course_code)
-    assignment.append(index)
-    assignment.append(category)
-    assignment.append(title)
-    assignment.append(description)
-    assignment.append(published)
-    assignment.append(deadline)
-    assignment.append(location)
-    assignment.append(mandatory)
-
-    # Adds the data to the table
-    connection = database.DatabaseConnector.connection
-    cursor = connection.cursor()
-    try:
-        cursor.execute("INSERT INTO `assignment`(`course_code`, `nr`, `category`, `title`, `description`, `published`, `deadline`, "
-                       "`delivery_location`, `mandatory`) VALUES (?,?,?,?,?,?,?,?,?)", assignment)
-    except:
-        cursor.execute("UPDATE assignment SET course_code = ?, nr = ?, category = ?, title = ?, description = ?, "
-                       "published = ?, deadline = ?, delivery_location = ?, mandatory = ? WHERE course_code = \""
-                       + course_code + "\" and category = \"" + category + "\" and nr = " + str(index), assignment)
-
-    connection.commit()
-
-
-def add_user_has_course(username, course_code):
-    """
-    Adds to the database that a user has a course
-    :param username: users username
-    :param course_code: courses course code
-    :return: 
-    """
-
-
-    connection = database.DatabaseConnector.connection
-    cursor = connection.cursor()
-
-    data_list = []
-    data_list.append(username)
-    data_list.append(course_code)
-
-    try:
-        cursor.execute("INSERT INTO user_has_course(username, course_code) "
-                       "VALUES(?,?)", data_list)
-    except:
-        pass
-
-    connection.commit()
-
-def add_itslearning_url(url: str):
-    """
-    Adds a itslearning ical url to the database
-    :param url: the ical url
-    :return: nothing
-    """
-
-    connection = database.DatabaseConnector.connection
-    cursor = connection.cursor()
-
-    data_list = []
-    data_list.append(url)
-
-    try:
-        cursor.execute("INSERT INTO `user`(`ical_itslearning`) "
-                       "VALUES(?)", data_list)
-    except:
-        pass
-
-    connection.commit()
-
-
-def add_user_completed_assignment(username, course_code, nr, category, score):
-    """
-    Adds to the database that a user have completed an assignment
-    :param username: users username
-    :param course_code: course course code
-    :param nr: the number of the assignment
-    :param category: the assignment category 
-    :param score: score is 1 if it was completed, 0 else
-    :return: nothing
-    """
-
-    #create variable for all fields to be added to database
-    data_list = []
-    data_list.append(username)
-    data_list.append(course_code)
-    data_list.append(nr)
-    data_list.append(category)
-    data_list.append(score)
-
-    #establish connection to database
-    connection = database.DatabaseConnector.connection
-    cursor = connection.cursor()
-    try:
-        cursor.execute("INSERT INTO `user_completed_assignment`(`username`, `course_code`, `nr`, `category`, `score`)"
-                       "values(?,?,?,?,?)", data_list)
-    except:
-        cursor.execute("UPDATE user_completed_assignment "
-                       "SET score = ? " +
-                       "WHERE username = \"" + username + "\" " +
-                       "and  course_code = \"" + course_code + "\" " +
-                       "and  nr = \"" + str(nr) + "\" " +
-                       "and category =\"" + category + "\"", str(score))
-
-    connection.commit()
-
-def add_course_event(date_time, course_code, room, category):
-    """
-    Adds an event to a course in the database
-    :param date_time: when the event is
-    :param course_code: the course code
-    :param room: where the event is
-    :param category: what kind of event this is
-    :return: nothing
-    """
-
-    #create variable for all fields to be added to database
-    data_list=[]
-    data_list.append(date_time)
-    data_list.append(course_code)
-    data_list.append(room)
-    data_list.append(category)
-
-    #establish connection to database
-    connection = database.DatabaseConnector.connection
-    cursor = connection.cursor()
-    try:
-        cursor.execute("INSERT INTO `course_event`(`date_time`, `course_code`, `room`, `category`) VALUES(?,?,?,?)", data_list)
-    except:
-        pass
-
-    connection.commit()
