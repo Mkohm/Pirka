@@ -173,18 +173,18 @@ def thread_function(username: str, password: str):
 
     # Scrapes for additional data that is user specific
     itslearning_scraper = ItsLearningScraper(username, password)
-    blackboad_scraper = BlackboardScraper(username, password)
+    blackboard_scraper = BlackboardScraper(username, password)
 
     # adds user-course relation to database
     itslearning_scraper.get_course_list()
-    blackboad_scraper.get_course_list()
+    blackboard_scraper.get_course_list()
 
     print("deleted user")
     DatabaseExtractor.delete_user()
 
     # adds user's associated assignment data
     itslearning_scraper.get_all_assignments()
-    blackboad_scraper.get_all_assignments()
+    blackboard_scraper.get_all_assignments()
 
     # add ical links
     itslearning_scraper.get_calendar_feed()
