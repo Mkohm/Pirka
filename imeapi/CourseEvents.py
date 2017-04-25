@@ -158,7 +158,7 @@ class Event:
 
         return week
 
-    # returns a catalog of every recurrence of one event.
+    # returns a dictionary of every recurrence of one event.
     def get_week_dict(self):
 
         week_dictionary = {}
@@ -219,6 +219,23 @@ class Event:
     def get_event(self, week_number):
         return self.week_dict[week_number]
 
+    def get_all_events(self):
+
+        i = 0
+        for index in range(0, self.recurrences):
+            # extracts time interval in the format [start week, end week]
+            week = self.get_week_entities(index)
+            i += 1
+            for week_number in range(week[0], week[1]):
+                print("Event: " + str(i))
+                print(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
+                date = Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5])
+                
+
+            if week[0] == week[1]:
+                print("Event: " + str(i))
+                print(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
+
     def to_string(self):
 
         line = ""
@@ -244,13 +261,8 @@ for index in range(0, 3):
         print(my_event.get_event(key))
 
 
-
-# print(my_event.to_string())
-# print("")
-# print(my_event.get_next_event())
-#
-#
 my_course = CourseEvents()
-#print(my_course.get_next_event())
-print(my_course.get_weekly_overview(8))
+my_event = Event(2)
+
+my_event.get_all_events()
 
