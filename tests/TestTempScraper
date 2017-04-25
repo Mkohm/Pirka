@@ -1,7 +1,0 @@
-from unittest import TestCase
-from scraper import tempScraper
-
-class TestTempScraper(TestCase):
-    def test_datetime_converter(self):
-        self.assertEqual("2017-03-28 16:00:00", tempScraper.datetime_converter("28. mars 2017 16:00 Tidsfristen er ute. Du kan fortsatt levere besvarelsen, men den blir merket som levert for sent"))
-        self.assertEqual("2014-11-25 23:59:00", tempScraper.datetime_converter("25. november 2014 23:59 Fristen er ute."))
