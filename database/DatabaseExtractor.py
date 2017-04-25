@@ -237,15 +237,19 @@ def get_exercises_left(course_code, username):
                                                                                                                                                                                          "S.username ;")
 
     try:
-        score = ans[0][1]
+        score = str(ans[0][1])
         course_name = ans[0][3]
-        required = ans[0][2]
+        required = str(ans[0][2])
 
         if required == "None":
             left = str(8-int(score))
         else:
             left = str(required - int(score))
-        return "You have " + left + " exercises left in " + course_code + " " + course_name + "."
+
+        if int(left) >= 0:
+            return "You have " + left + " exercises left in " + course_code + " " + course_name + "."
+        else:
+            return "You don't have any exercises left in " + course_code + " " + course_name + "."
 
     except:
         return "You haven't done any exercises in this course yet."
@@ -577,5 +581,4 @@ def get_users() -> list:
 def delete_user():
     ans = DatabaseConnector.get_values("delete from user")
 
-
-print(get_exercise_scheme_approval("TTK4105", "marihl"))
+print(get_exercises_left("TKT4123", "marihl"))
