@@ -4,16 +4,30 @@ import calendar
 from database import DatabaseInserter
 
 
-# this class aggregates all event info from all event based on the course's ntnu.no timetable.
 class CourseEvents:
+    """
+    This class aggregates all event info from the course's ntnu.no timetable, and stores it in the database.
+    There is some redundancy between this class and Events(), and that should be fixed at next opportunity.
+    To extract all the course events, and store it in the database, a call to get_list_of_events() is needed.
+    This is not the most elegant solution, and could also be improved at the next opportunity.
+    """
+
     def __init__(self, course_code):
+        """
+        Initalizes the class.
+        :param course_code: The course code the method will handle
+        """
         self.course_code = course_code.upper()
         self.data = self.get_data()  # stores the whole timetable for a given course
         self.number_of_weekly_events = self.get_number_of_weekly_events()  # the number of unique recurring events
-        self.event_list = self.get_list_of_events()
+        self.event_list = self.get_list_of_events() # returns a list of all events in a course, and stores it in the database
         self.event_days = self.get_list_of_event_days()
 
     def get_data(self):
+        """
+        Finds the JSON-feed for the timetable for the given course.
+        :return: Returns the JSON-converted dictionary, such that it can easily be stored as a member variable.
+        """
         start_of_url = "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_" \
                        "lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=" \
                        "cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode="
@@ -29,11 +43,19 @@ class CourseEvents:
             return None
 
     def get_number_of_weekly_events(self):
+        """
+        Finds the number of unique weekly events for a course.
+        :return: The number of weekly events.
+        """
         # no support for courses where mutiple instances for the same event is stored in JSON, i.e. courses which have
         # multiple exercise lecture at the same time, but for different groups at different places.
         return len(self.data)
 
     def get_list_of_events(self):
+        """
+        Finds all events, with relevant info, and stores it in the database
+        :return: A list, of type Events(), of all the events
+        """
         event_list = []
 
         for index in range(0, self.number_of_weekly_events):
@@ -41,49 +63,21 @@ class CourseEvents:
 
         return event_list
 
-    def get_list_of_event_days(self):
-
-        list_of_days = []
-
-        for event in self.event_list:
-            list_of_days.append(event.get_day_index())
-            print(event.get_day_index())
-
-        return list_of_days
-
-    #
-    #     def get_next_event(self):
-    #
-    #         next_event = self.event_list[0].get_next_event()
-    #         event_info = self.event_list[0]
-    #
-    #         for event in self.event_list:
-    #             # event_date is a datetime object
-    #             event_date = event.get_next_event()
-    #             if event_date < next_event:
-    #                 next_event = event_date
-    #                 event_info = event
-    #
-    #         week = datetime.date(next_event).isocalendar()[1]
-    #         return event_info.get_event(week)
-    #
-    #     def get_weekly_overview(self, week_index):
-    #
-    #         res = ""
-    #         for event in self.event_list:
-    #             res += event.event_to_string(week_index)
-    #
-    #         return res
-
-    # this class stores all info for one, 1, event based on the official course timetable on ntnu.no.
 
 
 class Event:
-    # todo: implement function to differentiate different course parallels and study programmes.
+    """
+    A class to handle all the relevant information for one single instance of an, possible recurring, event.
+    """
 
     def __init__(self, event_index, course_code):
-        self.event_index = event_index  # first event in a course time table -> index = 1 etc
-        self.course_code = course_code.upper()
+        """
+        Initializes the class, and stores necessary info.
+        :param event_index: Used to determine which event from the timetable at the course page at ntnu.no
+        :param course_code: The course code the method will handle
+        """
+        self.event_index = event_index  # first event in a course time table
+        self.course_code = course_code.upper() # makes sure the course_code is in correct format
         self.data = self.get_data()  # converts the JSON source to a python dict
         self.day = self.get_day_index()  # stores the event day as a int from 1 to 7
         self.room = self.get_event_room()  # stores the location of the event.
@@ -95,10 +89,14 @@ class Event:
         self.next_event = self.get_next_event()  # TODO: move functionality to databaseExtractor after the remainding functionalty is change to take regard to database system
         self.study_programmes = self.get_study_programmes()
 
+        # loops through every occurrence of the event, and stores it in the database. Not the most efficient solution.
         self.get_all_events()
 
     def get_data(self):
-
+        """
+        Finds the JSON-feed for the timetable for the given course.
+        :return: Returns the JSON-converted dictionary, such that it can easily be stored as a member variable.
+        """
         start_of_url = "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_" \
                        "lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=" \
                        "cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode="
@@ -113,12 +111,18 @@ class Event:
             return None
 
     def get_day_index(self):
+        """
+        :return: The day index, where sunday = 0, for the event.
+        """
         try:
             return self.data["dayNum"]
         except:
             pass
 
     def get_day(self):
+        """
+        :return: The name of the weekday the event occurs
+        """
         try:
             day = self.data["dayNum"]
             return calendar.day_name[day - 1]
@@ -126,24 +130,37 @@ class Event:
             pass
 
     def get_start_time(self):
+        """
+        :return: The starting time for the event in the format hh:mm
+        """
         try:
             return self.data["from"]
         except:
             pass
 
     def get_end_time(self):
+        """
+        :return: The ending time for the event in the format hh:mm
+        """
         try:
             return self.data["to"]
         except:
             pass
 
     def get_recurrences(self):
+        """
+        This method makes it easier to loop through an event, and find all instances of it.
+        :return: The number of unique time intervalls for the reccuring event.
+        """
         try:
             return len(self.data["weeks"])
         except:
             pass
 
     def get_event_type(self):
+        """
+        :return: The type (category) of the event
+        """
         try:
             typ = self.data["acronym"]
             if typ == "FOR":
@@ -156,6 +173,9 @@ class Event:
             pass
 
     def get_event_room(self):
+        """
+        :return: The room where the event takes place
+        """
         # When multiple rooms exsists, only the first room is taking into consideration.
         try:
             return self.data["rooms"][0]["romNavn"]
@@ -166,6 +186,14 @@ class Event:
     # a week interval, with a start and end week, or a single week number. The index-varible is used to loop through
     # this list.
     def get_week_entities(self, index):
+        """
+        the week entities (the week numbers) an event occurs in is stored as a list. The elements of the list is either
+        a week interval, with a start and end week, or a single week number. The index-varible is used to loop through
+        this list.
+        :param index: Used to determine which row in timetable at ntnu.no the method should handle.
+        :return: A list of all instances of one recurring event.
+        """
+
         # returns the starting and ending week for an event as a list.
         # for a non-recurring event a list with two identical entities is return (the week number the event occurs in).
         try:
@@ -190,8 +218,11 @@ class Event:
 
         return week
 
-    # returns a dictionary of every recurrence of one event.
+
     def get_week_dict(self):
+        """
+        :return: A dictionary of every recurrence of one event.
+        """
 
         week_dictionary = {}
 
@@ -212,7 +243,11 @@ class Event:
         return week_dictionary
 
     def event_to_string(self, week_index):
-
+        """
+        Creates a suitable formatted string of the week and info for a certain event.
+        :param week_index: The index is used to find the relevant week from the week list.
+        :return: A string with all the info
+        """
         if week_index < 10:
             return "Week:  " + str(week_index) + " " + str(
                 self.get_day()) + " " + self.start_time + "-" + self.end_time + " - " + self.get_event_type() + \
@@ -222,34 +257,33 @@ class Event:
                 self.get_day()) + " " + self.start_time + "-" + self.end_time + " - " + self.get_event_type() + \
                    " in " + self.get_event_room() + " for " + self.get_study_programmes() + "\n"
 
-    # TODO: move functionality.
-    # When the info extracted from ntnu.no timetable is stored in a database it will make more sense to have this some
-    # other place
-    def get_next_event(self):
-
-        now = datetime.now()
-        current_year = now.year
-
-        start_hour = self.start_time[0:2]
-        start_min = 15
-
-        # loops through an ordered dictionary and gets the first event in the future
-        for event_key in self.week_dict:
-            event_date = Event.week_string_to_date(current_year, event_key, self.day, start_hour, start_min)
-            if event_date >= now:
-                return event_date
-
-        return None
-
     @staticmethod
     def week_string_to_date(year, week, day, hour, mins):
+        """
+        Converts a date given by the integer parameters weekday, week and year to a datetime object given by
+        day, month and year. Should probably have a different name, to better reflect it's functionality
+        :param year: The year one wants to convert
+        :param week: The week
+        :param day: The day
+        :param hour: Starting hour for the event
+        :param mins: Starting minutes for the event
+        :return: A datetime object given by day, month and year
+        """
         date_string = str(year) + "-" + str(week) + "-" + str(day) + "-" + str(hour) + "-" + str(mins)
         return datetime.strptime(date_string, "%Y-%W-%w-%H-%M")
 
     def get_event(self, week_number):
+        """
+        Returns the event at key 'week_number' in the week_dict
+        :param week_number: The key for week_dict
+        :return: The event object
+        """
         return self.week_dict[week_number]
 
     def get_all_events(self):
+        """
+        Iterates through all the occurences of an event, and store the relevant info the to database.
+        """
 
         i = 0
         for index in range(0, self.recurrences):
@@ -275,7 +309,9 @@ class Event:
                 DatabaseInserter.add_course_event(date, self.course_code, self.room, self.type)
 
     def to_string(self):
-
+        """
+        A method to print event info in a more readable format
+        """
         line = ""
 
         for week in self.week_dict:
@@ -284,6 +320,9 @@ class Event:
         return line
 
     def get_study_programmes(self):
+        """
+        Finds all the study programmes involved in a given event.
+        """
         program_list = self.data["studyProgramKeys"]
 
         programmes = program_list[0]
@@ -292,17 +331,3 @@ class Event:
             programmes += ", " + program_list[i]
 
         return programmes
-
-
-file = open("/Users/mariuskohmann/PycharmProjects/pirka/imeapi/course_codes.txt")
-for line in file:
-    course = line.split(",")
-
-    for element in course:
-        if "\"code" in element:
-            try:
-                course_code = element.split(":")[1].replace("\"", "")
-                print(course_code)
-                my_course = CourseEvents(course_code)
-            except:
-                continue

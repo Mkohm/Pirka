@@ -10,11 +10,6 @@ from oauth2client.file import Storage
 import datetime
 import argparse
 
-#TODO: make a class out of this.
-#TODO: change time zone
-
-# https://www.google.com/calendar/render?cid=http://www.example.com/calendar.ics
-
 try:
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
 except ImportError:
@@ -29,7 +24,11 @@ APPLICATION_NAME = 'Google Calendar API Example'
 
 
 def get_credentials():
-    """Gets valid user credentials from storage.
+    """Laying the groundwork for future functionality, where all the relevant events for a given user is aggregated,
+    and stored in a Google Calender-feed, which is then served to the user. Not an feature complete file,
+    and is not used in production at the momement.
+
+    Gets valid user credentials from storage.
 
     If nothing has been stored, or if the stored credentials are invalid,
     the OAuth2 flow is completed to obtain the new credentials.
@@ -57,8 +56,7 @@ def get_credentials():
 
 
 def main():
-    """Shows basic usage of the Google Calendar API.
-
+    """
     Creates a Google Calendar API service object and outputs a list of the next
     10 events on the user's calendar.
     """

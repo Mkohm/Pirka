@@ -182,6 +182,10 @@ def thread_function(username: str, password: str):
 
     # Adding a dummy-course so it is possible to test pirka with data
     DatabaseInserter.add_user_has_course(username=username, course_code="DUMMYCOURSE")
+    DatabaseInserter.add_user_has_course(username=username, course_code="DUMMY2222")
+    DatabaseInserter.add_user_has_course(username=username, course_code="DUMMY3333")
+
+
 
     # Scrapes for additional data that is user specific
     itslearning_scraper = ItsLearningScraper(username, password)

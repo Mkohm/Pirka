@@ -66,6 +66,8 @@ class ItsLearningScraper:
 
         DatabaseInserter.add_itslearning_url(ical_url)
 
+        return ical_url
+
 
     def get_course_list(self):
         """
@@ -107,8 +109,8 @@ class ItsLearningScraper:
 
         # Navigates to the relevant course based in course index
         course_code = courses[course_index].text.split()[0]
-        # TODO: REMOVE
-        print("Extracting info from: " + course_code)
+
+        print("\nExtracting info from: " + course_code)
         courses[course_index].click()
 
         # Trying to find a folder containing assignments. Only assignment located directly below a top level folder
@@ -148,41 +150,29 @@ class ItsLearningScraper:
                 else:
                     anonymous = False
 
-                # TODO: REMOVE
-                print("Title: " + title)
+
+                print("\nTitle: " + title)
                 print("Published: " + published)
                 print("Deadline: " + deadline)
                 print("Obligatory: " + str(obligatory))
-                print("Anonym: " + str(anonymous))
+                print("Anonym: " + str(anonymous)+"\n")
 
                 try:
                     assessment = self.driver.find_element_by_class_name("colorbox_green").text
                     print("Assessment: " + assessment)
+                    score = 1
                 except:
-                    assessment = "None"
-                    print("Assessment: none")
-
-                # print("test")
-                # if "Godkjent/Vurdert" == assessment:
-                #     score = 1
-                #     print("Score: " + score)
-                # else:
-                #     score = 0
-                #     print("Score: " + score)
-                #
-                # print("test111")
-
-                score = 1
+                    score = 0
 
                 try:
                     DatabaseInserter.add_assignment_data(course_code, title, i + 1, str(obligatory), published, deadline,
                                                      "its", "exercise", " ingen ")
                 except:
-                    print("Database Error1")
+                    print("Database Error 1")
                 try:
                     DatabaseInserter.add_user_completed_assignment(self.username, course_code, i + 1, "exercise", score)
                 except:
-                    print("Database Error2")
+                    print("Database Error 2")
 
 
                 # makes the driver ready for a new iteration of the loop
@@ -191,7 +181,7 @@ class ItsLearningScraper:
                 link = self.driver.find_elements_by_class_name("GridTitle")
 
             except:
-                print("\nNot an supported assignment\n")
+                print("\nNot a supported assignment\n")
                 self.driver.back()
                 self.driver.switch_to.frame(self.driver.find_element_by_name("mainmenu"))
                 link = self.driver.find_elements_by_class_name("GridTitle")
@@ -258,9 +248,3 @@ def translate(month):
         return "december"
     else:
         return month
-
-
-
-
-
-
