@@ -2,7 +2,7 @@ from datetime import datetime
 import time
 
 import database.DatabaseConnector
-
+import imeapi.ImeApiDataReceiver as ime
 
 
 def add_user(username: str, password: str, facebook_id: int):
@@ -185,27 +185,27 @@ def add_subject_data(course_code: str):
     """
 
     # Get data to work with
-    data = get_data(course_code)
+    data = ime.get_data(course_code)
 
-    course_name = get_course_name(data)
-    exam_date = get_exam_date(data)
+    course_name = ime.get_course_name(data)
+    exam_date = ime.get_exam_date(data)
 
     if exam_date != "null":
         time1 = time.strptime(exam_date, '%B %d, %Y')
         exam_date = time.strftime('%Y-%m-%d', time1)
 
-    assessment_form = get_assessment_form(data)
-    contact_name = get_contact_name(data)
-    contact_mail = get_contact_mail(data)
-    contact_office = get_contact_office(data)
-    contact_phone = get_contact_phone(data)
-    credit = get_credit(data)
-    url = get_url(data)
-    course_content = get_course_content(data)
-    course_material = get_course_material(data)
-    teaching_form = get_teaching_form(data)
-    prereq_knowledge = get_prereq_knowledge(data)
-    term = get_term(data)
+    assessment_form = ime.get_assessment_form(data)
+    contact_name = ime.get_contact_name(data)
+    contact_mail = ime.get_contact_mail(data)
+    contact_office = ime.get_contact_office(data)
+    contact_phone = ime.get_contact_phone(data)
+    credit = ime.get_credit(data)
+    url = ime.get_url(data)
+    course_content = ime.get_course_content(data)
+    course_material = ime.get_course_material(data)
+    teaching_form = ime.get_teaching_form(data)
+    prereq_knowledge = ime.get_prereq_knowledge(data)
+    term = ime.get_term(data)
 
     # Adds the data to a list for insertion into the table
     data = []
