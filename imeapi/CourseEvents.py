@@ -2,6 +2,7 @@ import requests
 # import json
 from datetime import datetime
 import calendar
+from database import DatabaseInserter
 
 
 base_url = "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_lifecycle=" \
@@ -230,11 +231,14 @@ class Event:
                 print("Event: " + str(i))
                 print(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
                 date = Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5])
-                
+                DatabaseInserter.add_course_event(date, "TDT4100TEST", self.room, self.type)
 
             if week[0] == week[1]:
                 print("Event: " + str(i))
                 print(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
+                date = Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2],
+                                                 self.start_time[3:5])
+                DatabaseInserter.add_course_event(date, "TDT4100TEST", self.room, self.type)
 
     def to_string(self):
 

@@ -466,6 +466,7 @@ def add_course_event(date_time, course_code, room, category):
         cursor.execute("INSERT INTO course_event(date_time, course_code, room, category)"
                        "values(?,?,?,?)", data_list)
     except:
+        print("fail")
         cursor.execute("UPDATE course_event SET room  = ?  " +
                        "WHERE date_time =\"" +  date_time + "\"" +
                        "and course_code = \"" + course_code + "\"" +
