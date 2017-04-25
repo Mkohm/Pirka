@@ -72,6 +72,12 @@ def add_subject_data(course_code: str):
 
 
 def get_prereq_knowledge(data):
+    """
+    Extracts prerequisite knowldegde from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing prerequisite knowldege
+    """
+
     value = ""
     for i in range(0, 6):
         try:
@@ -89,6 +95,12 @@ def get_prereq_knowledge(data):
 
 
 def get_course_content(data):
+    """
+    Extracts course content from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing course content
+    """
+
     value = ""
     for i in range(0, 6):
         try:
@@ -106,6 +118,12 @@ def get_course_content(data):
 
 
 def get_teaching_form(data):
+    """
+    Extracts teaching form from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing teaching form
+    """
+
     value = ""
     for i in range(0, 6):
         try:
@@ -123,6 +141,12 @@ def get_teaching_form(data):
 
 
 def get_course_material(data):
+    """
+    Extracts course material from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing prerequisite knowldege
+    """
+
     value = ""
     for i in range(0, 6):
         try:
@@ -140,6 +164,12 @@ def get_course_material(data):
 
 
 def get_url(data):
+    """
+    Extracts course url from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing course url
+    """
+
     value = ""
     for i in range(0, 6):
         try:
@@ -157,6 +187,11 @@ def get_url(data):
 
 
 def get_credit(data):
+    """
+    Extracts course credit from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing course credit
+    """
     try:
         credit = data["course"]["credit"]
     except:
@@ -165,6 +200,12 @@ def get_credit(data):
 
 
 def get_contact_phone(data):
+    """
+    Extracts contact phone number from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing contact phone number
+    """
+
     try:
         contact_phone = data["course"]["educationalRole"][0]["person"]["phone"]
     except:
@@ -173,6 +214,12 @@ def get_contact_phone(data):
 
 
 def get_contact_office(data):
+    """
+    Extracts contact office from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing contact office
+    """
+
     try:
         contact_office = data["course"]["educationalRole"][0]["person"]["officeAddress"]
     except:
@@ -181,6 +228,12 @@ def get_contact_office(data):
 
 
 def get_contact_mail(data):
+    """
+    Extracts contact mail from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing contact mail
+    """
+
     try:
         contact_mail = data["course"]["educationalRole"][0]["person"]["email"]
     except:
@@ -189,6 +242,12 @@ def get_contact_mail(data):
 
 
 def get_contact_name(data):
+    """
+    Extracts contact name from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing contact name
+    """
+
     try:
         contact_name = data["course"]["educationalRole"][0]["person"]["displayName"]
     except:
@@ -197,6 +256,12 @@ def get_contact_name(data):
 
 
 def get_assessment_form(data):
+    """
+    Extracts assessment form from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing assessment form
+    """
+
     assessment_form = "null"
 
     try:
@@ -216,6 +281,12 @@ def get_assessment_form(data):
         return assessment_form
 
 def get_exam_date(data):
+    """
+    Extracts exam date from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing exam date
+    """
+
     try:
         exam_date = data["course"]["assessment"][0]["date"]
         exam_date = format_date(exam_date)
@@ -226,6 +297,14 @@ def get_exam_date(data):
 
 
 def add_user(username: str, password: str, facebook_id: int):
+    """
+    Inserts a user to the database
+    :param username: users username
+    :param password: users password
+    :param facebook_id: users unique facebook id
+    :return: nothing
+    """
+
     data = []
     data.append(username)
     data.append(password)
@@ -246,80 +325,35 @@ def add_user(username: str, password: str, facebook_id: int):
 
 
 def get_term(data):
+    """
+    Extracts course term from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing course term
+    """
+
     try:
         term = data["course"]["assessment"][0]["realExecutionTerm"]
     except:
         term = "Term not available"
     return term
 
-
-"""
-def set_year():
-    # Fetch the course
-    data = get_data()
-    try:
-        year = int(data["course"]["assessment"][0]["realExecutionYear"])
-    except KeyError:
-        year = "Year not available"
-
-
-
-def set_is_active_course():
-    # todo check for this on a smart place.
-    try:
-        get_year()
-        get_term()
-
-        # default value for end of course
-        end_of_course = None
-
-        # checks which term the course is taught, and assigns an appropiate value to end_of_course
-        if term == "Autumn":
-            end_of_course = datetime(year, 12, 31)
-        elif term == "Spring":
-            end_of_course = datetime(year, 6, 30)
-
-        # checks if the end_of_course is in the future, and returns the boolean
-        course_active = datetime.now() < end_of_course
-
-    except KeyError:
-        course_active = "Can not check for active course"
-
-def set_course_content():
-    # Fetch the course
-    data = get_data()
-    x = len(data["course"]["infoType"])
-    index = 0
-    for i in range(0, x):
-        try:
-            name = data["course"]["infoType"][i]["name"]
-            if (name == "Academic content"):
-                index = i
-        except KeyError:
-            course_content = "Course content is not available"
-    try:
-        course_content = data["course"]["infoType"][index]["text"]
-    except KeyError:
-        course_content = "Course content is not available"
-
-
-
-def is_valid_course():
-    data = get_data()
-    try:
-        cred = data["course"]["credit"]
-        return True
-    except TypeError:
-        return False
-"""
-
-
 def get_data(course_code):
+    """
+    Gets the data that we obtain all the data from using the API-url
+    :param course_code: the course we want to get data from
+    :return: json data that contains all the data from a course
+    """
+
     data = requests.get(base_url + course_code).json()
     return data
 
 
 def get_course_name(data) -> str:
+    """
+    Extracts course name from the data
+    :param data: the json received from IME-API that the data should be extracted from
+    :return: String containing course name
+     """
     try:
         course_name = data["course"]["englishName"]
     except:
@@ -329,6 +363,12 @@ def get_course_name(data) -> str:
 
 
 def format_date(date: str) -> str:
+    """
+    Formats the date to a more user friendly format
+    :param date: a string containing a date
+    :return: a user friendly string representing a date
+    """
+
     year = int(float(date[0:4]))
     month = int(float(date[5:7]))
     day = int(float(date[8:]))
@@ -338,6 +378,20 @@ def format_date(date: str) -> str:
 
 
 def add_assignment_data(course_code, title, index, mandatory, published, deadline, location, category, description):
+    """
+    Adds a new assignment to the database
+    :param course_code: the courses course code
+    :param title: the assignment title
+    :param index: the number of the assignment
+    :param mandatory: if the assignment is mandatory
+    :param published: when the assignment was published
+    :param deadline: when the assignment should be delivered
+    :param location: where the assignment should be delivered
+    :param category: what type of assignment it is
+    :param description: description of the assignment
+    :return: nothing
+    """
+
     # Adds data to a list for insertion into table
     assignment = []
     assignment.append(course_code)
@@ -365,6 +419,14 @@ def add_assignment_data(course_code, title, index, mandatory, published, deadlin
 
 
 def add_user_has_course(username, course_code):
+    """
+    Adds to the database that a user has a course
+    :param username: users username
+    :param course_code: courses course code
+    :return: 
+    """
+
+
     connection = database.DatabaseConnector.connection
     cursor = connection.cursor()
 
@@ -381,6 +443,12 @@ def add_user_has_course(username, course_code):
     connection.commit()
 
 def add_itslearning_url(url: str):
+    """
+    Adds a itslearning ical url to the database
+    :param url: the ical url
+    :return: nothing
+    """
+
     connection = database.DatabaseConnector.connection
     cursor = connection.cursor()
 
@@ -397,6 +465,16 @@ def add_itslearning_url(url: str):
 
 
 def add_user_completed_assignment(username, course_code, nr, category, score):
+    """
+    Adds to the database that a user have completed an assignment
+    :param username: users username
+    :param course_code: course course code
+    :param nr: the number of the assignment
+    :param category: the assignment category 
+    :param score: score is 1 if it was completed, 0 else
+    :return: nothing
+    """
+
     #create variable for all fields to be added to database
     data_list = []
     data_list.append(username)
@@ -422,6 +500,15 @@ def add_user_completed_assignment(username, course_code, nr, category, score):
     connection.commit()
 
 def add_course_event(date_time, course_code, room, category):
+    """
+    Adds an event to a course in the database
+    :param date_time: when the event is
+    :param course_code: the course code
+    :param room: where the event is
+    :param category: what kind of event this is
+    :return: nothing
+    """
+
     #create variable for all fields to be added to database
     data_list=[]
     data_list.append(date_time)
