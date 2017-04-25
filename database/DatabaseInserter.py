@@ -472,4 +472,3 @@ def add_course_event(date_time, course_code, room, category):
                        "and category = \"" + category + "\"", room )
 
     connection.commit()
-

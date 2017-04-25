@@ -68,6 +68,10 @@ def process_actions(parameter: str, action_name: str) -> str:
         return create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
     elif action_name == "get_exercise_status":
         return create_data_response(DatabaseExtractor.get_exercise_status(parameter[1], parameter[0]))
+    elif action_name=="get_exercise_scheme_approval":
+        return create_data_response(DatabaseExtractor.get_exercise_scheme_approval(parameter[1], parameter[0]))
+    elif action_name=="get_exercises_left":
+        return create_data_response(DatabaseExtractor.get_exercises_left(parameter[1], parameter[0]))
     elif action_name == "get_project_status":
         return create_data_response(DatabaseExtractor.get_project_status(parameter[1], parameter[0]))
     elif action_name == "get_lab_status":
