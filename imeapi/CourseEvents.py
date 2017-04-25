@@ -1,26 +1,12 @@
 import requests
-# import json
 from datetime import datetime
 import calendar
 from database import DatabaseInserter
 
-
-base_url = "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_lifecycle=" \
-       "2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=cacheLevelPage&p_p_col_id=" \
-       "column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode=TFY4170&_" \
-       "coursedetailsportlet_WAR_courselistportlet_version=1&_coursedetailsportlet_WAR_courselistportlet_" \
-       "year=2016&year=2016&version=1"
-
 "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode=TFY4170&_coursedetailsportlet_WAR_courselistportlet_version=1&_coursedetailsportlet_WAR_courselistportlet_year=2016&year=2016&version=1"
-
-# TODO: Change implementation to use json_url in favor of base_url
-
-# todo: implement error checking
-# todo: implement code to handle different courses, and not only FYSIKK 2
 
 # this class aggregates all event info from all event based on the course's ntnu.no timetable.
 class CourseEvents:
-    # todo: implement at least the listed functions
 
     def __init__(self, course_code):
         self.data = self.get_data()  # stores the whole timetable for a given course
@@ -53,7 +39,7 @@ class CourseEvents:
         event_list = []
 
         for index in range(0, self.number_of_weekly_events):
-            event_list.append(Event(index))
+            event_list.append(Event(index, self.course_code))
 
         return event_list
 
@@ -66,29 +52,29 @@ class CourseEvents:
             print(event.get_day_index())
 
         return list_of_days
-
-    def get_next_event(self):
-
-        next_event = self.event_list[0].get_next_event()
-        event_info = self.event_list[0]
-
-        for event in self.event_list:
-            # event_date is a datetime object
-            event_date = event.get_next_event()
-            if event_date < next_event:
-                next_event = event_date
-                event_info = event
-
-        week = datetime.date(next_event).isocalendar()[1]
-        return event_info.get_event(week)
-
-    def get_weekly_overview(self, week_index):
-
-        res = ""
-        for event in self.event_list:
-            res += event.event_to_string(week_index)
-
-        return res
+#
+#     def get_next_event(self):
+#
+#         next_event = self.event_list[0].get_next_event()
+#         event_info = self.event_list[0]
+#
+#         for event in self.event_list:
+#             # event_date is a datetime object
+#             event_date = event.get_next_event()
+#             if event_date < next_event:
+#                 next_event = event_date
+#                 event_info = event
+#
+#         week = datetime.date(next_event).isocalendar()[1]
+#         return event_info.get_event(week)
+#
+#     def get_weekly_overview(self, week_index):
+#
+#         res = ""
+#         for event in self.event_list:
+#             res += event.event_to_string(week_index)
+#
+#         return res
 
     # this class stores all info for one, 1, event based on the official course timetable on ntnu.no.
 class Event:
@@ -304,3 +290,6 @@ class Event:
 
         return programmes
 
+my_course = CourseEvents("TFY4170")
+
+my_course.get_list_of_events()
