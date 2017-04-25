@@ -21,7 +21,6 @@ class CourseEvents:
         self.data = self.get_data()  # stores the whole timetable for a given course
         self.number_of_weekly_events = self.get_number_of_weekly_events()  # the number of unique recurring events
         self.event_list = self.get_list_of_events() # returns a list of all events in a course, and stores it in the database
-        self.event_days = self.get_list_of_event_days()
 
     def get_data(self):
         """
@@ -64,7 +63,6 @@ class CourseEvents:
         return event_list
 
 
-
 class Event:
     """
     A class to handle all the relevant information for one single instance of an, possible recurring, event.
@@ -86,7 +84,6 @@ class Event:
         self.type = self.get_event_type()  # stores the event type as an abbreviation (based on NTNU's system), FOR, ØV, etc
         self.recurrences = self.get_recurrences()  # number of recurrences
         self.week_dict = self.get_week_dict()  # dict with every lecture/guidance week as key and event info as value
-        self.next_event = self.get_next_event()  # TODO: move functionality to databaseExtractor after the remainding functionalty is change to take regard to database system
         self.study_programmes = self.get_study_programmes()
 
         # loops through every occurrence of the event, and stores it in the database. Not the most efficient solution.

@@ -1,12 +1,12 @@
 from unittest import TestCase
-from scraper.ItsLearningScraper import ItsLearningScraper
+from scraper.BlackboardScraper import BlackboardScraper
 
 class TestItsLearningScraper(TestCase):
     def setUp(self):
         #todo: Type in username and password for NTNU account to run this test
         self.username = "marihl"
         self.password = "Fyrstikk94"
-        self.scraper = ItsLearningScraper(self.username, self.password)
+        self.scraper = BlackboardScraper(self.username, self.password)
 
     def test_get_calendar_feed(self):
         try:
@@ -32,11 +32,7 @@ class TestItsLearningScraper(TestCase):
         except Exception:
             self.fail("get_all_assignments() raised an Exception")
 
-    def test_get_announcements(self):
-        try:
-            self.scraper.get_announcements(0)
-        except Exception:
-            self.fail("get_announcements() raised an Exception")
+
 
 
 
