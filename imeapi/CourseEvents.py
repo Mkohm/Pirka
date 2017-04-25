@@ -3,22 +3,20 @@ from datetime import datetime
 import calendar
 from database import DatabaseInserter
 
-"https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode=TFY4170&_coursedetailsportlet_WAR_courselistportlet_version=1&_coursedetailsportlet_WAR_courselistportlet_year=2016&year=2016&version=1"
 
 # this class aggregates all event info from all event based on the course's ntnu.no timetable.
 class CourseEvents:
-
     def __init__(self, course_code):
-        self.data = self.get_data()  # stores the whole timetable for a given course
         self.course_code = course_code.upper()
+        self.data = self.get_data()  # stores the whole timetable for a given course
         self.number_of_weekly_events = self.get_number_of_weekly_events()  # the number of unique recurring events
         self.event_list = self.get_list_of_events()
         self.event_days = self.get_list_of_event_days()
 
     def get_data(self):
         start_of_url = "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_" \
-            "lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=" \
-            "cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode="
+                       "lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=" \
+                       "cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode="
 
         end_of_url = "&year=2016&version=1"
 
@@ -31,8 +29,8 @@ class CourseEvents:
             return None
 
     def get_number_of_weekly_events(self):
-    # no support for courses where mutiple instances for the same event is stored in JSON, i.e. courses which have
-    # multiple exercise lecture at the same time, but for different groups at different places.
+        # no support for courses where mutiple instances for the same event is stored in JSON, i.e. courses which have
+        # multiple exercise lecture at the same time, but for different groups at different places.
         return len(self.data)
 
     def get_list_of_events(self):
@@ -52,31 +50,34 @@ class CourseEvents:
             print(event.get_day_index())
 
         return list_of_days
-#
-#     def get_next_event(self):
-#
-#         next_event = self.event_list[0].get_next_event()
-#         event_info = self.event_list[0]
-#
-#         for event in self.event_list:
-#             # event_date is a datetime object
-#             event_date = event.get_next_event()
-#             if event_date < next_event:
-#                 next_event = event_date
-#                 event_info = event
-#
-#         week = datetime.date(next_event).isocalendar()[1]
-#         return event_info.get_event(week)
-#
-#     def get_weekly_overview(self, week_index):
-#
-#         res = ""
-#         for event in self.event_list:
-#             res += event.event_to_string(week_index)
-#
-#         return res
+
+    #
+    #     def get_next_event(self):
+    #
+    #         next_event = self.event_list[0].get_next_event()
+    #         event_info = self.event_list[0]
+    #
+    #         for event in self.event_list:
+    #             # event_date is a datetime object
+    #             event_date = event.get_next_event()
+    #             if event_date < next_event:
+    #                 next_event = event_date
+    #                 event_info = event
+    #
+    #         week = datetime.date(next_event).isocalendar()[1]
+    #         return event_info.get_event(week)
+    #
+    #     def get_weekly_overview(self, week_index):
+    #
+    #         res = ""
+    #         for event in self.event_list:
+    #             res += event.event_to_string(week_index)
+    #
+    #         return res
 
     # this class stores all info for one, 1, event based on the official course timetable on ntnu.no.
+
+
 class Event:
     # todo: implement function to differentiate different course parallels and study programmes.
 
@@ -94,11 +95,13 @@ class Event:
         self.next_event = self.get_next_event()  # TODO: move functionality to databaseExtractor after the remainding functionalty is change to take regard to database system
         self.study_programmes = self.get_study_programmes()
 
+        self.get_all_events()
+
     def get_data(self):
 
         start_of_url = "https://www.ntnu.no/web/studier/emner?p_p_id=coursedetailsportlet_WAR_courselistportlet&p_p_" \
-            "lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=" \
-            "cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode="
+                       "lifecycle=2&p_p_state=normal&p_p_mode=view&p_p_resource_id=timetable&p_p_cacheability=" \
+                       "cacheLevelPage&p_p_col_id=column-1&p_p_col_count=1&_coursedetailsportlet_WAR_courselistportlet_courseCode="
 
         end_of_url = "&year=2016&version=1"
 
@@ -109,7 +112,6 @@ class Event:
         except:
             return None
 
-
     def get_day_index(self):
         try:
             return self.data["dayNum"]
@@ -119,7 +121,7 @@ class Event:
     def get_day(self):
         try:
             day = self.data["dayNum"]
-            return calendar.day_name[day-1]
+            return calendar.day_name[day - 1]
         except:
             pass
 
@@ -220,8 +222,6 @@ class Event:
                 self.get_day()) + " " + self.start_time + "-" + self.end_time + " - " + self.get_event_type() + \
                    " in " + self.get_event_room() + " for " + self.get_study_programmes() + "\n"
 
-
-
     # TODO: move functionality.
     # When the info extracted from ntnu.no timetable is stored in a database it will make more sense to have this some
     # other place
@@ -243,7 +243,7 @@ class Event:
 
     @staticmethod
     def week_string_to_date(year, week, day, hour, mins):
-        date_string = str(year) + "-" + str(week) + "-" + str(day) + "-" + str(hour)+"-"+str(mins)
+        date_string = str(year) + "-" + str(week) + "-" + str(day) + "-" + str(hour) + "-" + str(mins)
         return datetime.strptime(date_string, "%Y-%W-%w-%H-%M")
 
     def get_event(self, week_number):
@@ -259,17 +259,20 @@ class Event:
             for week_number in range(week[0], week[1]):
                 print(week_number)
                 print("Event from A: " + str(i))
-                print(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
-                date = Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5])
-                DatabaseInserter.add_course_event(date, "TDT4100TEST", self.room, self.type)
+                print(
+                    Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
+                date = str(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2],
+                                                 self.start_time[3:5]))
+                DatabaseInserter.add_course_event(date, self.course_code, self.room, self.type)
 
             if week[0] == week[1]:
                 print(week_number)
                 print("Event from B: " + str(i))
-                print(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
-                date = Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2],
-                                                 self.start_time[3:5])
-                DatabaseInserter.add_course_event(date, "TDT4100TEST", self.room, self.type)
+                print(
+                    Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2], self.start_time[3:5]))
+                date = str(Event.week_string_to_date(2017, week_number, self.day, self.start_time[0:2],
+                                                 self.start_time[3:5]))
+                DatabaseInserter.add_course_event(date, self.course_code, self.room, self.type)
 
     def to_string(self):
 
@@ -290,6 +293,16 @@ class Event:
 
         return programmes
 
-my_course = CourseEvents("TFY4170")
 
-my_course.get_list_of_events()
+file = open("/Users/mariuskohmann/PycharmProjects/pirka/imeapi/course_codes.txt")
+for line in file:
+    course = line.split(",")
+
+    for element in course:
+        if "\"code" in element:
+            try:
+                course_code = element.split(":")[1].replace("\"", "")
+                print(course_code)
+                my_course = CourseEvents(course_code)
+            except:
+                continue

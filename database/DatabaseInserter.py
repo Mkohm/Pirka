@@ -329,7 +329,6 @@ def get_course_name(data) -> str:
 
 
 def format_date(date: str) -> str:
-    print(date)
     year = int(float(date[0:4]))
     month = int(float(date[5:7]))
     day = int(float(date[8:]))
@@ -389,42 +388,13 @@ def add_itslearning_url(url: str):
     data_list.append(url)
 
     try:
-        cursor.execute("INSERT INTO user(ical_itslearning) "
+        cursor.execute("INSERT INTO `user`(`ical_itslearning`) "
                        "VALUES(?)", data_list)
     except:
         pass
 
     connection.commit()
 
-def add_blackboard_url(url: str):
-    connection = database.DatabaseConnector.connection
-    cursor = connection.cursor()
-
-    data_list = []
-    data_list.append(url)
-
-    try:
-        cursor.execute("INSERT INTO user(ical_blackboard) "
-                       "VALUES(?)", data_list)
-    except:
-        pass
-
-    connection.commit()
-
-def add_course_event(course_code, name, date, start_time, end_time, room, study_programmes):
-    connection = database.DatabaseConnector.connection
-    cursor = connection.cursor()
-
-    # data_list = []
-    # data_list.append(url)
-    #
-    # try:
-    #     cursor.execute("INSERT INTO user(ical_blackboard) "
-    #                    "VALUES(?)", data_list)
-    # except:
-    #     pass
-
-    connection.commit()
 
 def add_user_completed_assignment(username, course_code, nr, category, score):
     #create variable for all fields to be added to database
@@ -463,14 +433,8 @@ def add_course_event(date_time, course_code, room, category):
     connection = database.DatabaseConnector.connection
     cursor = connection.cursor()
     try:
-        cursor.execute("INSERT INTO course_event(date_time, course_code, room, category)"
-                       "values(?,?,?,?)", data_list)
+        cursor.execute("INSERT INTO `course_event`(`date_time`, `course_code`, `room`, `category`) VALUES(?,?,?,?)", data_list)
     except:
-        print("fail")
-        cursor.execute("UPDATE course_event SET room  = ?  " +
-                       "WHERE date_time =\"" +  date_time + "\"" +
-                       "and course_code = \"" + course_code + "\"" +
-                       "and category = \"" + category + "\"", room )
+        pass
 
     connection.commit()
-

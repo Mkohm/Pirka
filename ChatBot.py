@@ -68,6 +68,10 @@ def process_actions(parameter: str, action_name: str) -> str:
         return create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
     elif action_name == "get_exercise_status":
         return create_data_response(DatabaseExtractor.get_exercise_status(parameter[1], parameter[0]))
+    elif action_name=="get_exercise_scheme_approval":
+        return create_data_response(DatabaseExtractor.get_exercise_scheme_approval(parameter[1], parameter[0]))
+    elif action_name=="get_exercises_left":
+        return create_data_response(DatabaseExtractor.get_exercises_left(parameter[1], parameter[0]))
     elif action_name == "get_project_status":
         return create_data_response(DatabaseExtractor.get_project_status(parameter[1], parameter[0]))
     elif action_name == "get_lab_status":
@@ -100,6 +104,14 @@ def process_actions(parameter: str, action_name: str) -> str:
         return create_data_response(DatabaseExtractor.get_course_names(username=parameter[0]))
     elif action_name == "get_number_of_courses":
         return create_data_response(DatabaseExtractor.get_number_of_courses(username=parameter[0]))
+    elif action_name == "get_today_assignments":
+        return create_data_response(DatabaseExtractor.get_today_assignments(username=parameter[0]))
+    elif action_name == "get_tomorrow_assignments":
+        return create_data_response(DatabaseExtractor.get_tomorrow_assignments(username=parameter[0]))
+    elif action_name == "get_today_events":
+        return create_data_response(DatabaseExtractor.get_today_events(username=parameter[0]))
+    elif action_name == "get_tomorrow_events":
+        return create_data_response(DatabaseExtractor.get_tomorrow_events(username=parameter[0]))
     else:
         return create_data_response("I didn't understand anything, you probably broke me :(")
 
