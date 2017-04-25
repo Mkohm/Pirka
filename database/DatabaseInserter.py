@@ -329,7 +329,6 @@ def get_course_name(data) -> str:
 
 
 def format_date(date: str) -> str:
-    print(date)
     year = int(float(date[0:4]))
     month = int(float(date[5:7]))
     day = int(float(date[8:]))
@@ -439,4 +438,3 @@ def add_course_event(date_time, course_code, room, category):
         pass
 
     connection.commit()
-

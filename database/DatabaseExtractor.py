@@ -195,7 +195,6 @@ def get_exercise_status(course_code, username):
                                        "status_exercise as S, course as C where S.course_code = \"" + course_code + "\" "
                                                                                                                     "and S.course_code = C.course_code and S.username = \"" + username + "\" group by "
                                                                                                                                                                                          "S.username ;")
-
     try:
         score = str(ans[0][1])
         course_name = ans[0][3]
@@ -203,21 +202,26 @@ def get_exercise_status(course_code, username):
         if required == "None":
             return "You have done " + score + " exercises in " + course_code + " " + course_name + "."
         else:
-            return "You have done " + score + " out of " + required + " exercises in " + course_code + " " + course_name + "."
+            return "You have done " + score + " out of " + required + " required exercises in " + course_code + " " + course_name + "."
     except:
         return "Sorry, I could not get the exercise status."
 
 
-def get_passed_assignments(course_code, username):
+def get_exercise_scheme_approval(course_code, username):
 
     ans = DatabaseConnector.get_values("Select S.username, S.total_score, S.req_score, C.course_name from "
                                        "status_exercise as S, course as C where S.course_code = \"" + course_code + "\" "
                                         "and S.course_code = C.course_code and S.username = \"" + username + "\" group by ""S.username ;")
+
     try:
         score = str(ans[0][1])
         required = str(ans[0][2])
+        course_name=ans[0][3]
         if required == "None":
-            return "Sorry, i don't know how many exercises is required."
+            if score >= 8:
+                return "Yes, you have completed the exercise scheme in " + course_code + " " + course_name + "."
+            else:
+                return "No, you have done " + score + " out of " + required + " required exercises in " + course_code + " " + course_name + "."
 
         if score == required:
             return "Yes, you have completed all the required assignments!"
@@ -236,13 +240,14 @@ def get_exercises_left(course_code, username):
         required = ans[0][2]
 
         if required == "None":
-
-            return "You have done " + str(score) + " exercises in " + course_code + " " + course_name + "."
+            left = str(8-score)
         else:
             left = str(required - score)
-            return "You have " + left + " exercises left in " + course_code + " " + course_name + "."
+        return "You have " + left + " exercises left in " + course_code + " " + course_name + "."
+
     except:
         return "You haven't done any exercises in this course yet."
+
 
 
 def get_project_status(course_code, username):
