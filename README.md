@@ -6,6 +6,11 @@ A chatbot developed using API.AI and a python web server. Release date of Pirka 
 ## Usage
 The first time you want to use Pirka you have to visit: https://www.facebook.com/pirkabot/ and then click to send a message to Pirka.
 
+### Example usages
+- stoehu
+- staho
+- shoe
+
 ## Non personal features
 
 - [x] Can ask when an exam in a course is
@@ -32,6 +37,7 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 ## Future 
 - [ ] Get links to the assignments
 - [ ] Push notifications for 
+
 
 
 ## Setup for contributing to Pirka
