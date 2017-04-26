@@ -1,5 +1,5 @@
-Some Markdown text with <span style="color:blue">some *blue* text</span>.
-
+# **WARNING**
+THIS SOFTWARE STORES YOUR USERNAME AND PASSWORD IN CLEAR-TEXT - USE AT YOUR OWN RISK
 
 # Pirka - the student helper
 A chatbot developed using API.AI and a python web server. Release date of Pirka is 27.april 2017
