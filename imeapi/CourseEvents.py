@@ -328,3 +328,19 @@ class Event:
             programmes += ", " + program_list[i]
 
         return programmes
+
+def add_all_course_events():
+    file = open("/Users/mariuskohmann/PycharmProjects/pirka/imeapi/course_codes.txt")
+    for line in file:
+        course = line.split(",")
+
+        for element in course:
+            if "\"code" in element:
+                try:
+                    course_code = element.split(":")[1].replace("\"", "")
+                    print(course_code)
+                    my_course = CourseEvents(course_code)
+                except:
+                    continue
+
+add_all_course_events()
