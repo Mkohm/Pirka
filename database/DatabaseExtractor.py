@@ -740,7 +740,7 @@ def get_next_weeks_assignments(username):
 
     ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, C.course_name "
                                        "from user_assignment AS A, course AS C "
-                                       "where (A.username = \"" + username + "\") AND (A.course_code = C.course_code) AND (deadline BETWEEN Date('now', 'localtime', 'weekday 0') AND date('now', 'localtime', 'weekday 0', '+8 days')) ORDER BY deadline ASC")
+                                       "where (A.username = \"" + username + "\") AND (A.course_code = C.course_code) AND (deadline BETWEEN Date('now', 'localtime', 'weekday 0', '+1 days') AND date('now', 'localtime', 'weekday 0', '+8 days')) ORDER BY deadline ASC")
 
     try:
 
@@ -775,15 +775,6 @@ def get_this_week_schedule(username):
     :return: String containing schedule that is presented to the user
     """
     return get_this_weeks_assignments(username) + "\n" + get_this_weeks_events(username)
-
-
-
-
-
-
-
-
-
 
 def get_ical_itslearning(username):
     """
