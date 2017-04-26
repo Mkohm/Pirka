@@ -1,6 +1,8 @@
 # **WARNING**
 This software is in development and stores your username and password unsecurely. Run the software locally on your computer to avoid security risks. 
 
+At this point Pirka contains dummy courses to test the different features that is implemented by now.
+
 # Pirka - the student helper
 A chatbot developed using API.AI and a python web server. Release date of Pirka is 27.april 2017
 
