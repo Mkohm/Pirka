@@ -1,5 +1,5 @@
 # **WARNING**
-THIS SOFTWARE STORES YOUR USERNAME AND PASSWORD IN CLEAR-TEXT - USE AT YOUR OWN RISK
+This software is in development and stores your username and password unsecurely. Run the software locally on your computer to avoid security risks. 
 
 # Pirka - the student helper
 A chatbot developed using API.AI and a python web server. Release date of Pirka is 27.april 2017
@@ -17,7 +17,7 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - Pirka: "The name of the contact person in **TDT4100** is Hallvard Trætteberg" (Pirka remembers the course code you talked about in the last messages)
 
 #### Course specific usage
-- Get exam date
+- What is the exam date?
 - Get exam date in TDT4100
 - Get assessment form in TDT4100
 - Get contact mail
