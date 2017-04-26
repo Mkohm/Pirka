@@ -670,9 +670,9 @@ def get_this_weeks_events(username):
         string_builder = "This weeks events:\n"
         for i in range(0, len(ans)):
             date = ans[i][1]
-            course_name = ans[i][2]
-            room = ans[i][3]
-            category = ans[i][4]
+            course_name = ans[i][0]
+            room = ans[i][2]
+            category = ans[i][3]
 
             string_builder += "- " + category + " in " + room + " in " + course_name + " " + format_date_datetime(date) + "\n"
 
