@@ -34,87 +34,90 @@ def process_actions(parameter: str, action_name: str) -> str:
     :return: Json - data containing the string that should be returned to the user
     """
 
-    if action_name == "login":
-        return create_followup_event_data(parameter[2])
-    elif action_name == "get_exam_date":
-        return create_data_response(DatabaseExtractor.get_exam_date(parameter[1]))
-    elif action_name == "get_assessment_form":
-        return create_data_response(DatabaseExtractor.get_assessment_form(parameter[1]))
-    elif action_name == "get_contact_mail":
-        return create_data_response(DatabaseExtractor.get_contact_mail(parameter[1]))
-    elif action_name == "get_contact_name":
-        return create_data_response(DatabaseExtractor.get_contact_name(parameter[1]))
-    elif action_name == "get_contact_phone":
-        return create_data_response(DatabaseExtractor.get_contact_phone(parameter[1]))
-    elif action_name == "get_contact_website":
-        return create_data_response(DatabaseExtractor.get_contact_website(parameter[1]))
-    elif action_name == "get_office":
-        return create_data_response(DatabaseExtractor.get_contact_office(parameter[1]))
-    elif action_name == "get_teaching_form":
-        return create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
-    elif action_name == "get_course_name":
-        return create_data_response(DatabaseExtractor.get_course_name(parameter[1]))
-    elif action_name == "get_credit":
-        return create_data_response(DatabaseExtractor.get_credit(parameter[1]))
-    elif action_name == "get_url":
-        return create_data_response(DatabaseExtractor.get_url(parameter[1]))
-    elif action_name == "get_prereq_knowledge":
-        return create_data_response(DatabaseExtractor.get_prereq_knowledge(parameter[1]))
-    elif action_name == "get_course_content":
-        return create_data_response(DatabaseExtractor.get_course_content(parameter[1]))
-    elif action_name == "get_course_material":
-        return create_data_response(DatabaseExtractor.get_course_material(parameter[1]))
-    elif action_name == "get_teaching_form":
-        return create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
-    elif action_name == "get_exercise_status":
-        return create_data_response(DatabaseExtractor.get_exercise_status(parameter[1], parameter[0]))
-    elif action_name=="get_exercise_scheme_approval":
-        return create_data_response(DatabaseExtractor.get_exercise_scheme_approval(parameter[1], parameter[0]))
-    elif action_name=="get_exercises_left":
-        return create_data_response(DatabaseExtractor.get_exercises_left(parameter[1], parameter[0]))
-    elif action_name == "get_project_status":
-        return create_data_response(DatabaseExtractor.get_project_status(parameter[1], parameter[0]))
-    elif action_name == "get_lab_status":
-        return create_data_response(DatabaseExtractor.get_lab_status(parameter[1], parameter[0]))
-    elif action_name == "get_next_event":
-        return create_data_response(DatabaseExtractor.get_next_event(username=parameter[0]))
-    elif action_name == "get_next_assignment":
-        return create_data_response(DatabaseExtractor.get_next_assignment(username=parameter[0]))
-    elif action_name == "get_this_weeks_schedule":
-        return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
-    elif action_name == "get_next_weeks_schedule":
-        return create_data_response(DatabaseExtractor.get_next_week_schedule(username=parameter[0]))
-    elif action_name == "get_next_weeks_events":
-        return create_data_response(DatabaseExtractor.get_next_weeks_events(username=parameter[0]))
-    elif action_name == "get_next_weeks_assignments":
-        return create_data_response(DatabaseExtractor.get_next_weeks_assignments(username=parameter[0]))
-    elif action_name == "get_this_weeks_assignments":
-        return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
-    elif action_name == "get_this_weeks_events":
-        return create_data_response(DatabaseExtractor.get_this_weeks_events(username=parameter[0]))
-    elif action_name == "get_passed_assignments":
-        return create_data_response(DatabaseExtractor.get_passed_assignments(course_code=parameter[1], username=parameter[0]))
-    elif action_name == "get_exam_dates":
-        return create_data_response(DatabaseExtractor.get_exam_dates(username=parameter[0]))
-    elif action_name == "get_days_until_first_exam":
-        return create_data_response(DatabaseExtractor.get_days_until_first_exam(username=parameter[0]))
-    elif action_name == "get_course_codes":
-        return create_data_response(DatabaseExtractor.get_course_codes(username=parameter[0]))
-    elif action_name == "get_course_names":
-        return create_data_response(DatabaseExtractor.get_course_names(username=parameter[0]))
-    elif action_name == "get_number_of_courses":
-        return create_data_response(DatabaseExtractor.get_number_of_courses(username=parameter[0]))
-    elif action_name == "get_today_assignments":
-        return create_data_response(DatabaseExtractor.get_today_assignments(username=parameter[0]))
-    elif action_name == "get_tomorrow_assignments":
-        return create_data_response(DatabaseExtractor.get_tomorrow_assignments(username=parameter[0]))
-    elif action_name == "get_today_events":
-        return create_data_response(DatabaseExtractor.get_today_events(username=parameter[0]))
-    elif action_name == "get_tomorrow_events":
-        return create_data_response(DatabaseExtractor.get_tomorrow_events(username=parameter[0]))
-    else:
-        return create_data_response("I didn't understand anything, you probably broke me :(")
+    try:
+        if action_name == "login":
+            return create_followup_event_data(parameter[2])
+        elif action_name == "get_exam_date":
+            return create_data_response(DatabaseExtractor.get_exam_date(parameter[1]))
+        elif action_name == "get_assessment_form":
+            return create_data_response(DatabaseExtractor.get_assessment_form(parameter[1]))
+        elif action_name == "get_contact_mail":
+            return create_data_response(DatabaseExtractor.get_contact_mail(parameter[1]))
+        elif action_name == "get_contact_name":
+            return create_data_response(DatabaseExtractor.get_contact_name(parameter[1]))
+        elif action_name == "get_contact_phone":
+            return create_data_response(DatabaseExtractor.get_contact_phone(parameter[1]))
+        elif action_name == "get_contact_website":
+            return create_data_response(DatabaseExtractor.get_contact_website(parameter[1]))
+        elif action_name == "get_office":
+            return create_data_response(DatabaseExtractor.get_contact_office(parameter[1]))
+        elif action_name == "get_teaching_form":
+            return create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
+        elif action_name == "get_course_name":
+            return create_data_response(DatabaseExtractor.get_course_name(parameter[1]))
+        elif action_name == "get_credit":
+            return create_data_response(DatabaseExtractor.get_credit(parameter[1]))
+        elif action_name == "get_url":
+            return create_data_response(DatabaseExtractor.get_url(parameter[1]))
+        elif action_name == "get_prereq_knowledge":
+            return create_data_response(DatabaseExtractor.get_prereq_knowledge(parameter[1]))
+        elif action_name == "get_course_content":
+            return create_data_response(DatabaseExtractor.get_course_content(parameter[1]))
+        elif action_name == "get_course_material":
+            return create_data_response(DatabaseExtractor.get_course_material(parameter[1]))
+        elif action_name == "get_teaching_form":
+            return create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
+        elif action_name == "get_exercise_status":
+            return create_data_response(DatabaseExtractor.get_exercise_status(parameter[1], parameter[0]))
+        elif action_name=="get_exercise_scheme_approval":
+            return create_data_response(DatabaseExtractor.get_exercise_scheme_approval(parameter[1], parameter[0]))
+        elif action_name=="get_exercises_left":
+            return create_data_response(DatabaseExtractor.get_exercises_left(parameter[1], parameter[0]))
+        elif action_name == "get_project_status":
+            return create_data_response(DatabaseExtractor.get_project_status(parameter[1], parameter[0]))
+        elif action_name == "get_lab_status":
+            return create_data_response(DatabaseExtractor.get_lab_status(parameter[1], parameter[0]))
+        elif action_name == "get_next_event":
+            return create_data_response(DatabaseExtractor.get_next_event(username=parameter[0]))
+        elif action_name == "get_next_assignment":
+            return create_data_response(DatabaseExtractor.get_next_assignment(username=parameter[0]))
+        elif action_name == "get_this_weeks_schedule":
+            return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
+        elif action_name == "get_next_weeks_schedule":
+            return create_data_response(DatabaseExtractor.get_next_week_schedule(username=parameter[0]))
+        elif action_name == "get_next_weeks_events":
+            return create_data_response(DatabaseExtractor.get_next_weeks_events(username=parameter[0]))
+        elif action_name == "get_next_weeks_assignments":
+            return create_data_response(DatabaseExtractor.get_next_weeks_assignments(username=parameter[0]))
+        elif action_name == "get_this_weeks_assignments":
+            return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
+        elif action_name == "get_this_weeks_events":
+            return create_data_response(DatabaseExtractor.get_this_weeks_events(username=parameter[0]))
+        elif action_name == "get_passed_assignments":
+            return create_data_response(DatabaseExtractor.get_passed_assignments(course_code=parameter[1], username=parameter[0]))
+        elif action_name == "get_exam_dates":
+            return create_data_response(DatabaseExtractor.get_exam_dates(username=parameter[0]))
+        elif action_name == "get_days_until_first_exam":
+            return create_data_response(DatabaseExtractor.get_days_until_first_exam(username=parameter[0]))
+        elif action_name == "get_course_codes":
+            return create_data_response(DatabaseExtractor.get_course_codes(username=parameter[0]))
+        elif action_name == "get_course_names":
+            return create_data_response(DatabaseExtractor.get_course_names(username=parameter[0]))
+        elif action_name == "get_number_of_courses":
+            return create_data_response(DatabaseExtractor.get_number_of_courses(username=parameter[0]))
+        elif action_name == "get_today_assignments":
+            return create_data_response(DatabaseExtractor.get_today_assignments(username=parameter[0]))
+        elif action_name == "get_tomorrow_assignments":
+            return create_data_response(DatabaseExtractor.get_tomorrow_assignments(username=parameter[0]))
+        elif action_name == "get_today_events":
+            return create_data_response(DatabaseExtractor.get_today_events(username=parameter[0]))
+        elif action_name == "get_tomorrow_events":
+            return create_data_response(DatabaseExtractor.get_tomorrow_events(username=parameter[0]))
+        else:
+            return create_data_response("I didn't understand anything, you probably broke me :(")
 
+    except:
+        return create_data_response("Sorry, i can not answer that.")
 
 def create_data_response(speech: str) -> str:
     """
