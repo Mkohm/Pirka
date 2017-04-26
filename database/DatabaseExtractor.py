@@ -488,17 +488,17 @@ def get_next_event(username):
     :return: String that is presented to the user
     """
 
-    ans = DatabaseConnector.get_values("SELECT U.category, U.date_time, U.room, U.course_code, C.course_name "
-                                       "from user_event AS U, course AS C "
+    ans = DatabaseConnector.get_values("SELECT U.category, U.date_time, U.room, U.course_code, U.course_code "
+                                       "from user_event AS U "
                                        "WHERE (U.username = \"" + username + "\") AND (U.date_time BETWEEN Date('now') AND DATE('now', '+365 days')) "
                                                                               " ORDER BY U.date_time ASC "
                                                                               " LIMIT 1;")
     try:
-        description = ans[0][0]
+        category = ans[0][0]
         date = ans[0][1]
         room = ans[0][2]
         course_name = ans[0][4]
-        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + format_date_datetime(date)
+        return "Your next event is a " + category + " in the course " + course_name + " in " + room + ", " + format_date_datetime(date)
     except:
         return "I could not find any events."
 
@@ -548,7 +548,7 @@ def get_today_assignments(username):
             title = ans[i][0]
             date = ans[i][1]
             course_name = ans[i][2]
-            string_builder += "You have an assignment " + title + " in course " + course_name + ", that should be delivered today at " + format_date_datetime(
+            string_builder += "- " + title + " in course " + course_name + ", that should be delivered today at " + format_date_datetime(
             date) + "\n"
 
         return string_builder
@@ -575,8 +575,8 @@ def get_tomorrow_assignments(username):
             title = ans[i][0]
             date = ans[i][1]
             course_name = ans[i][2]
-            string_builder += "You have an assignment " + title + " in course " + course_name + ", that should be delivered tomorrow at " + \
-               format_date_datetime(date)
+            string_builder += "- " + title + " in course " + course_name + ", that should be delivered tomorrow at " + \
+               format_date_datetime(date) + "\n"
         return string_builder
 
     except:
@@ -603,11 +603,12 @@ def get_today_events(username):
             title = ans[i][0]
             date = ans[i][1]
             course_name = ans[i][2]
-            string_builder += "You have an event " + title + " in course " + course_name + ", today at " + \
+            string_builder += "- " + title + " in course " + course_name + ", today at " + \
                format_date_datetime(date) + "\n"
         return string_builder
     except:
         return "I could not find any events today."
+
 
 def get_tomorrow_events(username):
     """
@@ -616,20 +617,21 @@ def get_tomorrow_events(username):
     :return: A string containing events tomorrow that is presented to the user
     """
 
-    ans = DatabaseConnector.get_values("SELECT A.category, A.date_time, course.course_name "
+    ans = DatabaseConnector.get_values("SELECT A.category, A.date_time, course.course_name, A.room "
                                        " FROM user_event AS A "
                                        "JOIN course ON A.course_code = course.course_code "
                                        " WHERE (A.username = \"" + username + "\") AND (date_time BETWEEN Date('now', '+1 days') AND DATE('now', '+2 days')) "
                                                                               " ORDER BY date_time ASC ")
 
     try:
-        string_builder = "Tomorrows events"
+        string_builder = "Tomorrows events: \n"
         for i in range(0, len(ans)):
             title = ans[i][0]
             date = ans[i][1]
             course_name = ans[i][2]
-            string_builder += "You have an event " + title + " in course " + course_name + ", " + \
-               format_date_datetime(date) + "\n"
+            room = ans[i][3]
+            string_builder += "- " + title + " in course " + course_name + ", "  + format_date_datetime(date) + " in " + room + "\n"
+        return string_builder
     except:
         return "I could not find any events for tomorrow."
 
