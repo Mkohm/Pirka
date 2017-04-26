@@ -40,8 +40,6 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - What is the exercise status?
 - Have I passed the assignment scheme?
 - How many exercises do i have left?
-- What is the project status?
-- What is the lab status?
 - When is my next due date? 
 - What’s my next event? 
 - Where and when is my next lecture? 
