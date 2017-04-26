@@ -678,10 +678,9 @@ def get_this_weeks_events(username):
 
 
     ans = DatabaseConnector.get_values(
-        "SELECT user_event.course_code, user_event.date_time, course.course_name, user_event.room, user_event.category "
+        "SELECT user_event.course_code, user_event.date_time, user_event.room, user_event.category "
         "from user_event "
-        "JOIN course ON user_event.course_code = course.course_code "
-        "where(user_event.username = \"" + username + "\") AND (date_time BETWEEN Date('now', 'localtime', 'weekday 0', '-7 days') AND date('now', 'localtime', 'weekday 0')) ORDER BY date_time ASC ")
+        "where(user_event.username = \"" + username + "\") AND (date_time BETWEEN Date('now', 'localtime', 'weekday 0', '-7 days') AND date('now', 'localtime', 'weekday 0', '+1 days')) ORDER BY date_time ASC ")
 
     try:
 
