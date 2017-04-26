@@ -10,12 +10,59 @@ A chatbot developed using API.AI and a python web server. Release date of Pirka 
 The first time you want to use Pirka you have to visit: https://www.facebook.com/pirkabot/ and then click to send a message to Pirka.
 
 ### Example usages
-- stoehu
-- staho
-- shoe
+#### Course specific usage
+- Get exam date
+- Get exam date in TDT4100
+- Get assessment form in TDT4100
+- Get contact mail
+- Get the contact name
+- Get contact phone
+- Get contact website
+- Get office
+- Get teaching form
+- Get course name
+- Get credit
+- Can i get the URL?
+- Get prerequisite knowledge
+- Get course content
+- Get course material
+- Get teaching form
+
+#### User specific usage
+- Get exercise status
+- Do i have all the required exercises approved?
+- How many exercises do i have left?
+- Get project status
+- Get lab status
+- What is my next assignment?
+- What is my next event?
+- Can you give me this weeks schedule?
+- Can you give me next weeks schedule?
+
+- Can you give me next weeks assignments?
+- Can you give me next weeks events?
+
+- Can you give me this weeks assignments?
+- Can you give me this weeks events?
+
+- Do i have any assignments today?
+- Do i have any assignments tomorrow?
+- Do i have any events today?
+- Do i have any events tomorrow?
+
+- Get passed assignments
+- Can you give me a list of my exam dates?
+- How many days are there until my first exam?
+- Should i start to read for my exam?
+- Can i get a list of my course codes?
+- Can i get a list of my course names?
+- How many courses do i have?
+
+    
+
 
 ## Non personal features
-
+- [x] Support for context
 - [x] Can ask when an exam in a course is
 - [x] Can login to get personal Itslearning and Blackboard data
 - [x] Can get the name, phonenumber, office, email to the contact person in a course
@@ -37,13 +84,13 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - [x] Can get a list of all your course names
 - [x] Can get the number of courses your are participating in
 
-## Future 
+## Planned Future features 
 - [ ] Get links to the assignments
-- [ ] Push notifications for 
+- [ ] Push notifications for assignments not delivered
 
 
 
-## Setup for contributing to Pirka
+# Want to contribute? **Setup for contributing to Pirka**
 
 ### Requirements
 - Python 3.6 (or some other Python 3 version)
