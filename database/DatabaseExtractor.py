@@ -471,16 +471,6 @@ def get_days_until_first_exam(username):
 
     return "There is " + str(days_to_exam.days) + " days to your first exam in " + closestDate[0][1]
 
-
-
-
-
-
-
-
-
-
-
 def get_next_event(username):
     """
     Returns the next event that a user has 
@@ -501,7 +491,6 @@ def get_next_event(username):
         return "Your next event is a " + category + " in the course " + course_name + " in " + room + ", " + format_date_datetime(date)
     except:
         return "I could not find any events."
-
 
 def get_next_assignment(username):
     """
@@ -525,7 +514,6 @@ def get_next_assignment(username):
             date) + ", in the course " + course_name + "."
     except:
         return "I could not find any assignments."
-
 
 def get_today_assignments(username):
     """
@@ -555,7 +543,6 @@ def get_today_assignments(username):
     except:
         return "I could not find any assignments that should be delivered today."
 
-
 def get_tomorrow_assignments(username):
     """
     Returns assignments that has to be delivered tomorrow
@@ -582,8 +569,6 @@ def get_tomorrow_assignments(username):
     except:
         return "I could not find any assignments that should be delivered tomorrow."
 
-
-
 def get_today_events(username):
     """
     Returns events that is happening today
@@ -609,7 +594,6 @@ def get_today_events(username):
     except:
         return "I could not find any events today."
 
-
 def get_tomorrow_events(username):
     """
     Returns events that is happening tomorrow
@@ -634,8 +618,6 @@ def get_tomorrow_events(username):
         return string_builder
     except:
         return "I could not find any events for tomorrow."
-
-
 
 def get_this_weeks_assignments(username):
     """
@@ -666,8 +648,6 @@ def get_this_weeks_assignments(username):
         return string_builder
     except:
         return "You dont have any assignments this week."
-
-
 
 def get_this_weeks_events(username):
     """
