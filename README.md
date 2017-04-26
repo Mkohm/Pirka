@@ -7,7 +7,7 @@ A chatbot developed using API.AI and a python web server. Release date of Pirka 
 ![Pirka](https://scontent-arn2-1.xx.fbcdn.net/v/t31.0-8/18077390_722541831261768_7727061630711910667_o.jpg?oh=09daf4894e8e18e1036c598a1d92e92d&oe=59859C1A "Pirka")
 
 ## Usage
-The first time you want to use Pirka you have to visit: https://www.facebook.com/pirkabot/ and then click to send a message to Pirka.
+The first time you want to use Pirka you have to visit: https://www.facebook.com/pirkabot/ and then click to send a message to Pirka. You will then have to login with your Itslearning/Blackboard login details to get all the functionality. When you have entered your details Pirka will scrape data from Itslearing & Blackboard, this will take some time (around -5 minutes), please be patient.
 
 ### Example usages
 #### Course specific usage
@@ -38,18 +38,14 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - What is my next event?
 - Can you give me this weeks schedule?
 - Can you give me next weeks schedule?
-
 - Can you give me next weeks assignments?
 - Can you give me next weeks events?
-
 - Can you give me this weeks assignments?
 - Can you give me this weeks events?
-
 - Do i have any assignments today?
 - Do i have any assignments tomorrow?
 - Do i have any events today?
 - Do i have any events tomorrow?
-
 - Get passed assignments
 - Can you give me a list of my exam dates?
 - How many days are there until my first exam?
