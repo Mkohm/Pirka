@@ -16,58 +16,57 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - User: "Name of the contact person?"
 - Pirka: "The name of the contact person in **TDT4100** is Hallvard Trætteberg" (Pirka remembers the course code you talked about in the last messages)
 
+
+
+
 #### Course specific usage
 - What is the exam date?
-- Get exam date in TDT4100
-- Get assessment form in TDT4100
-- Get contact mail
-- Get the contact name
-- Get contact phone
-- Get contact website
-- Get office
-- Get teaching form
-- Get course name
-- Get credit
-- Can i get the URL?
-- Get prerequisite knowledge
+- What is the exam date in TDT4100
+- How am I assessed? 
+- What is the contact mail?
+- What is the name of the contact person?
+- What is the phone number to the contact person?
+- What is the contact website?
+- What office does the contact person have?
+- What is the teaching form?
+- What is the course name?
+- How many credits is there for TDT4100?
+- Send me the link to the course home page. 
+- What’s the pre required knowledge?
 - Get course content
-- Get course material
+- Which book do I need?
 - Get teaching form
 
 #### User specific usage
-- Get exercise status
-- Do i have all the required exercises approved?
+- What is the exercise status?
+- Have I passed the assignment scheme?
 - How many exercises do i have left?
-- Get project status
-- Get lab status
-- What is my next assignment?
-- What is my next event?
+- What is the project status?
+- What is the lab status?
+- When is my next due date? 
+- What’s my next event? 
+- Where and when is my next lecture? 
 - Can you give me this weeks schedule?
-- Can you give me next weeks schedule?
 - Can you give me next weeks assignments?
 - Can you give me next weeks events?
 - Can you give me this weeks assignments?
 - Can you give me this weeks events?
-- Do i have any assignments today?
+- Do I have any assignments due today?
 - Do i have any assignments tomorrow?
 - Do i have any events today?
 - Do i have any events tomorrow?
-- Get passed assignments
-- Can you give me a list of my exam dates?
+- Can you give me all passed assignments?
+- What are my exam dates?
 - How many days are there until my first exam?
 - Should i start to read for my exam?
 - Can i get a list of my course codes?
-- Can i get a list of my course names?
+- Which courses am I participating in? 
 - How many courses do i have?
-
-
 
 ## Planned Future features 
 - [ ] Get links to the assignments
 - [ ] Push notifications for assignments that soon needs to be delivered
 - [ ] Push notifications for upcoming events
-
-
 
 # Want to contribute? **Setup for contributing to Pirka**
 
