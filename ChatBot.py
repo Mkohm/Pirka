@@ -1,124 +1,295 @@
 import json
+import netifaces as network_interfaces
 import os
+from threading import Thread
 from flask import Flask
 from flask import make_response
 from flask import render_template
 from flask import request
-
-from selenium import webdriver
-import platform
-
 from database import DatabaseConnector
-from database import DatabaseInserter
-from database.Course import Course
-from threading import Thread
 from database import DatabaseExtractor
+from database import DatabaseInserter
 from scraper import LoginHandler
-from scraper.tempScraper import tempScraper
-import time
-
-import netifaces as ni
-ni.ifaddresses('en0')
-ip = ni.ifaddresses('en0')[2][0]['addr']
-print("my ip address is: ", ip)
+from scraper.ItsLearningScraper import ItsLearningScraper
+from scraper.BlackboardScraper import BlackboardScraper
 
 # Flask app should start in global layout
 app = Flask(__name__)
 
+network_interfaces.ifaddresses('en0')
+ip = network_interfaces.ifaddresses('en0')[2][0]['addr']
+
+# Holds the current state of the login
 validLogin = False
 
+# Bind to PORT if defined, otherwise default to 5000.
+port = int(os.environ.get('PORT', 8080))
 
-class ChatBot:
-    # Starts the webserver and is ready to listen to incoming actions
-    def __init__(self):
 
-        # Bind to PORT if defined, otherwise default to 5000.
-        port = int(os.environ.get('PORT', 8080))
-        print(port, "er porten")
-        app.run(debug=True, host='', port=port, threaded=True)
+def process_actions(parameter: str, action_name: str) -> str:
+    """
+    This method creates a response to API.AI according to which parameters that was passed by API.AI
+    :param parameter: parameter[0] is username, parameter[1] is course_code, parameter[2] is facebook-id
+    :param action_name: the action being called in API.AI
+    :return: Json - data containing the string that should be returned to the user
+    """
 
-    # Receives action-name, gets the data and returns a string ready to send back to API.AI
-    @staticmethod
-    def process_actions(parameter: str, action_name: str) -> str:
+    try:
         if action_name == "login":
-            print(parameter)
-            return ChatBot.create_followup_event_data(parameter)
+            return create_followup_event_data(parameter[2])
         elif action_name == "get_exam_date":
-            return ChatBot.create_data_response(DatabaseExtractor.get_exam_date(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_exam_date(parameter[1]))
         elif action_name == "get_assessment_form":
-            return ChatBot.create_data_response(DatabaseExtractor.get_assessment_form(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_assessment_form(parameter[1]))
         elif action_name == "get_contact_mail":
-            return ChatBot.create_data_response(DatabaseExtractor.get_contact_mail(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_contact_mail(parameter[1]))
         elif action_name == "get_contact_name":
-            return ChatBot.create_data_response(DatabaseExtractor.get_contact_name(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_contact_name(parameter[1]))
         elif action_name == "get_contact_phone":
-            return ChatBot.create_data_response(DatabaseExtractor.get_contact_phone(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_contact_phone(parameter[1]))
         elif action_name == "get_contact_website":
-            return ChatBot.create_data_response(DatabaseExtractor.get_contact_website(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_contact_website(parameter[1]))
         elif action_name == "get_office":
-            return ChatBot.create_data_response(DatabaseExtractor.get_contact_office(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_contact_office(parameter[1]))
         elif action_name == "get_teaching_form":
-            return ChatBot.create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
         elif action_name == "get_course_name":
-            return ChatBot.create_data_response(DatabaseExtractor.get_course_name(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_course_name(parameter[1]))
         elif action_name == "get_credit":
-            return ChatBot.create_data_response(DatabaseExtractor.get_credit(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_credit(parameter[1]))
         elif action_name == "get_url":
-            return ChatBot.create_data_response(DatabaseExtractor.get_url(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_url(parameter[1]))
         elif action_name == "get_prereq_knowledge":
-            return ChatBot.create_data_response(DatabaseExtractor.get_prereq_knowledge(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_prereq_knowledge(parameter[1]))
         elif action_name == "get_course_content":
-            return ChatBot.create_data_response(DatabaseExtractor.get_course_content(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_course_content(parameter[1]))
         elif action_name == "get_course_material":
-            return ChatBot.create_data_response(DatabaseExtractor.get_course_material(parameter[1]))
+            return create_data_response(DatabaseExtractor.get_course_material(parameter[1]))
         elif action_name == "get_teaching_form":
-            return ChatBot.create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
-        # personal:
+            return create_data_response(DatabaseExtractor.get_teaching_form(parameter[1]))
         elif action_name == "get_exercise_status":
-            return ChatBot.create_data_response(DatabaseExtractor.get_exercise_status(parameter[1], parameter[0]))
+            return create_data_response(DatabaseExtractor.get_exercise_status(parameter[1], parameter[0]))
+        elif action_name=="get_exercise_scheme_approval":
+            return create_data_response(DatabaseExtractor.get_exercise_scheme_approval(parameter[1], parameter[0]))
+        elif action_name=="get_exercises_left":
+            return create_data_response(DatabaseExtractor.get_exercises_left(parameter[1], parameter[0]))
         elif action_name == "get_project_status":
-            return ChatBot.create_data_response(DatabaseExtractor.get_project_status(parameter[1], parameter[0]))
+            return create_data_response(DatabaseExtractor.get_project_status(parameter[1], parameter[0]))
         elif action_name == "get_lab_status":
-            return ChatBot.create_data_response(DatabaseExtractor.get_lab_status(parameter[1], parameter[0]))
+            return create_data_response(DatabaseExtractor.get_lab_status(parameter[1], parameter[0]))
         elif action_name == "get_next_event":
-            return ChatBot.create_data_response(DatabaseExtractor.get_next_event(parameter[0]))
+            return create_data_response(DatabaseExtractor.get_next_event(username=parameter[0]))
+        elif action_name == "get_next_assignment":
+            return create_data_response(DatabaseExtractor.get_next_assignment(username=parameter[0]))
+        elif action_name == "get_this_weeks_schedule":
+            return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
+        elif action_name == "get_next_weeks_schedule":
+            return create_data_response(DatabaseExtractor.get_next_week_schedule(username=parameter[0]))
+        elif action_name == "get_next_weeks_events":
+            return create_data_response(DatabaseExtractor.get_next_weeks_events(username=parameter[0]))
+        elif action_name == "get_next_weeks_assignments":
+            return create_data_response(DatabaseExtractor.get_next_weeks_assignments(username=parameter[0]))
+        elif action_name == "get_this_weeks_assignments":
+            return create_data_response(DatabaseExtractor.get_this_weeks_assignments(username=parameter[0]))
+        elif action_name == "get_this_weeks_events":
+            return create_data_response(DatabaseExtractor.get_this_weeks_events(username=parameter[0]))
+        elif action_name == "get_passed_assignments":
+            return create_data_response(DatabaseExtractor.get_passed_assignments(course_code=parameter[1], username=parameter[0]))
+        elif action_name == "get_exam_dates":
+            return create_data_response(DatabaseExtractor.get_exam_dates(username=parameter[0]))
+        elif action_name == "get_days_until_first_exam":
+            return create_data_response(DatabaseExtractor.get_days_until_first_exam(username=parameter[0]))
+        elif action_name == "get_course_codes":
+            return create_data_response(DatabaseExtractor.get_course_codes(username=parameter[0]))
+        elif action_name == "get_course_names":
+            return create_data_response(DatabaseExtractor.get_course_names(username=parameter[0]))
+        elif action_name == "get_number_of_courses":
+            return create_data_response(DatabaseExtractor.get_number_of_courses(username=parameter[0]))
+        elif action_name == "get_today_assignments":
+            return create_data_response(DatabaseExtractor.get_today_assignments(username=parameter[0]))
+        elif action_name == "get_tomorrow_assignments":
+            return create_data_response(DatabaseExtractor.get_tomorrow_assignments(username=parameter[0]))
+        elif action_name == "get_today_events":
+            return create_data_response(DatabaseExtractor.get_today_events(username=parameter[0]))
+        elif action_name == "get_tomorrow_events":
+            return create_data_response(DatabaseExtractor.get_tomorrow_events(username=parameter[0]))
         else:
-            return "I didn't understand anything, you probably broke me :("
+            return create_data_response("I didn't understand anything, you probably broke me :(")
 
-    @staticmethod
-    def create_data_response(speech: str) -> str:
-        data = {
-            "speech": speech,
-            "displayText": speech,
-            # "data": data,
-            # "contextOut": [],
-            "source": "Pirka-chatbot-webserver"
-        }
-        return data
+    except:
+        return create_data_response("Sorry, i can not answer that.")
 
-    @staticmethod
-    def create_followup_event_data(parameter_value: str):
-        data = {
-            "followupEvent": {
-                "name": "custom_event",
-                "data": {
-                    "user_id": parameter_value,
-                    "ip_address": ip
-                }
+def create_data_response(speech: str) -> str:
+    """
+    Creates Json that contains the data that should be sent to API.AI
+    :param speech: a string that should be put inside the json (this is the string that should be sent back to the user)
+    :return: json data
+    """
+
+    data = {
+        "speech": speech,
+        "displayText": speech,
+        "source": "pirka-chatbot-webserver"
+    }
+    return data
+
+
+def create_followup_event_data(facebook_id: str):
+    """
+    This function is used when logging in with itslearning details, 
+    to provide a unique login for each user 
+    (link that contains the ip and port, along with the unique facebook-id) 
+    :param facebook_id: facebook-id
+    :return: json data
+    """
+    data = {
+        "followupEvent": {
+            "name": "custom_event",
+            "data": {
+                "user_id": facebook_id,
+                "ip_address": ip + ":" + str(port)
             }
         }
+    }
 
-        print(json.dumps(data, indent=4))
-
-        return data
+    return data
 
 
-@app.route('/favicon.ico', methods=['GET'])
+def add_ime_api_data():
+    """
+    This function adds all the 4000+ courses and corresponding data to the database.
+    :return: Nothing
+    """
+    file = open("/Users/mariuskohmann/PycharmProjects/pirka/imeapi/course_codes.txt")
+    for line in file:
+        course = line.split(",")
+
+        for element in course:
+            if "\"code" in element:
+                course_code = element.split(":")[1].replace("\"", "")
+                if "\\" in course_code or "{" in course_code:
+                    continue
+                print(course_code)
+                DatabaseInserter.add_subject_data(course_code)
+
+
+def thread_function(username: str, password: str):
+    """
+    This function runs when the user has logged in. It adds the data that is relevant for this user in its own thread.
+    :param username: Users username
+    :param password: Users password
+    :return: Nothing
+    """
+
+
+    # Adding a dummy-course so it is possible to test pirka with data
+    DatabaseInserter.add_user_has_course(username=username, course_code="DUMMYCOURSE")
+    DatabaseInserter.add_user_has_course(username=username, course_code="DUMMY2222")
+    DatabaseInserter.add_user_has_course(username=username, course_code="DUMMY3333")
+
+
+
+    # Scrapes for additional data that is user specific
+    itslearning_scraper = ItsLearningScraper(username, password)
+    blackboard_scraper = BlackboardScraper(username, password)
+
+    # adds user-course relation to database
+    itslearning_scraper.get_course_list()
+    blackboard_scraper.get_course_list()
+
+    # adds user's associated assignment data
+    itslearning_scraper.get_all_assignments()
+    blackboard_scraper.get_all_assignments()
+
+    blackboard_scraper.close_driver()
+    itslearning_scraper.close_driver()
+
+    # add ical links
+    #itslearning_scraper.get_calendar_feed()
+
+
+def valid_login(username: str, password: str):
+    """
+    Uses scraper to test if it was entered correct username and password. Uses a global variable to keep track of valid login or not.
+    :param username: username
+    :param password: password
+    :return: Nothing
+    """
+
+    try:
+        LoginHandler.login(username, password)
+        global validLogin
+        validLogin = True
+    except:
+        validLogin = False
+
+
+
+"""
+All web endpoint functions is listed below
+"""
+
+@app.route('/', methods=['POST'])
+def webhook():
+    """
+    Receives json data from API.AI through NGROK
+    :return: The response to API.AI containing the string that should be returned to the user.
+    """
+
+    json_request = request.get_json(silent=True, force=True)
+
+
+    # Extract the data from the json-request (first get the result section of the json)
+    result = json_request.get("result")
+
+    # Then get the parameters and action_name from the result
+    parameters = result.get("parameters")
+
+    # Get the action name
+    action_name = result.get("action")
+
+    facebook_id = json_request.get("originalRequest").get("data").get("sender").get("id")
+
+    # Retreives the username by looking up with the unique facebook id
+    username = None
+    try:
+        username = DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id + "\"")[0][0]
+    except:
+        username = None
+
+
+    # Retrieve the course code
+    course_code = parameters.get("course_code")
+    parameter = [username, course_code, facebook_id]
+
+    # Creates the string that should be sent back to the user
+    print(action_name, facebook_id, course_code, parameter[0], parameter[1])
+    speech = process_actions(parameter, action_name)
+
+    # Create a response to API.AI and return it
+    response = json.dumps(speech, indent=4)
+    created_response = make_response(response)
+    created_response.headers['Content-Type'] = 'application/json'
+
+    return created_response
+
+
 def scrape_data_from_last_user():
+    """
+    Scrape data after the user has successfully logged in.
+    :return: The template that should be rendered when the user has sucessfully logged in.
+    """
 
+    # todo: This should be fixed, this is only getting the last user, so if a user is logging in twice, the last user will be scraped
     users = DatabaseExtractor.get_users()
-    lastUsername = users[len(users) - 1][0]
-    lastPassword = users[len(users) - 1][1]
+
+
+    try:
+        lastUsername = users[0][0]
+        lastPassword = users[0][1]
+    except:
+        print("there was no users")
+
 
     thread = Thread(target=thread_function(lastUsername, lastPassword))
     thread.start()
@@ -133,7 +304,6 @@ def login(current_sender_id):
     We load a template so the user can login and send us the email and password.
     :return:
     """
-    print("login")
 
     error = None
     if request.method == 'POST':
@@ -141,116 +311,34 @@ def login(current_sender_id):
         username = request.form["username"]
         password = request.form["password"]
 
-        print(username, password)
-
         thread = Thread(target=valid_login(username, password))
         thread.start()
         thread.join()
 
         global validLogin
 
+
         if validLogin:
+            # If valid login, we add the user to the database and we render the success template
             DatabaseInserter.add_user(username, password, current_sender_id)
             validLogin = False
+            scrape_data_from_last_user()
             return render_template("login_success.html")
         else:
+
+            # If the login was not valid, we render the login screen again
             return render_template('login.html')
 
     return render_template('login.html')
 
-    # the code below is executed if the request method
-    # was GET or the credentials were invalid
 
+"""
+Start app
+"""
+if __name__ == '__main__':
 
-def thread_function(username: str, password: str):
-    """
-    This function runs when the user has logged in. It adds the data that is relevant for this user in its own thread.
+    # Add all the IME-API data to the database
+    #add_ime_api_data()
 
-    It first add all the non-user specific data to the database
-    :param username:
-    :param password:
-    :return:
-    """
-
-    # To be removed?
-    # Get a list of course codes that the user has
-    # course_list = LoginHandler.get_course_list(username, password)
-
-    print("starter scraping")
-
-    # Scrapes for additional data that is user specific
-    # scraper = ItsLearningScraper(username, password)
-    myScraper = tempScraper(username, password)
-
-    # returns a list of courses that the user has, and adds user-course relation to database
-    course_list = myScraper.get_course_list()
-
-    # adds user's associated assignment data
-    myScraper.get_all_assignments()
-
-    # Adds the users courses (and course-data) to the database
-    # for course in course_list:
-    #    DatabaseInserter.add_subject_data(course.split()[0])
-
-
-def valid_login(username: str, password: str):
-    print("starter valid login")
-
-    try:
-        LoginHandler.login(username, password)
-        print("setter til true")
-        global validLogin
-        validLogin = True
-    except:
-        print("setter til false")
-        validLogin = False
-
-
-@app.route('/', methods=['POST'])
-def webhook():
-    json_request = request.get_json(silent=True, force=True)
-
-    print(json.dumps(json_request, indent=4))
-
-    # Extract the data from the json-request (first get the result section of the json)
-    result = json_request.get("result")
-
-    # Then get the parameters and action_name of the result
-    parameters = result.get("parameters")
-
-    action_name = result.get("action")
-
-    # Handles different parameters to the process-actions method
-    if action_name == "login":
-
-        # Depending on if the event "WELCOME_FACEBOOK" or if the user typed "login, get started ect" the
-        # resulting json request is different, hence we get the parameter in different ways
-        if len(result.get("contexts")) > 1:
-            parameter = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
-        else:
-            parameter = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
-    else:
-        facebook_id = ""
-        if len(result.get("contexts")) > 1:
-            facebook_id = result.get("contexts")[1].get("parameters").get("facebook_sender_id")
-        elif len(result.get("contexts")) == 0:
-            facebook_id = json_request.get("originalRequest").get("data").get("sender").get("id")
-        else:
-            facebook_id = result.get("contexts")[0].get("parameters").get("facebook_sender_id")
-
-        print(facebook_id, " er face id")
-        username = \
-        DatabaseConnector.get_values("Select username from user where facebook_id = \"" + facebook_id + "\"")[0][0]
-        parameter = [username, parameters.get("course_code")]
-
-    speech = ChatBot.process_actions(parameter, action_name)
-
-    response = json.dumps(speech, indent=4)
-    created_response = make_response(response)
-    created_response.headers['Content-Type'] = 'application/json'
-
-    return created_response
-
-
-# Start the application
-bot = ChatBot()
+    # Start our webserver
+    app.run(debug=True, host='', port=port, threaded=True)  # Receives action-name, gets the data and returns a string ready to send back to API.AI

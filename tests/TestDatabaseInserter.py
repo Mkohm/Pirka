@@ -11,17 +11,17 @@ class TestDatabaseInserter(TestCase):
         DatabaseInserter.add_subject_data("TTK4105")
         ans = DatabaseConnector.get_values("Select exam_date from course where course.course_code = "
                                            "\"TTK4105\"")
-        self.assertEqual("June 10, 2017", ans[0][0])
+        self.assertEqual("2017-06-10", ans[0][0])
 
         DatabaseInserter.add_subject_data("TDT4100")
         ans = DatabaseConnector.get_values("Select exam_date from course where course.course_code = "
                                            "\"TDT4100\"")
-        self.assertEqual("May 16, 2017", ans[0][0])
+        self.assertEqual("2017-05-16", ans[0][0])
 
         DatabaseInserter.add_subject_data("TDT4145")
         ans = DatabaseConnector.get_values("Select exam_date from course where course.course_code = "
                                            "\"TDT4145\"")
-        self.assertEqual("June 07, 2017", ans[0][0])
+        self.assertEqual("2017-06-07", ans[0][0])
 
     def test_insert_exam_date_not_exist(self):
         DatabaseInserter.add_subject_data("TDT4140")
@@ -71,7 +71,7 @@ class TestDatabaseInserter(TestCase):
         DatabaseInserter.add_subject_data("TMR4105")
         ans = DatabaseConnector.get_values("Select contact_name from course where course.course_code = "
                                            "\"TMR4105\"")
-        self.assertEqual("Håvard Holm", ans[0][0])
+        self.assertEqual("Jørgen Amdahl", ans[0][0])
 
         DatabaseInserter.add_subject_data("TTK4105")
         ans = DatabaseConnector.get_values("Select contact_name from course where course.course_code = "
@@ -192,10 +192,12 @@ class TestDatabaseInserter(TestCase):
         ans = DatabaseConnector.get_values("Select * from assignment where assignment.course_code = \"TDT4100\"" + 
                                            "and title = \"Assignment 3\"")
         self.assertEqual("TDT4100", ans[0][0])
-        self.assertEqual("Assignment 3", ans[0][3])
+        self.assertEqual("Assignment 3", ans[0][6])
         self.assertEqual(3, ans[0][1])
-        self.assertEqual(1, ans[0][8])
-        self.assertEqual("The first exercise in this course", ans[0][4])
+        self.assertEqual(1, ans[0][5])
+        self.assertEqual("The first exercise in this course", ans[0][8])
+
+
 
 
 
