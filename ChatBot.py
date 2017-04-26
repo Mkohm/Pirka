@@ -192,11 +192,17 @@ def thread_function(username: str, password: str):
     blackboard_scraper.get_course_list()
 
     # adds user's associated assignment data
+
+    # the difference between scraping both user completed and
+    # user incompleted assignment in contrast to only scrape user completed assignment
+    # is negligible and therefore we scrape all content
     itslearning_scraper.get_all_assignments()
     blackboard_scraper.get_all_assignments()
 
     blackboard_scraper.close_driver()
     itslearning_scraper.close_driver()
+
+
 
     # add ical links
     #itslearning_scraper.get_calendar_feed()
