@@ -9,15 +9,15 @@ A chatbot developed using API.AI and a python web server. Release date of Pirka 
 ## Usage
 The first time you want to use Pirka you have to visit: https://www.facebook.com/pirkabot/ and then click to send a message to Pirka. You will then have to login with your Itslearning/Blackboard login details to get all the functionality. When you have entered your details Pirka will scrape data from Itslearing & Blackboard, this will take some time (around -5 minutes), please be patient.
 
+
 ### Example usages
+#### Type "Help" to get examples of what you can do
+
 #### Using context
 - User: "Can i get the exam date in TDT4100?"
 - Pirka: "The exam date in TDT4100 is..."
 - User: "Name of the contact person?"
 - Pirka: "The name of the contact person in **TDT4100** is Hallvard Trætteberg" (Pirka remembers the course code you talked about in the last messages)
-
-
-
 
 #### Course specific usage
 - What is the exam date?
