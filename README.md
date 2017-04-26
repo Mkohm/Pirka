@@ -26,7 +26,6 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - What is the contact mail?
 - What is the name of the contact person?
 - What is the phone number to the contact person?
-- What is the contact website?
 - What office does the contact person have?
 - What is the teaching form?
 - What is the course name?
