@@ -10,6 +10,12 @@ A chatbot developed using API.AI and a python web server. Release date of Pirka 
 The first time you want to use Pirka you have to visit: https://www.facebook.com/pirkabot/ and then click to send a message to Pirka. You will then have to login with your Itslearning/Blackboard login details to get all the functionality. When you have entered your details Pirka will scrape data from Itslearing & Blackboard, this will take some time (around -5 minutes), please be patient.
 
 ### Example usages
+#### Using context
+- User: "Can i get the exam date in TDT4100?"
+- Pirka: "The exam date in TDT4100 is..."
+- User: "Name of the contact person?"
+- Pirka: "The name of the contact person in **TDT4100** is Hallvard Trætteberg" (Pirka remembers the course code you talked about in the last messages)
+
 #### Course specific usage
 - Get exam date
 - Get exam date in TDT4100
@@ -54,35 +60,12 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - Can i get a list of my course names?
 - How many courses do i have?
 
-    
 
-
-## Non personal features
-- [x] Support for context
-- [x] Can ask when an exam in a course is
-- [x] Can login to get personal Itslearning and Blackboard data
-- [x] Can get the name, phonenumber, office, email to the contact person in a course
-- [x] Can get a courses website, teaching form, credit, url, prerequisite knowledge, course content, course material, assessment form
-
-## Personal features
-- [x] Can get exercise status
-- [x] Can get next event
-- [x] Can get next assignment
-- [x] Can get this weeks schedule (assignments + events)
-- [x] Can get next weeks schedule (assignments + events)
-- [x] Can get this weeks events
-- [x] Can get this weeks assignments
-- [x] Can get next weeks events
-- [x] Can get next weeks assignments
-- [x] Can get number of days until your first exam
-- [x] Can get a list of all your exam dates
-- [x] Can get a list of all your course codes
-- [x] Can get a list of all your course names
-- [x] Can get the number of courses your are participating in
 
 ## Planned Future features 
 - [ ] Get links to the assignments
-- [ ] Push notifications for assignments not delivered
+- [ ] Push notifications for assignments that soon needs to be delivered
+- [ ] Push notifications for upcoming events
 
 
 
