@@ -4,7 +4,7 @@ THIS SOFTWARE STORES YOUR USERNAME AND PASSWORD IN CLEAR-TEXT - USE AT YOUR OWN 
 # Pirka - the student helper
 A chatbot developed using API.AI and a python web server. Release date of Pirka is 27.april 2017
 
-![Pirka running](https://github.com/Mkohm/Pirka/blob/dev/demo_pictures/pirka.png "Pirka running")
+![Pirka](https://scontent-arn2-1.xx.fbcdn.net/v/t31.0-8/18077390_722541831261768_7727061630711910667_o.jpg?oh=09daf4894e8e18e1036c598a1d92e92d&oe=59859C1A "Pirka")
 
 ## Usage
 The first time you want to use Pirka you have to visit: https://www.facebook.com/pirkabot/ and then click to send a message to Pirka.
