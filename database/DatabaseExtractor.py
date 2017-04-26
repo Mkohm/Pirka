@@ -429,54 +429,6 @@ def get_lab_status(course_code, username):
     except:
         return "Sorry, i could not get the lab status."
 
-
-def get_next_event(username):
-    """
-    Returns the next event that a user has 
-    :param username: users username
-    :return: String that is presented to the user
-    """
-
-    ans = DatabaseConnector.get_values("SELECT U.category, U.date_time, U.room, U.course_code, C.course_name "
-                                       "from user_event AS U, course AS C "
-                                       "WHERE (U.username = \"" + username + "\") AND (U.date_time BETWEEN Date('now') AND DATE('now', '+365 days')) "
-                                                                              " ORDER BY U.date_time ASC "
-                                                                              " LIMIT 1;")
-    print(ans)
-    try:
-        description = ans[0][0]
-        date = ans[0][1]
-        room = ans[0][2]
-        course_name = ans[0][4]
-        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + format_date_datetime(date)
-    except:
-        return "I could not find any events."
-
-
-def get_next_assignment(username):
-    """
-    Returns the next assignment that a user has 
-    :param username: users username
-    :return: String that is presented to the user
-    """
-
-    ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, course.course_name "
-                                       " FROM user_assignment AS A "
-                                       "JOIN course ON A.course_code = course.course_code "
-                                       " WHERE (A.username = \"" + username + "\") AND (deadline BETWEEN Date('now') AND DATE('now', '+365 days')) "
-                                                                              " ORDER BY deadline ASC "
-                                                                              " LIMIT 1;")
-
-    try:
-        title = ans[0][0]
-        date = ans[0][1]
-        course_name = ans[0][2]
-        return "Your next assignment delivery is " + title + " which is due " + format_date_datetime(
-            date) + ", in the course " + course_name + "."
-    except:
-        return "I could not find any assignments."
-
-
 def get_days_until_first_exam(username):
     """
     Returns the number of days until a users next exam
@@ -520,6 +472,61 @@ def get_days_until_first_exam(username):
     return "There is " + str(days_to_exam.days) + " days to your first exam in " + closestDate[0][1]
 
 
+
+
+
+
+
+
+
+
+
+def get_next_event(username):
+    """
+    Returns the next event that a user has 
+    :param username: users username
+    :return: String that is presented to the user
+    """
+
+    ans = DatabaseConnector.get_values("SELECT U.category, U.date_time, U.room, U.course_code, C.course_name "
+                                       "from user_event AS U, course AS C "
+                                       "WHERE (U.username = \"" + username + "\") AND (U.date_time BETWEEN Date('now') AND DATE('now', '+365 days')) "
+                                                                              " ORDER BY U.date_time ASC "
+                                                                              " LIMIT 1;")
+    try:
+        description = ans[0][0]
+        date = ans[0][1]
+        room = ans[0][2]
+        course_name = ans[0][4]
+        return "Your next event is a " + description + " in the course " + course_name + " in " + room + ", " + format_date_datetime(date)
+    except:
+        return "I could not find any events."
+
+
+def get_next_assignment(username):
+    """
+    Returns the next assignment that a user has 
+    :param username: users username
+    :return: String that is presented to the user
+    """
+
+    ans = DatabaseConnector.get_values("SELECT A.title, A.deadline, course.course_name "
+                                       " FROM user_assignment AS A "
+                                       "JOIN course ON A.course_code = course.course_code "
+                                       " WHERE (A.username = \"" + username + "\") AND (deadline BETWEEN Date('now') AND DATE('now', '+365 days')) "
+                                                                              " ORDER BY deadline ASC "
+                                                                              " LIMIT 1;")
+
+    try:
+        title = ans[0][0]
+        date = ans[0][1]
+        course_name = ans[0][2]
+        return "Your next assignment delivery is " + title + " which is due " + format_date_datetime(
+            date) + ", in the course " + course_name + "."
+    except:
+        return "I could not find any assignments."
+
+
 def get_today_assignments(username):
     """
     Returns assignments that have to be delivered today
@@ -533,13 +540,18 @@ def get_today_assignments(username):
                                        "JOIN course ON A.course_code = course.course_code "
                                        " WHERE (A.username = \"" + username + "\") AND (deadline BETWEEN Date('now') AND DATE('now', '+1 days')) "
                                                                               " ORDER BY deadline ASC ")
-
+    if len(ans) == 0:
+        return "I could not find any assignments that should be delivered today."
     try:
-        title = ans[0][0]
-        date = ans[0][1]
-        course_name = ans[0][2]
-        return "You have an assignment " + title + " in course " + course_name + ", that should be delivered today at " + format_date_datetime(
-            date)
+        string_builder = "Todays assignments: \n"
+        for i in range(0, len(ans)):
+            title = ans[i][0]
+            date = ans[i][1]
+            course_name = ans[i][2]
+            string_builder += "You have an assignment " + title + " in course " + course_name + ", that should be delivered today at " + format_date_datetime(
+            date) + "\n"
+
+        return string_builder
     except:
         return "I could not find any assignments that should be delivered today."
 
@@ -558,13 +570,18 @@ def get_tomorrow_assignments(username):
                                                                               " ORDER BY deadline ASC ")
 
     try:
-        title = ans[0][0]
-        date = ans[0][1]
-        course_name = ans[0][2]
-        return "You have an assignment " + title + " in course " + course_name + ", that should be delivered tomorrow at " + \
+        string_builder = "Tomorrow assignments: \n"
+        for i in range(0, len(ans)):
+            title = ans[i][0]
+            date = ans[i][1]
+            course_name = ans[i][2]
+            string_builder += "You have an assignment " + title + " in course " + course_name + ", that should be delivered tomorrow at " + \
                format_date_datetime(date)
+        return string_builder
+
     except:
         return "I could not find any assignments that should be delivered tomorrow."
+
 
 
 def get_today_events(username):
@@ -581,14 +598,16 @@ def get_today_events(username):
                                                                               " ORDER BY date_time ASC ")
 
     try:
-        title = ans[0][0]
-        date = ans[0][1]
-        course_name = ans[0][2]
-        return "You have an event " + title + " in course " + course_name + ", today at " + \
-               format_date_datetime(date)
+        string_builder = "Todays events: \n"
+        for i in range(0, len(ans)):
+            title = ans[i][0]
+            date = ans[i][1]
+            course_name = ans[i][2]
+            string_builder += "You have an event " + title + " in course " + course_name + ", today at " + \
+               format_date_datetime(date) + "\n"
+        return string_builder
     except:
         return "I could not find any events today."
-
 
 def get_tomorrow_events(username):
     """
@@ -604,13 +623,16 @@ def get_tomorrow_events(username):
                                                                               " ORDER BY date_time ASC ")
 
     try:
-        title = ans[0][0]
-        date = ans[0][1]
-        course_name = ans[0][2]
-        return "You have an event " + title + " in course " + course_name + ", " + \
-               format_date_datetime(date)
+        string_builder = "Tomorrows events"
+        for i in range(0, len(ans)):
+            title = ans[i][0]
+            date = ans[i][1]
+            course_name = ans[i][2]
+            string_builder += "You have an event " + title + " in course " + course_name + ", " + \
+               format_date_datetime(date) + "\n"
     except:
         return "I could not find any events for tomorrow."
+
 
 
 def get_this_weeks_assignments(username):
@@ -636,12 +658,13 @@ def get_this_weeks_assignments(username):
             date = ans[i][1]
             course_name = ans[i][2]
 
-            string_builder += title + " which is due " + format_date_datetime(
+            string_builder += "- " + title + " which is due " + format_date_datetime(
                 date) + ", in the course " + course_name + ".\n"
 
         return string_builder
     except:
         return "You dont have any assignments this week."
+
 
 
 def get_this_weeks_events(username):
@@ -670,12 +693,11 @@ def get_this_weeks_events(username):
             room = ans[i][3]
             category = ans[i][4]
 
-            string_builder += category + " in " + room + " in " + course_name + " " + format_date_datetime(date) + "\n"
+            string_builder += "- " + category + " in " + room + " in " + course_name + " " + format_date_datetime(date) + "\n"
 
         return string_builder
     except:
         return "You dont have any events this week."
-
 
 def get_next_weeks_events(username):
     """
@@ -702,12 +724,11 @@ def get_next_weeks_events(username):
             room = ans[i][3]
             category = ans[i][4]
 
-            string_builder += category + " in " + room + " in " + course_name + " " + format_date_datetime(date) + "\n"
+            string_builder += "- " + category + " in " + room + " in " + course_name + " " + format_date_datetime(date) + "\n"
 
         return string_builder
     except:
         return "You dont have any events next week."
-
 
 def get_next_weeks_assignments(username):
     """
@@ -731,13 +752,12 @@ def get_next_weeks_assignments(username):
             date = ans[i][1]
             course_name = ans[i][2]
 
-            string_builder += title + " which is due " + format_date_datetime(
+            string_builder += "- " + title + " which is due " + format_date_datetime(
                 date) + ", in the course " + course_name + ".\n"
 
         return string_builder
     except:
         return "You dont have any assignments next week."
-
 
 def get_next_week_schedule(username):
     """
@@ -747,7 +767,6 @@ def get_next_week_schedule(username):
     """
     return get_next_weeks_assignments(username) + "\n" + get_next_weeks_events(username)
 
-
 def get_this_week_schedule(username):
     """
     This weeks schedule contains both events and assignments for this week
@@ -755,6 +774,14 @@ def get_this_week_schedule(username):
     :return: String containing schedule that is presented to the user
     """
     return get_this_weeks_assignments(username) + "\n" + get_this_weeks_events(username)
+
+
+
+
+
+
+
+
 
 
 def get_ical_itslearning(username):
@@ -804,7 +831,7 @@ def format_date_datetime(datetime: str):
     """
 
     time1 = time.strptime(datetime, '%Y-%m-%d %H:%M:%S')
-    datestring = time.strftime('%A %d %B %H:%M:%S', time1)
+    datestring = time.strftime('%A %d %B %H:%M', time1)
 
     return datestring
 
