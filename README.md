@@ -1,3 +1,6 @@
+- ![#f03c15](https://placehold.it/15/f03c15/000000?text=+) `#f03c15`
+
+
 # Pirka - the student helper
 A chatbot developed using API.AI and a python web server. Release date of Pirka is 27.april 2017
 
