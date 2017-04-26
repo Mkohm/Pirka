@@ -43,7 +43,7 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - When is my next due date? 
 - What’s my next event? 
 - Where and when is my next lecture? 
-- Can you give me this weeks schedule?
+- What is the schedule this week
 - Can you give me next weeks assignments?
 - Can you give me next weeks events?
 - Can you give me this weeks assignments?
@@ -52,7 +52,6 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 - Do i have any assignments tomorrow?
 - Do i have any events today?
 - Do i have any events tomorrow?
-- Can you give me all passed assignments?
 - What are my exam dates?
 - How many days are there until my first exam?
 - Should i start to read for my exam?
