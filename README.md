@@ -91,7 +91,7 @@ The result will be something like this:
 Ngrok will now forward all connections to localhost.
 
 2. Copy the address that is hightligted in the picture above.
-3. Log in to API.AI (using the username an dpassword that is provided in the delivery package) and go to fulfillment and enable webhook. Paste the address so API.AI can send POST requests to Ngrok.
+3. Log in to API.AI (using the username and password that is provided in the delivery package (README-LOGIN-DETAILS.txt)) and go to fulfillment and enable webhook. Paste the address so API.AI can send POST requests to Ngrok.
 4. Clone this project into a new folder
 5. Get all the required python libraries: Cd into the project folder and do:
 ```
