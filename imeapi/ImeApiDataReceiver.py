@@ -1,4 +1,4 @@
-
+import requests
 base_url = "http://www.ime.ntnu.no/api/course/en/"
 
 
