@@ -71,7 +71,8 @@ The first time you want to use Pirka you have to visit: https://www.facebook.com
 ### Requirements
 - Python 3.6 (or some other Python 3 version)
 - Ngrok (download here: https://ngrok.com/)
-- API.AI account and an agent (go to https://api.ai/ to create one)
+- API.AI account and an agent (go to https://api.ai/ to create one, you will also need to integrate your bot with Facebook (including creating an Facebook App - google guides for setup API.AI with facebook.)
+- A copy of the current bot (with intents and entitys (Pirka.zip is in the root and can be imported to your agent))
 
 ### Installation
 1. cd into your folder where you downloaded ngrok, then do:
