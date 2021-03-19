@@ -9,7 +9,7 @@ grip==4.3.2
 httplib2==0.10.3
 icalendar==3.11.3
 itsdangerous==0.24
-Jinja2==2.9.5
+Jinja2==2.11.3
 Markdown==2.6.8
 MarkupSafe==0.23
 netifaces==0.10.5
