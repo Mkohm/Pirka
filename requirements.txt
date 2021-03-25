@@ -22,7 +22,7 @@ pyasn1-modules==0.0.8
 Pygments==2.2.0
 python-dateutil==2.6.0
 pytz==2013b0
-PyYAML==3.12
+PyYAML==5.4
 requests==2.13.0
 rsa==3.4.2
 selenium==3.3.0
