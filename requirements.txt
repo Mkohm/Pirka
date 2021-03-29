@@ -19,7 +19,7 @@ path-and-address==2.0.1
 pathtools==0.1.2
 pyasn1==0.2.3
 pyasn1-modules==0.0.8
-Pygments==2.2.0
+Pygments==2.7.4
 python-dateutil==2.6.0
 pytz==2013b0
 PyYAML==3.12
