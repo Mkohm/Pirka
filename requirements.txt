@@ -13,7 +13,7 @@ Jinja2==2.9.5
 Markdown==2.6.8
 MarkupSafe==0.23
 netifaces==0.10.5
-numpy==1.12.1
+numpy==1.22.0
 oauth2client==4.0.0
 path-and-address==2.0.1
 pathtools==0.1.2
